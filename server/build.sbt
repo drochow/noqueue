@@ -1,6 +1,7 @@
 import play.routes.compiler.InjectedRoutesGenerator
 import play.sbt.PlayScala
-import NativePackegerKeys._ // with auto plugins this won't be necessary soon
+//import NativePackegerKeys._ // with auto plugins this won't be necessary soon
+import com.typesafe.sbt.SbtNativePackager.autoImport._
 
 name := """NoQueue"""
 
@@ -28,12 +29,8 @@ libraryDependencies ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-maintainer += Seq(
-  "David Kaatz",
-  "Sean Percy Harnak",
-  "Robert Dimitrov",
-  "Benjamin Shurian"
-)
+// setting a maintainer which is used for all packaging types
+maintainer := "David Kaatz"
 
 fork in run := false
 
