@@ -1,6 +1,8 @@
 # vim:set ft=dockerfile:
 FROM debian:jessie
 
+RUN ["chmod", "+x", "/usr/src/app/docker-entrypoint.sh"]
+
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
 
