@@ -1,4 +1,0 @@
-
-# Users routes
-GET         /user/:id                                                                @controllers.api.v1.UserController.read(id: Long)
-POST        /user                                                                    @controllers.api.v1.UserController.create
