@@ -1,3 +1,5 @@
 .idea
-server/.idea
-server/target
+backend/.idea
+backend/target
+backend/project/target
+backend/project/project
