@@ -6,6 +6,16 @@ import com.nimbusds.jose.{ Payload, JWSAlgorithm, JWSHeader, JWSObject }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+/**
+  * Json Web Tocken Utility class
+  *
+  * This class wraps the following functionality:
+  *
+  * palyoad signing and encryption
+  * payload verification and decryption
+  *
+  *
+  */
 object JwtUtil {
   def signJwtPayload(payload: String)(implicit secret: JwtSecret): String = {
     Asserts.argumentIsNotNullNorEmpty(payload)
