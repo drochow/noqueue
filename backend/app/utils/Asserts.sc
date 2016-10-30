@@ -1,6 +1,6 @@
 package utils
 
-object Asserts
+package object Asserts
 {
   def argumentIsNotNull[T](arg: T)
   {
