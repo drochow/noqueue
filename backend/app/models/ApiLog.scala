@@ -15,7 +15,6 @@ case class ApiLog(
     id: Long,
     date: DateTime,
     ip: String,
-    apiKey: Option[String],
     token: Option[String],
     method: String,
     uri: String,
@@ -37,9 +36,8 @@ object ApiLog {
   def insert[R <: RequestHeader](request: ApiRequestHeader[R], status: Int, json: JsValue): Future[(Long, ApiLog)] = Future.successful {
     logs.insert(ApiLog(
       _,
-      date = request.dateOrNow,
+      date = request.now,
       ip = request.remoteAddress,
-      apiKey = request.apiKeyOpt,
       token = request.tokenOpt,
       method = request.method,
       uri = request.uri,
