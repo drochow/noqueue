@@ -24,6 +24,16 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
   def signIn = ApiActionWithBody { implicit request =>
     readFromRequest[Tuple2[String, String]] {
       case (email, pwd) =>
+       AnwenderDa.findByEmail(email).pw(pwd){
+            case None => errorAnwenderNotFound
+            case Some(anwender) => {
+              if anwender.active InvalidCredentialsException
+              else {
+                var payLoad = TokenPayload(anwender.userId, 3000000000)
+                JwtUtil.signJwtPayload(Json.payLoad).
+              }
+            }
+          }
         User.findByEmail(email).flatMap {
           case None => errorUserNotFound
           case Some(user) => {

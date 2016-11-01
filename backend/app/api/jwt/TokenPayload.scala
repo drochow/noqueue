@@ -6,7 +6,7 @@ import play.api.libs.json.{ Json, Format }
 
 case class TokenPayload(
     userId: Long,
-    email: String,
+    //email: String,
     expiration: DateTime
 ) {
   Asserts.argumentIsNotNull(userId)
