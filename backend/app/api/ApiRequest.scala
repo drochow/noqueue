@@ -5,22 +5,22 @@ import play.api.mvc._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.util.Locale
+
+import api.jwt.TokenPayload
+import com.nimbusds.jose.Payload
+
 import scala.util.Try
 import play.api.libs.json._
 
 /*
-* Wrapped Request with additional information for the API (headers: Api Key, Date, Auth-Token, ...)
+* Wrapped Request with additional information for the API
 */
 trait ApiRequestHeader[R <: RequestHeader] {
   val request: R
-  val apiKeyOpt: Option[String] = request.headers.get(HEADER_API_KEY)
-  val dateOptTry: Option[Try[DateTime]] = request.headers.get(HEADER_DATE).map { dateStr =>
-    Try(parseHeaderDate(dateStr))
-  }
-  val dateOpt: Option[DateTime] = dateOptTry.filter(_.isSuccess).map(_.get)
+
   val tokenOpt: Option[String] = request.headers.get(HEADER_AUTH_TOKEN)
 
-  def dateOrNow: DateTime = dateOpt.getOrElse(new DateTime())
+  def now: DateTime = new DateTime()
   def remoteAddress: String = request.remoteAddress
   def method: String = request.method
   def uri: String = request.uri
@@ -43,33 +43,19 @@ class ApiRequest[A](val request: Request[A]) extends WrappedRequest[A](request) 
   }
 }
 
+/**
+  * Default api request
+  */
 object ApiRequest {
   def apply[A](request: Request[A]): ApiRequest[A] = new ApiRequest[A](request)
 }
 
 /**
- * ApiRequest for user aware requests
- *
- * @param request
- * @param apiKey
- * @param date
- * @param token
- * @param userId
- * @tparam A
- */
-case class UserAwareApiRequest[A](override val request: Request[A], apiKey: String, date: DateTime, token: Option[String], userId: Option[Long]) extends ApiRequest[A](request) {
-  def isLogged = userId.isDefined
-}
-
-/**
- * ApiRequest for authenticated requests
- *
- * @param request
- * @param apiKey
- * @param date
- * @param token
- * @param userId
- * @tparam A
- */
-case class SecuredApiRequest[A](override val request: Request[A], apiKey: String, date: DateTime, token: String, userId: Long) extends ApiRequest[A](request)
+  * ApiRequest for authenticated requests
+  *
+  * @param request the request object
+  * @param payload the authentication payload
+  * @tparam A the type of the request object data
+  */
+case class SecuredApiRequest[A](override val request: Request[A], payload: TokenPayload) extends ApiRequest[A](request)
 
