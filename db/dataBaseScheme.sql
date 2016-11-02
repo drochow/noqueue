@@ -42,7 +42,7 @@ CREATE TABLE Anbieter(
 );
 
 
-CREATE TABLE Bewertungen (
+CREATE TABLE Bewertungen(
 	id serial,
 	anbieter integer NOT NULL,
 	anwender integer NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE Mitarbeiter(
 );
 
 
-CREATE TABLE WartschlangenPlatz(
+CREATE TABLE WartschlangenPlaetze(
 	id serial,
 	dienstleistung integer NOT NULL,
 	mitarbeiter integer NOT NULL,
@@ -89,11 +89,11 @@ CREATE TABLE Dienstleistungen(
 	aktion varchar(255) NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(anbieter) REFERENCES Anbieter,
-	FOREIGN KEY(dienstleistungsTyp) REFERENCES DienstleistungsTyp
+	FOREIGN KEY(dienstleistungsTyp) REFERENCES DienstleistungsTypen
 );
 
 
-CREATE TABLE DienstleistungsTyp(
+CREATE TABLE DienstleistungsTypen(
 	id serial,
 	name varchar(255) NOT NULL,
 	PRIMARY KEY(id)
