@@ -5,11 +5,11 @@ CREATE TABLE Anwender(
 	password varchar(255) NOT NULL,
 	nutzerName varchar(255) UNIQUE NOT NULL,
 	PRIMARY KEY(id),
-	FOREIGN KEY(adresse) REFERENCES Adresse
+	FOREIGN KEY(adresse) REFERENCES Adressen
 );
 
 
-CREATE TABLE Adresse(
+CREATE TABLE Adressen(
 	id serial,
 	straße varchar(255) NOT NULL,
 	hausNummer varchar(5) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE Anbieter(
 	wsOffen boolean NOT NULL,
 	bewertung integer,
 	PRIMARY KEY(id),
-	FOREIGN KEY(adresse) REFERENCES Adresse
+	FOREIGN KEY(adresse) REFERENCES Adressen
 );
 
 
