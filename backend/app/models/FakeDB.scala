@@ -11,15 +11,6 @@ object FakeDB {
 
   val dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
 
-  // API KEYS
-  val apiKeys = FakeTable(
-    1L -> ApiKey(apiKey = "AbCdEfGhIjK1", name = "ios-app", active = true),
-    2L -> ApiKey(apiKey = "AbCdEfGhIjK2", name = "android-app", active = true)
-  )
-
-  // TOKENS
-  val tokens = FakeTable[ApiToken]()
-
   // API REQUEST LOG
   val logs = FakeTable[ApiLog]()
 

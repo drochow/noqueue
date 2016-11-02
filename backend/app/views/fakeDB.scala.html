@@ -155,7 +155,6 @@
 							<td>@log.id</td>
 							<td>@log.dateStr</td>
 							<td>@log.ip</td>
-							<td>@log.apiKey</td>
 							<td>@log.token</td>
 							<td>@log.method</td>
 							<td>@log.uri</td>
@@ -171,62 +170,6 @@
 				}
 			</tbody>
 		</table>
-		
-		
-		
-		<h1 id="apikeys">Api Keys</h1>
-
-		<table class="table table-bordered table-striped table-condensed">
-			<thead class="text-center">
-				<tr>
-					<th>Api Key</th>
-					<th>Name</th>
-					<th><abbr title="Is active">Act.</abbr></th>
-				</tr>
-			</thead>
-			<tbody>
-				@if(!FakeDB.apiKeys.isEmpty) {
-					@FakeDB.apiKeys.values.sortBy(_.apiKey).map { apiKey =>
-						<tr>
-							<td>@apiKey.apiKey</td>
-							<td>@apiKey.name</td>
-							<td class="text-center">@if(apiKey.active){<span class="glyphicon glyphicon-ok text-success"></span>}else{<span class="glyphicon glyphicon-remove text-danger"></span>}</td>
-						</tr>
-					}
-				} else {
-					<tr><td colspan="50" class="no-items">There is no Api Key</td></tr>
-				}
-			</tbody>
-		</table>
-		
-		
-		<h1 id="tokens">Auth Tokens</h1>
-
-		<table class="table table-bordered table-striped table-condensed">
-			<thead class="text-center">
-				<tr>
-					<th>Api Key</th>
-					<th>Token</th>
-					<th class="text-center">User id</th>
-					<th>Expiration date</th>
-				</tr>
-			</thead>
-			<tbody>
-				@if(!FakeDB.tokens.isEmpty) {
-					@FakeDB.tokens.values.sortBy(_.apiKey).map { token =>
-						<tr>
-							<td>@token.apiKey</td>
-							<td>@token.token</td>
-							<td class="text-center">@token.userId</td>
-							<td class="text-center">@displayDate(token.expirationTime.toDate)</td>
-						</tr>
-					}
-				} else {
-					<tr><td colspan="50" class="no-items">There is no Auth Token</td></tr>
-				}
-			</tbody>
-		</table>
-		
 		
 		<h1 id="users">Users</h1>
 

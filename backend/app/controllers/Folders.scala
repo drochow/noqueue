@@ -14,14 +14,14 @@ class Folders @Inject() (val messagesApi: MessagesApi) extends api.ApiController
 
   def list(sort: Option[String], p: Int, s: Int) = SecuredApiAction { implicit request =>
     sortedPage(sort, Folder.sortingFields, default = "order") { sortingFields =>
-      Folder.page(request.userId, sortingFields, p, s)
+      Folder.page(request.payload.userId, sortingFields, p, s)
     }
   }
 
   // Returns the Location header, but not the folder information within the content body.
   def insert = SecuredApiActionWithBody { implicit request =>
     readFromRequest[Folder] { folder =>
-      Folder.insert(request.userId, folder.name).flatMap {
+      Folder.insert(request.payload.userId, folder.name).flatMap {
         case (id, newFolder) => created(Api.locationHeader(routes.Folders.info(id)))
       }
     }

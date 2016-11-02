@@ -15,7 +15,7 @@ import play.api.i18n.Lang
 trait ApiResult {
   val status: Int
   val json: JsValue
-  val headers: Seq[()]
+  val headers: Seq[(String, String)]
 
   /*
 	* Saves into DB an ApiLog for this ApiResponse

@@ -27,10 +27,10 @@ object Api {
   final val HEADER_PAGE_TOTAL = "X-Page-Total"
 
   /**
-    * Basic headers
-    * @param lang used language
-    * @return
-    */
+   * Basic headers
+   * @param lang used language
+   * @return
+   */
   def basicHeaders(implicit lang: Lang) = Seq(
     HEADER_CONTENT_LANGUAGE -> lang.language,
     HEADER_ACCEPT_LANGUAGE -> lang.language
@@ -52,7 +52,6 @@ object Api {
    * @return
    */
   def locationHeader(call: Call)(implicit request: RequestHeader): (String, String) = locationHeader(call.absoluteURL())
-
 
   //////////////////////////////////////////////////////////////////////
   // Sorting

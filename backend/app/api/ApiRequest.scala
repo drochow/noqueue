@@ -44,18 +44,18 @@ class ApiRequest[A](val request: Request[A]) extends WrappedRequest[A](request) 
 }
 
 /**
-  * Default api request
-  */
+ * Default api request
+ */
 object ApiRequest {
   def apply[A](request: Request[A]): ApiRequest[A] = new ApiRequest[A](request)
 }
 
 /**
-  * ApiRequest for authenticated requests
-  *
-  * @param request the request object
-  * @param payload the authentication payload
-  * @tparam A the type of the request object data
-  */
+ * ApiRequest for authenticated requests
+ *
+ * @param request the request object
+ * @param payload the authentication payload
+ * @tparam A the type of the request object data
+ */
 case class SecuredApiRequest[A](override val request: Request[A], payload: TokenPayload) extends ApiRequest[A](request)
 

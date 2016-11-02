@@ -17,7 +17,6 @@ GET           /anwender                           controllers.Users.usernames
 GET           /account                            controllers.Account.info
 PUT           /account                            controllers.Account.update
 PUT           /account/password                   controllers.Account.updatePassword
-DELETE        /account                            controllers.Account.delete
 
 # FOLDERS
 GET           /folders                            controllers.Folders.list(sort: Option[String], page: Int ?= 1, size: Int ?= 10)

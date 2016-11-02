@@ -57,12 +57,12 @@ object JwtUtil {
   }
 
   /**
-    * Tries to verify and decrypt token and returns future with payload
-    *
-    * @param token encrypted and signed jwt
-    * @param secret jwt encryption secret
-    * @return
-    */
+   * Tries to verify and decrypt token and returns future with payload
+   *
+   * @param token encrypted and signed jwt
+   * @param secret jwt encryption secret
+   * @return
+   */
   def tryGetPayloadStringIfValidToken(token: String)(implicit secret: JwtSecret): Future[Option[String]] = {
     Asserts.argumentIsNotNull(token)
     Asserts.argumentIsNotNull(secret)
@@ -80,21 +80,21 @@ object JwtUtil {
   }
 
   /**
-    * Tries to verify and decrypt token and returns future with payload
-    *
-    * @param token encrypted and signed jwt token
-    * @param secret jwt encryption secret
-    * @param jsonWrites json deserializer
-    * @tparam T type of data to be deserialized
-    * @return
-    */
+   * Tries to verify and decrypt token and returns future with payload
+   *
+   * @param token encrypted and signed jwt token
+   * @param secret jwt encryption secret
+   * @param jsonWrites json deserializer
+   * @tparam T type of data to be deserialized
+   * @return
+   */
   def getPayloadIfValidToken[T](token: String)(implicit secret: JwtSecret, jsonWrites: Reads[T]): Future[Option[T]] = {
     Asserts.argumentIsNotNull(token)
     Asserts.argumentIsNotNull(secret)
     Asserts.argumentIsNotNull(jsonWrites)
 
-    case Some(sv) => Future.successful(Some(Json.parse(sv).as[T]))
     this.tryGetPayloadStringIfValidToken(token).flatMap {
+      case Some(sv) => Future.successful(Some(Json.parse(sv).as[T]))
       case None => Future.successful(None)
     }
   }
