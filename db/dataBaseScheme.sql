@@ -4,7 +4,7 @@ CREATE TABLE Anwender(
 	nutzerEmail varchar(255) UNIQUE NOT NULL,
 	password varchar(255) NOT NULL,
 	nutzerName varchar(255) UNIQUE NOT NULL,
-	PRIMARY KEY (id),
+	PRIMARY KEY(id),
 	FOREIGN KEY(adresse) REFERENCES Adresse
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE Adresse(
 	hausNummer varchar(5) NOT NULL,
 	plz varchar(5) NOT NULL,
 	stadt varchar(255) NOT NULL,
-	PRIMARY KEY (id),
+	PRIMARY KEY(id),
 );
 
 
@@ -47,9 +47,9 @@ CREATE TABLE Bewertung (
 	anbieter integer NOT NULL,
 	anwender integer NOT NULL,
 	wert integer NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY (anbieter) REFERENCES Anbieter,
-	FOREIGN KEY (anwender) REFERENCES Anwender,
+	PRIMARY KEY(id),
+	FOREIGN KEY(anbieter) REFERENCES Anbieter,
+	FOREIGN KEY(anwender) REFERENCES Anwender,
 	CONSTRAINT bewertet UNIQUE (anbieter, anwender)
 );
 
