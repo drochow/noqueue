@@ -42,7 +42,7 @@ CREATE TABLE Anbieter(
 );
 
 
-CREATE TABLE Bewertung (
+CREATE TABLE Bewertungen (
 	id serial,
 	anbieter integer NOT NULL,
 	anwender integer NOT NULL,
@@ -75,13 +75,13 @@ CREATE TABLE WartschlangenPlatz(
 	schaetzPunkt time NOT NULL,
 	platzNummer integer NOT NULL,
 	PRIMARY KEY(id),
-	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistung,
+	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistungen,
 	FOREIGN KEY(mitarbeiter) REFERENCES Mitarbeiter,
 	FOREIGN KEY(anwender) REFERENCES Anwender
 );
 
 
-CREATE TABLE Dienstleistung(
+CREATE TABLE Dienstleistungen(
 	id serial,
 	dienstleistungsTyp integer NOT NULL,
 	anbieter integer NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE Faehigkeiten(
 	beschreibung varchar(255) NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(mitarbeiter) REFERENCES Mitarbeiter,
-	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistung,
+	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistungen,
 	CONSTRAINT hasFaehigkeit UNIQUE (mitarbeiter, dienstleistung)
 );
 
@@ -119,6 +119,6 @@ CREATE TABLE Tags(
 	tag varchar(255),
 	PRIMARY KEY(id),
 	FOREIGN KEY(anbieter) REFERENCES Anbieter,
-	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistung,
+	FOREIGN KEY(dienstleistung) REFERENCES Dienstleistungen,
 	CONSTRAINT hasTag UNIQUE (anbieter, dienstleistung)	
 );
