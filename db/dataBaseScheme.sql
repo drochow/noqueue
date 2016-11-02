@@ -15,7 +15,7 @@ CREATE TABLE Adresse(
 	hausNummer varchar(5) NOT NULL,
 	plz varchar(5) NOT NULL,
 	stadt varchar(255) NOT NULL,
-	PRIMARY KEY(id),
+	PRIMARY KEY(id)
 );
 
 
@@ -61,7 +61,7 @@ CREATE TABLE Mitarbeiter(
 	anwesend boolean NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(anwender) REFERENCES Anwender,
-	FOREIGN KEY(anbieter) REFERENCES Anbieter,
+	FOREIGN KEY(anbieter) REFERENCES Anbieter
 );
 
 
