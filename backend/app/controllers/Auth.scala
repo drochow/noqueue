@@ -23,36 +23,21 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
 
   def signIn = ApiActionWithBody { implicit request =>
     readFromRequest[Tuple2[String, String]] {
-      case (email, pwd) =>
-       AnwenderDa.findByEmail(email).pw(pwd){
-            case None => errorAnwenderNotFound
-            case Some(anwender) => {
-              if anwender.active InvalidCredentialsException
-              else {
-                var payLoad = TokenPayload(anwender.userId, 3000000000)
-                JwtUtil.signJwtPayload(Json.payLoad).
-              }
-            }
-          }
-        User.findByEmail(email).flatMap {
-          case None => errorUserNotFound
-          case Some(user) => {
-            if (user.password != pwd) errorUserNotFound
-            else if (!user.emailConfirmed) errorUserEmailUnconfirmed
-            else if (!user.active) errorUserInactive
-            else ApiToken.create(request.apiKeyOpt.get, user.id).flatMap { token =>
-              ok(Json.obj(
-                "token" -> token,
-                "minutes" -> 10
-              ))
-            }
+      case (email, pwd) => DaAnwender.findByEmail(email).pw(pwd).flatMap{
+        case None => errorAnwenderNotFound
+        case Some(anwender) => {
+          if anwender.active InvalidCredentialsException
+          else {
+            val payLoad = TokenPayload(anwender.userId, 3000000000)//#TODO realistisch
+            ok(JwtUtil.signJwtPayload(Json.toJson(payLoad)))
           }
         }
+      }
     }
   }
 
   def signOut = SecuredApiAction { implicit request =>
-    ApiToken.delete(request.token).flatMap { _ =>
+    ResponseToken.delete(request.token).flatMap { _ =>
       noContent()
     }
   }
@@ -84,3 +69,5 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
   }
 
 }
+
+object

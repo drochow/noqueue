@@ -93,8 +93,8 @@ object JwtUtil {
     Asserts.argumentIsNotNull(secret)
     Asserts.argumentIsNotNull(jsonWrites)
 
+    case Some(sv) => Future.successful(Some(Json.parse(sv).as[T]))
     this.tryGetPayloadStringIfValidToken(token).flatMap {
-      case Some(sv) => Future.successful(Some(Json.parse(sv).as[T]))
       case None => Future.successful(None)
     }
   }
