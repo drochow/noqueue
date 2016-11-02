@@ -100,7 +100,7 @@ CREATE TABLE DienstleistungsTyp(
 );
 
 
-CREATE TABLE faehigkeiten(
+CREATE TABLE Faehigkeiten(
 	id serial,
 	mitarbeiter integer NOT NULL,
 	dienstleistung integer NOT NULL,
