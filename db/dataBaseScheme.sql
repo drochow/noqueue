@@ -55,10 +55,11 @@ CREATE TABLE Bewertung (
 
 
 CREATE TABLE Mitarbeiter(
-	id serial PRIMARY KEY,
+	id serial,
 	anwender integer NOT NULL,
 	anbieter integer NOT NULL,
 	anwesend boolean NOT NULL,
+	PRIMARY KEY(id),
 	FOREIGN KEY(anwender) REFERENCES Anwender,
 	FOREIGN KEY(anbieter) REFERENCES Anbieter,
 );
