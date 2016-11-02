@@ -65,7 +65,7 @@ CREATE TABLE Mitarbeiter(
 );
 
 
-CREATE TABLE WartschlangenPlaetze(
+CREATE TABLE WarteschlangenPlaetze(
 	id serial,
 	dienstleistung integer NOT NULL,
 	mitarbeiter integer NOT NULL,
