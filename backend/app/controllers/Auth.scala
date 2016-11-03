@@ -32,10 +32,10 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
         User.findByEmail(email).flatMap {
           case None => errorUserNotFound
           case Some(user) => {
-            if (user.password != pwd) errorUserNotFound
+            if (user.password != pwd) errorUserNotFound //@todo pwd-Hash
             else {
               //@todo get config
-              val exp: DateTime = (new DateTime()).plusMinutes(120)
+              val exp: DateTime = (new DateTime()).plusMinutes(config.getInt("jwt.token.minutesToLive").get);
               val token: String = JwtUtil.signJwtPayload(new TokenPayload(user.id, exp))
               ok(Json.obj(
                 "token" -> token,

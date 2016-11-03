@@ -1,16 +1,19 @@
 package api
 
+import javax.inject.Inject
+
 import api.ApiError._
 import api.Api.Sorting._
-import api.jwt.{ JwtSecret, JwtUtil, TokenPayload }
+import api.jwt.{JwtSecret, JwtUtil, TokenPayload}
 import org.joda.time.DateTime
+import play.api.Configuration
 import play.api.mvc._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.{ I18nSupport, MessagesApi }
+import play.api.i18n.{I18nSupport, MessagesApi}
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 import play.api.libs.json._
 
 /**
@@ -18,8 +21,9 @@ import play.api.libs.json._
  */
 trait ApiController extends Controller with I18nSupport {
 
+  @Inject val config: Configuration;
   val messagesApi: MessagesApi
-  implicit protected val SECRET: JwtSecret = JwtSecret("Abcdefg§$!U)JRFANF9wahfioU)JRFANF9wahfiowanfU)JRFANU)JRFANF9wahfioF9wahfioöwamP)UJAPADMWI$J!POENDAND")
+  implicit protected val SECRET: JwtSecret = JwtSecret(config.getString("jwt.token.secret").get);
   ////////////////////////////////////
   /// Transformation Uitlities
   ////////////////////////////////////
