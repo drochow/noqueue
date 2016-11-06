@@ -17,9 +17,10 @@ import javax.inject.Inject
 import api.ApiResponse
 import api.jwt.{ JwtUtil, TokenPayload }
 import org.joda.time.DateTime
+import play.api.Configuration
 import play.api.i18n.MessagesApi
 
-class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends api.ApiController {
+class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
 
   implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
     (__ \ "email").read[String](Reads.email) and
@@ -35,7 +36,7 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
             if (user.password != pwd) errorUserNotFound //@todo pwd-Hash
             else {
               //@todo get config
-              val exp: DateTime = (new DateTime()).plusMinutes(config.getInt("jwt.token.minutesToLive").get);
+              val exp: DateTime = (new DateTime()).plusMinutes(config.getInt("jwt.token.minutesToLive ").get);
               val token: String = JwtUtil.signJwtPayload(new TokenPayload(user.id, exp))
               ok(Json.obj(
                 "token" -> token,

@@ -5,12 +5,15 @@ import api.ApiError._
 import api.JsonCombinators._
 import models.Folder
 import play.api.mvc._
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import javax.inject.Inject
-import play.api.i18n.{ MessagesApi }
 
-class Folders @Inject() (val messagesApi: MessagesApi) extends api.ApiController {
+import play.api.Configuration
+import play.api.i18n.MessagesApi
+
+class Folders @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def list(sort: Option[String], p: Int, s: Int) = SecuredApiAction { implicit request =>
     sortedPage(sort, Folder.sortingFields, default = "order") { sortingFields =>

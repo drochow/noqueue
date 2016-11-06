@@ -14,6 +14,19 @@ object FakeDB {
   // API REQUEST LOG
   val logs = FakeTable[ApiLog]()
 
+  //ANWENDERS
+  val anwenders = FakeTable(
+    1L -> Anwender(1L, "1L@example.com", "pw1234", "Anw 1", 1L), //does this actually work//@todo delete comment
+    2L -> Anwender(2L, "2L@example.com", "pw2234", "Anw 2", 2L),
+    3L -> Anwender(3L, "3L@example.com", "pw3234", "Anw 3", 3L)
+  )
+
+  val adressen = FakeTable(
+    1L -> Adresse(1L, "Hauptstr.", "11a", "11111", "Aachen"),
+    2L -> Adresse(2L, "NebenStr.", "2b", "22222", "Berlin"),
+    3L -> Adresse(3L, "Die Gasse", "30c", "30030", "Christenhain")
+  )
+
   // USERS
   val users = FakeTable(
     1L -> User(1L, "user1@mail.com", "123456", "User 1", true, true),
