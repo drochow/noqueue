@@ -55,7 +55,7 @@ object FakeDB {
   /*
 	* Fake table that emulates a SQL table with an auto-increment index
 	*/
-  case class FakeTable[A](var table: Map[Long, A], var incr: Long) {
+  case class FakeTable[A](var table: Map[Long, A], var incr: Long) extends GenDAOSlick[A]{
     def nextId: Long = {
       if (!table.contains(incr))
         incr
