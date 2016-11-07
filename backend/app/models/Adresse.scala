@@ -16,6 +16,20 @@ case class Adresse(
 
 }
 
+class Adresses(tag: Tag) extends Table[Adresse](tag, "ADRESSEN") {
+    def id = column[Long]("ADR_ID", O.PrimaryKey, O.AutoInc)
+    def strasse = column[String]("STRASSE")
+    def hausnummer = column[String]("HAUSNUMMER")
+    def plz = column[String]("PLZ")
+    def stadt = column[String]("STADT")
+    
+    def * = (id.?, strasse, hausnummer, plz, stadt) <>(Adresse.tupled, Adresse.unapply)
+}
+
+
+
+
+
 trait GenDAO[A]{
   def nextId: Long
   def get(id: Long): Option[A]
