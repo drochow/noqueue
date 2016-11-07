@@ -1,4 +1,4 @@
-package models2
+package models
 
 import org.joda.time.DateTime
 import slick.driver.H2Driver.api._
