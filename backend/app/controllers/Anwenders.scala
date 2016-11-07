@@ -2,23 +2,26 @@ package controllers
 
 import javax.inject.Inject
 
-import models.{ Adresse, Anwender, AnwenderDAO }
+import api.JsonCombinators._
+import api.ApiError
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import models.db.{ Adresse, AnwenderRepository, Anwender => AnwenderResource }
 
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwenders @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+
   def create(nutzerName: String) = ApiActionWithBody { implicit request =>
-    readFromRequest[Anwender] {
+    readFromRequest[AnwenderResource] {
       anwender =>
-        readFromRequest[Adresse] { //@todo stil
-          adresse =>
-            AnwenderDAO.insert(anwender.nutzerEmail, anwender.password, anwender.nutzerName, adresse.straße, adresse.hausNummer, adresse.plz, adresse.stadt).flatMap {
-              case (_, newAnwender) => created(newAnwender)
-              //case _ => //@todo fail
-            }
+        readFromRequest[Adresse] {
+          adresse => created("okey")
+          //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
+          //              case newAnwenderId => created(newAnwenderId)
+          //              case _ => ApiError.errorInternal("Unable to create User")
+          //            }
         }
     }
   }

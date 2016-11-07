@@ -25,30 +25,25 @@ case class ApiLog(
   def dateStr: String = ApiLog.dtf.print(date)
 }
 object ApiLog {
-  import FakeDB.logs
 
   private val dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:ss:mm")
 
-  def findById(id: Long): Future[Option[ApiLog]] = Future.successful {
-    logs.get(id)
-  }
-
-  def insert[R <: RequestHeader](request: ApiRequestHeader[R], status: Int, json: JsValue): Future[(Long, ApiLog)] = Future.successful {
-    logs.insert(ApiLog(
-      _,
-      date = request.now,
-      ip = request.remoteAddress,
-      token = request.tokenOpt,
-      method = request.method,
-      uri = request.uri,
-      requestBody = request.maybeBody,
-      responseStatus = status,
-      responseBody = if (json == JsNull) None else Some(Json.prettyPrint(json))
-    ))
-  }
+  //  def insert[R <: RequestHeader](request: ApiRequestHeader[R], status: Int, json: JsValue): Future[(Long, ApiLog)] = Future.successful {
+  ////    logs.insert(ApiLog(
+  ////      _,
+  ////      date = request.now,
+  ////      ip = request.remoteAddress,
+  ////      token = request.tokenOpt,
+  ////      method = request.method,
+  ////      uri = request.uri,
+  ////      requestBody = request.maybeBody,
+  ////      responseStatus = status,
+  ////      responseBody = if (json == JsNull) None else Some(Json.prettyPrint(json))
+  ////    ))
+  //  }
 
   def delete(id: Long): Future[Unit] = Future.successful {
-    logs.delete(id)
+    //    logs.delete(id)
   }
 
 }

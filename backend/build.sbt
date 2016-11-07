@@ -17,11 +17,13 @@ scalariformSettings
 
 libraryDependencies ++= Seq(
   specs2 % Test,
-	"org.specs2" %% "specs2-matcher-extra" % "3.8.5" % Test,
-  "com.nimbusds" % "nimbus-jose-jwt" % "4.11.2",
-  "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
-  "com.typesafe.slick" %% "slick" % "3.1.1",
-  "com.github.tminglei" %% "slick-pg" % "0.12.0"
+	"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
+  "com.nimbusds"          % "nimbus-jose-jwt"             % "4.11.2",
+  "org.postgresql"        % "postgresql"                  % "9.4-1202-jdbc41",
+  "com.typesafe.slick"    %% "slick-hikaricp"             %  "3.1.1",
+  "com.typesafe.slick"    %%  "slick" % "3.1.1",
+  "org.scalatest"         %%  "scalatest"                 %      "2.2.5"       %    "test",
+  "com.h2database"        %   "h2"                        %      "1.4.187"     %   "test"
 )
 
 fork in run := true
@@ -29,8 +31,6 @@ routesGenerator := InjectedRoutesGenerator
 
 // setting a maintainer which is used for all packaging types
 maintainer := "David Kaatz"
-
-fork in run := false
 
 fork in run := true
 

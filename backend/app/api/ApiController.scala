@@ -1,14 +1,12 @@
 package api
 
-import javax.inject.Inject
-
 import api.ApiError._
 import api.Api.Sorting._
 import api.jwt.{ JwtSecret, JwtUtil, TokenPayload }
 import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.mvc._
-
+import javax.inject.Inject
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.i18n.{ I18nSupport, MessagesApi }
