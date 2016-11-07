@@ -1,4 +1,4 @@
-package models2
+package models
 
 import slick.driver.H2Driver.api._
 import slick.lifted.TableQuery
