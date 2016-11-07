@@ -15,6 +15,20 @@ case class Anwender(
     adresseId: Long //@todo Adresse || Long
 ) {
 }
+
+
+class Anwenders(tag: Tag) extends Table[Anwender](tag, "ANWENDER") {
+    def id = column[Long]("ANW_ID", O.PrimaryKey, O.AutoInc)  
+    def adresseID = column[Long]("ADR_ID")  
+    def nutzerEmail = column[String]("NUTZEREMAIL")  
+    def password = column[String]("PASSWORD")  
+    def nutzerName = column[String]("NUTZERNAME")  
+    
+    def * = (id.?, adresseID.?, nutzerEmail, password, nutzerName) <> (Anwender.tupled, Anwender.unapply)  
+    
+    def adresse: ForeignKeyQuery[Adresses, Adresse] = foreignKey("ADR_FK", adresseID, TableQuery[Adresses])(_.id)
+}
+
 //
 object AnwenderDAO { // extends TableQuery(Anwender) {
 
