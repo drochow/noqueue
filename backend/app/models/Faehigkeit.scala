@@ -7,7 +7,7 @@ import slick.lifted.{ProvenShape, ForeignKeyQuery}
 
 import scala.concurrent.Future
 
-  case class Faehigkeit(id: Option[Long], mitarbeiterID: Long, dienstleistungsID: Long, beschreibung: String)
+case class Faehigkeit(id: Option[Long], mitarbeiterID: Long, dienstleistungsID: Long, beschreibung: String)
 
 class Faehigkeits(tag: Tag) extends Table[Faehigkeit](tag, "FAEHIGKEIT") {
   def id = column[Long]("FHK_ID", O.PrimaryKey, O.AutoInc)
