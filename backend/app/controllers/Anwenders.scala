@@ -2,32 +2,27 @@ package controllers
 
 import javax.inject.Inject
 
-import io.netty.channel.AddressedEnvelope
-import models.{ Adresse, Anwender, AnwenderDAOFakeDB }
+import api.JsonCombinators._
+import api.ApiError
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import models.db.{ Adresse, AnwenderRepository, Anwender => AnwenderResource }
 
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwenders @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
-  def create(nutzerEmail: String, password: String, nutzerName: String, straße: String, hausNummer: String, plz: String, stadt: String) = ApiActionWithBody { implicit request =>
-    readFromRequest[Adresse] {
-      adresse =>
-        readFromRequest[Anwender] { //@todo stil
-          anwender =>
-            AnwenderDAOFakeDB.insert(anwender.nutzerEmail, anwender.password, anwender.nutzerName, adresse.straße, adresse.hausNummer, adresse.plz, adresse.stadt).flatMap {
-              case (_, newAnwender) => created(newAnwender)
-              //case _ => //@todo fail
-            }
-        }
-    }
-  }
+class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
-  def get = SecuredApiAction { implicit request =>
-    readFromRequest[Anwender] {
+  def create(nutzerName: String) = ApiActionWithBody { implicit request =>
+    readFromRequest[AnwenderResource] {
       anwender =>
-        ok(AnwenderDAOFakeDB.get(anwender.anwenderId));
+        readFromRequest[Adresse] {
+          adresse => created("okey")
+          //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
+          //              case newAnwenderId => created(newAnwenderId)
+          //              case _ => ApiError.errorInternal("Unable to create User")
+          //            }
+        }
     }
   }
 }
