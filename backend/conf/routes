@@ -12,7 +12,7 @@ POST          /signup                             controllers.Auth.signUp
 
 # ANWENDER
 GET           /anwender                           controllers.Users.usernames
-POST          /anwender                           controllers.Anwenders.create(name: String)
+POST          /anwender                           controllers.Anwenders.create
 
 # ACCOUNT
 GET           /account                            controllers.Account.info

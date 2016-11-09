@@ -16,7 +16,7 @@ case class Adresse(
 
 }
 
-trait GenDAO[A]{
+trait GenDAO[A] {
   def nextId: Long
   def get(id: Long): Option[A]
   def find(p: A => Boolean): Option[A]
@@ -34,27 +34,23 @@ trait GenDAO[A]{
   def size: Int
   def isEmpty: Boolean
 
-  def page(p: Int, s: Int)(filterFunc: A => Boolean)(sortFuncs: ((A, A) => Boolean)*): Page[A]
+  def page(p: Int, s: Int)(filterFunc: A => Boolean)(sortFuncs: ((A, A) => Boolean)*): Any //Page[A]
 }
 
-class GenDAOSlick[A] extends GenDAOSlick[A]{
-  override def insert(a: Long => A) = { //@todo Sean
-    (a:A)
-  }
+class GenDAOSlick[A] { // extends GenDAO[A]{
 }
 
-trait AdresseDAO extends GenDAO[Adresse]{
-  def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String)
+trait AdresseDAO extends GenDAO[Adresse] {
+  def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String): (Long, Adresse)
   //def findByplz //Bsp
 }
 
-class AdresseDAOSlick extends AdresseDAO with GenDAOSlick[Adresse]{
-  override def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String): Unit = None:Unit//@Todo Sean
+class AdresseDAOSlick { //extends GenDAOSlick[Adresse] with AdresseDAO{
+  def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String): Unit = None: Unit //@Todo Sean
 }
 
-class AdresseDAOFakeDB extends FakeDB.FakeTable[Adresse](FakeDB.adressen.table, FakeDB.adressen.incr) with AdresseDAO{
+object AdresseDAOFakeDB extends FakeDB.FakeTable[Adresse](FakeDB.adressen.table, FakeDB.adressen.incr) with AdresseDAO {
   import FakeDB.adressen
-  override def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String) = Future.successful {
-    adressen.insert(Adresse(_, straße, hausNummer, plz, stadt))
-  }
+  override def insertOrFind(straße: String, hausNummer: String, plz: String, stadt: String) = adressen.insert(Adresse(_, straße, hausNummer, plz, stadt))
 }
+

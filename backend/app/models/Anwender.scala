@@ -16,11 +16,9 @@ case class Anwender(
 ) {
 }
 //
-object AnwenderDAO { // extends TableQuery(Anwender) {
+object AnwenderDAOFakeDB extends FakeDB.FakeTable[Anwender](FakeDB.anwenders.table, FakeDB.anwenders.incr) { // extends TableQuery(Anwender) {
 
   import FakeDB.anwenders
-
-  //@TODO Sean
 
   //def getByNutzerEmail(): Anwender
   //def getById(): Anwender
@@ -34,7 +32,7 @@ object AnwenderDAO { // extends TableQuery(Anwender) {
     plz: String,
     stadt: String
   ): Future[(Long, Anwender)] = Future.successful {
-    val newAdresseId = AdresseDAO.insertOrFind(straße, hausNummer, plz, stadt).value.get.get._1
+    val newAdresseId = AdresseD.insertOrFind(straße, hausNummer, plz, stadt).value.get.get._1
     anwenders.insert(Anwender(_, nutzerEmail, password, nutzerName, newAdresseId))
   }
   //def save(anwender: Anwender)
