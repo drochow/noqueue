@@ -5,6 +5,9 @@
 # TEST PAGE
 GET           /test                               controllers.Application.test
 
+# SETUP OF DATABASE
+GET           /setup                              controllers.Application.setup
+
 # AUTHENTICATION
 #POST          /signin                             controllers.Auth.signIn
 #POST          /signout                            controllers.Auth.signOut
