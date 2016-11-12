@@ -20,13 +20,13 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   def setup = ApiAction { implicit request =>
-    {
+
       //for comprehension to combine the two futures
-      for {
+    (for {
         adresseF <- AdresseRepository.setup()
         anwenderF <- AnwenderRepository.setup()
       } yield (adresseF, anwenderF)
-    }.flatMap {
+    ).flatMap {
       //success block
       case _ => ok("Successfully setup database.")
     } recover {

@@ -1,6 +1,6 @@
 package models.db
 
-import scala.concurrent.Future
+import scala.concurrent._
 import models.db.connections.{ DBComponent, PostgresDBComponent }
 
 trait AdresseRepository extends AdresseTable { this: DBComponent =>
@@ -12,7 +12,9 @@ trait AdresseRepository extends AdresseTable { this: DBComponent =>
    *
    * @param adresse
    */
-  def create(adresse: Adresse): Future[Long] = db.run { adresseAutoInc += adresse } //@todo check before if a address witht he same specs does exist
+  def findOrCreate(adresse: Adresse): Future[Long] = {
+    db.run(adresseTableQuery += adresse)
+  }
 
   /**
    * Update a adresse
@@ -41,6 +43,8 @@ trait AdresseRepository extends AdresseTable { this: DBComponent =>
    */
   def delete(id: Long): Future[Unit] = { db.run(DBIO.seq(adresseTableQuery.filter(_.id === id).delete)) }
 
+  def setup(): Future[Any] = db.run { adresseTableQuery.schema.create }
+  //def setup(): Future[Unit] = db.run { adresseTableQuery.schema.create }
 }
 
 private[db] trait AdresseTable { this: DBComponent =>
@@ -61,6 +65,7 @@ private[db] trait AdresseTable { this: DBComponent =>
   protected val adresseTableQuery = TableQuery[AdresseTable]
 
   protected def adresseAutoInc = adresseTableQuery returning adresseTableQuery.map(_.id)
+
 }
 
 /**

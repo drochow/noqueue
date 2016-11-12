@@ -4,6 +4,7 @@
 
 # TEST PAGE
 GET           /test                               controllers.Application.test
+GET           /setup                               controllers.Application.setup
 
 # AUTHENTICATION
 #POST          /signin                             controllers.Auth.signIn

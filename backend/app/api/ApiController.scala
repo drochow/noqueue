@@ -19,7 +19,7 @@ import play.api.libs.json._
  */
 trait ApiController extends Controller with I18nSupport {
 
-  @Inject val config: Configuration;
+  val config: Configuration;
   val messagesApi: MessagesApi
   implicit protected val SECRET: JwtSecret = JwtSecret(config.getString("jwt.token.secret").get);
   ////////////////////////////////////
