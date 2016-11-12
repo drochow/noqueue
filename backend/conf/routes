@@ -4,6 +4,7 @@
 
 # TEST PAGE
 GET           /test                               controllers.Application.test
+GET           /setup                               controllers.Application.setup
 
 # SETUP OF DATABASE
 GET           /setup                              controllers.Application.setup

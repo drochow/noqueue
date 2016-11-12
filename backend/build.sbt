@@ -1,3 +1,6 @@
+import play.routes.compiler.InjectedRoutesGenerator
+import play.sbt.PlayScala
+
 name := """NoQueue"""
 
 version := "1.0-SNAPSHOT"
@@ -8,9 +11,10 @@ scalaVersion := "2.11.7"
 
 scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-language:reflectiveCalls", "-language:postfixOps", "-language:implicitConversions")
 
-
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
 resolvers += "jitpack" at "https://jitpack.io"
+
 resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.com/typesafe/ivy-releases"))(Resolver.ivyStylePatterns)
 
 scalariformSettings
@@ -27,6 +31,7 @@ libraryDependencies ++= Seq(
 )
 
 fork in run := true
+
 routesGenerator := InjectedRoutesGenerator
 
 // setting a maintainer which is used for all packaging types

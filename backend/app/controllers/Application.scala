@@ -20,20 +20,19 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   def setup = ApiAction { implicit request =>
-    var apiResult: ApiResult = ApiError.errorInternalServer("Setup failed") {
+
       //for comprehension to combine the two futures
-      for {
+    (for {
         adresseF <- AdresseRepository.setup()
         anwenderF <- AnwenderRepository.setup()
       } yield (adresseF, anwenderF)
-    }.flatMap {
+    ).flatMap {
       //success block
-      case _ => apiResult = ok("Successfully setup database.")
+      case _ => ok("Successfully setup database.")
     } recover {
       //failure block
-      case t => apiResult = ApiError.errorInternal("Unable to setup:" + t.toString())
+      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
     }
-    apiResult
   }
 
 }

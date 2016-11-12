@@ -1,10 +1,11 @@
 package models.db
 
-import scala.concurrent.Future
+import scala.concurrent._
 import models.db.connections.{ DBComponent, PostgresDBComponent }
 
 trait AnwenderRepository extends AnwenderTable { this: DBComponent =>
   import driver.api._
+  import ExecutionContext.Implicits.global
 
   /**
    * Create a new anwender
@@ -17,8 +18,8 @@ trait AnwenderRepository extends AnwenderTable { this: DBComponent =>
 
     val dbAction = (
       for {
-        adrId <- AdresseRepository.create(adresse)
-        anwenderId <- anwenderAutoInc += Anwender(anwender.nutzerEmail, anwender.password, anwender.nutzerName, adrId.result)
+        adrId <- { adresseTableQuery returning adresseTableQuery.map(_.id) += adresse }
+        anwenderId <- { anwenderTableQuery returning anwenderTableQuery.map(_.id) += Anwender(anwender.nutzerEmail, anwender.password, anwender.nutzerName, Option(adrId)) }
       } yield anwenderId
     ).transactionally
 
@@ -54,6 +55,7 @@ trait AnwenderRepository extends AnwenderTable { this: DBComponent =>
    */
   def delete(id: Long): Future[Unit] = { db.run(DBIO.seq(anwenderTableQuery.filter(_.id === id).delete)) }
 
+  def setup(): Future[Any] = { db.run(DBIO.seq(anwenderTableQuery.schema.create)) }
 }
 
 private[db] trait AnwenderTable extends AdresseTable { this: DBComponent =>
