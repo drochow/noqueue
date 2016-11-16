@@ -19,6 +19,18 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     ok("The API is ready")
   }
 
+  def test2 = ApiAction { implicit request =>
+    readFromRequest[String] {
+      case email  =>  AnwenderRepository.findByEmail(email).flatMap {
+        case anwender => ok(anwender)
+      } recover {
+        case _ => ApiError.errorItemNotFound
+      }
+    }
+
+    ok("Successfull");
+  }
+
   def setup = ApiAction { implicit request =>
 
       //for comprehension to combine the two futures

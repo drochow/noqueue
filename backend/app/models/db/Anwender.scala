@@ -55,6 +55,8 @@ trait AnwenderRepository extends AnwenderTable { this: DBComponent =>
    */
   def delete(id: Long): Future[Unit] = { db.run(DBIO.seq(anwenderTableQuery.filter(_.id === id).delete)) }
 
+  def findByEmail(email: String):Future[Anwender] = { Future.successful(Anwender(email, "something", "Max Mustermann", 1, 12L))}
+
   def setup(): Future[Any] = { db.run(DBIO.seq(anwenderTableQuery.schema.create)) }
 }
 
