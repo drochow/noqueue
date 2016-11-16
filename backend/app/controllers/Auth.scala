@@ -13,6 +13,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import javax.inject.Inject
 import play.api.i18n.MessagesApi
+import api.jwt._
 
 class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends api.ApiController {
 
@@ -21,24 +22,31 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
       (__ \ "password").read[String] tupled
   )
 
-  def signIn = ApiActionWithBody { implicit request =>
-    readFromRequest[Tuple2[String, String]] {
-      case (email, pwd) =>
-        User.findByEmail(email).flatMap {
-          case None => errorUserNotFound
-          case Some(user) => {
-            if (user.password != pwd) errorUserNotFound
-            else if (!user.emailConfirmed) errorUserEmailUnconfirmed
-            else if (!user.active) errorUserInactive
-            else ApiToken.create(request.apiKeyOpt.get, user.id).flatMap { token =>
-              ok(Json.obj(
-                "token" -> token,
-                "minutes" -> 10
-              ))
-            }
-          }
-        }
-    }
+  implicit val jwtSecret: JwtSecret = new JwtSecret("aaaaaaaaaaaaaaasdasdasdasdasdaasdsd")
+
+  def signIn = ApiAction { implicit request =>
+    ok(JwtUtil.signJwtPayload("a"))
+    // readFromRequest[Tuple2[String, String]] {
+    //   case (email, pwd) =>
+    //     User.findByEmail(email).flatMap {
+    //       case None => errorUserNotFound
+    //       case Some(user) => {
+    //         if (user.password != pwd) errorUserNotFound
+    //         else if (!user.emailConfirmed) errorUserEmailUnconfirmed
+    //         else if (!user.active) errorUserInactive
+    //         else ApiToken.create(request.apiKeyOpt.get, user.id).flatMap { token =>
+    //           ok(Json.obj(
+    //             "token" -> token,
+    //             "minutes" -> 10
+    //           ))
+    //         }
+    //       }
+    //     }
+    // }
+  }
+
+  def testSignedIn = SecuredApiAction { implicit request =>
+    ok("You are logged in")
   }
 
   def signOut = SecuredApiAction { implicit request =>

@@ -4,9 +4,10 @@
 
 # TEST PAGE
 GET           /test                               controllers.Application.test
+GET           /testSignedIn                       controllers.Auth.testSignedIn
 
 # AUTHENTICATION
-POST          /signin                             controllers.Auth.signIn
+GET          /signin                             controllers.Auth.signIn
 POST          /signout                            controllers.Auth.signOut
 POST          /signup                             controllers.Auth.signUp
 
