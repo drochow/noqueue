@@ -1,7 +1,7 @@
 package api.auth
 
 import utils.Asserts
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{ Format, Json }
 
 case class Credentials(
     email: String,
