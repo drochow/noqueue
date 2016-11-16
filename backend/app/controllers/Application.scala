@@ -21,7 +21,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
 
   def test2 = ApiAction { implicit request =>
     readFromRequest[String] {
-      case email  =>  AnwenderRepository.findByEmail(email).flatMap {
+      case email => AnwenderRepository.findByEmail(email).flatMap {
         case anwender => ok(anwender)
       } recover {
         case _ => ApiError.errorItemNotFound
@@ -33,12 +33,11 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
 
   def setup = ApiAction { implicit request =>
 
-      //for comprehension to combine the two futures
+    //for comprehension to combine the two futures
     (for {
-        adresseF <- AdresseRepository.setup()
-        anwenderF <- AnwenderRepository.setup()
-      } yield (adresseF, anwenderF)
-    ).flatMap {
+      adresseF <- AdresseRepository.setup()
+      anwenderF <- AnwenderRepository.setup()
+    } yield (adresseF, anwenderF)).flatMap {
       //success block
       case _ => ok("Successfully setup database.")
     } recover {
