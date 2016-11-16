@@ -2,17 +2,21 @@ package controllers
 
 import api.ApiError._
 import api.JsonCombinators._
-import models.{ User, ApiToken }
+import models.{ApiToken, User}
 import play.api.mvc._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Play.current
 import akka.actor.ActorSystem
+
 import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import javax.inject.Inject
+
+import api.jwt.JwtUtil
 import play.api.i18n.MessagesApi
+import play.core.j.JavaWebSocket
 
 class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends api.ApiController {
 
@@ -22,7 +26,8 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
   )
 
   def signIn = ApiActionWithBody { implicit request =>
-    readFromRequest[Tuple2[String, String]] {
+    ok(JwtUtil.signJwtPayload("a")) //@TODO nur test
+    /*readFromRequest[Tuple2[String, String]] {
       case (email, pwd) =>
         User.findByEmail(email).flatMap {
           case None => errorUserNotFound
@@ -38,7 +43,11 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
             }
           }
         }
-    }
+    }*/
+  }
+
+  def testSignedIn= SecuredApiAction {implicit  request =>
+    ok("You are logged in")
   }
 
   def signOut = SecuredApiAction { implicit request =>
