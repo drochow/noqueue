@@ -8,6 +8,9 @@ GET           /setup                               controllers.Application.setup
 GET           /test2                                controllers.Application.test2
 
 
+# SETUP OF DATABASE
+GET           /setup                              controllers.Application.setup
+
 # AUTHENTICATION
 #POST          /signin                             controllers.Auth.signIn
 #POST          /signout                            controllers.Auth.signOut
