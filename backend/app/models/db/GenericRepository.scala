@@ -1,7 +1,9 @@
-/*package models.db
+/*
+package models.db
+
 
 import models.db.connections.DBComponent
-import slick.lifted.TableQuery
+import slick.lifted.AbstractTable
 import slick.model.Table
 
 import scala.concurrent.Future
@@ -10,8 +12,14 @@ import scala.concurrent.Future
  * Created by anwender on 10.11.2016.
  */
 
-class GenericRepository[T <: TTable[_]] { this: DBComponent =>
+class GenericRepository[TTable <: AbstractTable[_] with WithId] { this: DBComponent =>
   import driver.api._
+
+  val tableQuery = slick.lifted.TableQuery[TTable]
+
+  def tAutoInc = tableQuery returning tableQuery.map(_.id)
+
+  type T = TTable#TableElementType with WithId
 
   /**
    * Create a new t
@@ -25,7 +33,7 @@ class GenericRepository[T <: TTable[_]] { this: DBComponent =>
    * @param t
    */
   def update(t: T): Future[Unit] = {
-    db.run(DBIO.seq(tTableQuery.filter(_.id === t.id.get).update(t)))
+    db.run(DBIO.seq(tableQuery.filter(_.id == t.id).update(t)))
   }
 
   /**
@@ -33,29 +41,24 @@ class GenericRepository[T <: TTable[_]] { this: DBComponent =>
    *
    * @param id
    */
-  def getById(id: Long): Future[Option[T]] = db.run { tTableQuery.filter(_.id === id).result.headOption }
+  def getById(id: Long): Future[Option[T]] = db.run { tableQuery.filter(_.id == id).result.headOption }
 
   /**
    * get all t
    *
    * @return
    */
-  def getAll(): Future[List[T]] = db.run { tTableQuery.to[List].result }
+  def getAll(): Future[List[T]] = db.run { tableQuery.to[List].result }
 
   /**
    * delete t by id
    *
    * @param id
    */
-  def delete(id: Long): Future[Unit] = { db.run(DBIO.seq(tTableQuery.filter(_.id === id).delete)) }
+  def delete(id: Long): Future[Unit] = { db.run(DBIO.seq(tableQuery.filter(_.id === id).delete)) }
 }
 
-private[db] trait TTable[T] { this: DBComponent =>
+trait WithId {
   val id: Long
-  import driver.api._
-
-  protected val tTableQuery = TableQuery[T]
-
-  protected def tAutoInc = tTableQuery returning tTableQuery.map(_.id)
 }
 */ 

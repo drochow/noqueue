@@ -6,16 +6,16 @@ import models.db.connections.{ DBComponent, PostgresDBComponent }
 trait AdresseRepository extends AdresseTable { this: DBComponent =>
 
   import driver.api._
-
+  /*
   /**
    * Create a new Adresse
    *
    * @param adresse
    */
   def findOrCreate(adresse: Adresse): Future[Long] = {
-    db.run(adresseTableQuery += adresse)
+    //db.run(adresseTableQuery += adresse)
   }
-
+*/
   /**
    * Update a adresse
    * @param adresse
