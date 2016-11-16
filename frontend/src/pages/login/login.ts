@@ -25,6 +25,7 @@ export class LoginPage{
   users: any;
   username: any;
   password: any;
+  token: any;
 
   constructor(public navCtrl: NavController, public modalCtrl: ModalController,  public alertCtrl: AlertController, public httpService : HttpService) {
   }
@@ -44,6 +45,8 @@ export class LoginPage{
 
 
   logIn(username: string, password: string){
+    console.log(this.httpService.getToken());
+
     var userExists = false;
     this.users.forEach(function(u){
       if(u.username === username && u.password === password){
@@ -59,6 +62,7 @@ export class LoginPage{
   }
 
   skip(){
+    this.httpService.testSignIn();
     let confirm = this.alertCtrl.create({
       title: 'Skip Log In?',
       message: 'Users that are not logged in can not reserve a place in a queue.',

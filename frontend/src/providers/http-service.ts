@@ -4,7 +4,7 @@ import { Store } from '../providers/store';
 import { User } from '../providers/user';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-
+import { AuthHttp } from 'angular2-jwt';
 
 @Injectable()
 export class HttpService {
@@ -12,15 +12,37 @@ export class HttpService {
   private servicesDB = "https://noqueue-dummy.firebaseio.com/";
   private usersDB = "https://noqueue-dummy-users.firebaseio.com/";
   private testDB = "http://localhost:9000";
+  private token: string;
 
-  constructor(public http: Http) {
+  constructor(public http: Http, public authHttp: AuthHttp) {
   }
 
-  getTestToken(): Observable<any>{
-    return this.http.get(this.testDB + "/test2")
+  fetchToken(): Observable<any>{
+    return this.http.get(this.testDB + "/signin")
       .map(this.extractJson)
       .catch(this.handleError);
   }
+
+  getToken(){
+    this.fetchToken().subscribe((token)=>{
+      this.token = token
+    });
+    return this.token;
+  }
+
+  testSignIn(){
+    let header = new Headers();
+    header.append('Accept', 'application/json');
+    header.append('X-Auth-Token', this.token || "");
+    let res = this.http.get(this.testDB + "/testSignedIn", { headers: header})
+      .map(this.extractJson)
+      .catch(this.handleError)
+    res.subscribe(
+      (info) => console.log(info)
+    )
+  }
+
+
 
   getAllServices(): Observable<Store[]> {
     return this.http.get(this.servicesDB + ".json")

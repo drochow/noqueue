@@ -18,6 +18,20 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import {HttpService} from "../providers/http-service";
 import { AUTH_PROVIDERS } from 'angular2-jwt';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+import { Http } from '@angular/http';
+import { Storage } from '@ionic/storage';
+
+let storage = new Storage();
+
+export function getAuthHttp(http) {
+  return new AuthHttp(new AuthConfig({
+    headerPrefix: "X-Auth-Token",
+    noJwtError: true,
+    globalHeaders: [{'Accept': 'application/json'}],
+    tokenGetter: (() => storage.get('id_token')),
+  }), http);
+}
 
 @NgModule({
   declarations: [
@@ -51,6 +65,10 @@ import { AUTH_PROVIDERS } from 'angular2-jwt';
     ForgotPassword,
     SingleService
   ],
-  providers: [HttpService, ServicesData, AUTH_PROVIDERS]
+  providers: [HttpService, ServicesData, {
+    provide: AuthHttp,
+    useFactory: getAuthHttp,
+    deps: [Http]
+  }]
 })
 export class AppModule {}
