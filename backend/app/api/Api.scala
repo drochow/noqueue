@@ -15,13 +15,10 @@ object Api {
 
   //////////////////////////////////////////////////////////////////////
   // Headers
-
   final val HEADER_CONTENT_TYPE = "Content-Type"
   final val HEADER_CONTENT_LANGUAGE = "Content-Language"
   final val HEADER_ACCEPT_LANGUAGE = "Accept-Language"
-  final val HEADER_DATE = "Date"
   final val HEADER_LOCATION = "Location"
-  final val HEADER_API_KEY = "X-Api-Key"
   final val HEADER_AUTH_TOKEN = "X-Auth-Token"
 
   final val HEADER_PAGE = "X-Page"
@@ -29,31 +26,35 @@ object Api {
   final val HEADER_PAGE_SIZE = "X-Page-Size"
   final val HEADER_PAGE_TOTAL = "X-Page-Total"
 
+  /**
+   * Basic headers
+   * @param lang used language
+   * @return
+   */
   def basicHeaders(implicit lang: Lang) = Seq(
-    HEADER_DATE -> printHeaderDate(new DateTime()),
-    HEADER_CONTENT_LANGUAGE -> lang.language
+    HEADER_CONTENT_LANGUAGE -> lang.language,
+    HEADER_ACCEPT_LANGUAGE -> lang.language
   )
 
+  /**
+   * Uses the given parameter to set header location
+   *
+   * @param uri uri that represents actuall location
+   * @return
+   */
   def locationHeader(uri: String): (String, String) = HEADER_LOCATION -> uri
+
+  /**
+   * Transforms call object to absolute URL and passes to not overloaded locationHeader
+   *
+   * @param call action call that will be transformed to a uri string
+   * @param request request headers
+   * @return
+   */
   def locationHeader(call: Call)(implicit request: RequestHeader): (String, String) = locationHeader(call.absoluteURL())
 
   //////////////////////////////////////////////////////////////////////
-  // Date and joda.DateTime utils
-
-  private final val longDateTimeFormatter = DateTimeFormat.forPattern("E, 3 'GMT'").withLocale(Locale.ENGLISH).withZoneUTC()
-  def parseHeaderDate(dateStr: String): DateTime = longDateTimeFormatter.parseDateTime(dateStr)
-  def printHeaderDate(date: DateTime): String = longDateTimeFormatter.print(date)
-
-  private final val dateTimeFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-  def parseDateTime(dateStr: String): Date = dateTimeFormatter.parse(dateStr)
-  def printDateTime(date: Date): String = dateTimeFormatter.format(date)
-  private final val dateFormatter = new SimpleDateFormat("dd-MM-yyyy")
-  def parseDate(dateStr: String): Date = dateFormatter.parse(dateStr)
-  def printDate(date: Date): String = dateFormatter.format(date)
-
-  //////////////////////////////////////////////////////////////////////
   // Sorting
-
   object Sorting {
     final val ASC = false
     final val DESC = true

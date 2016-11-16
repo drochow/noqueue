@@ -11,8 +11,15 @@ export class HttpService {
 
   private servicesDB = "https://noqueue-dummy.firebaseio.com/";
   private usersDB = "https://noqueue-dummy-users.firebaseio.com/";
+  private testDB = "http://localhost:9000";
 
   constructor(public http: Http) {
+  }
+
+  getTestToken(): Observable<any>{
+    return this.http.get(this.testDB + "/test2")
+      .map(this.extractJson)
+      .catch(this.handleError);
   }
 
   getAllServices(): Observable<Store[]> {
@@ -47,7 +54,7 @@ export class HttpService {
       url: this.usersDB,
       headers: headers,
       body: JSON.stringify(user)
-    })
+    });
 
     console.log("test");
     return this.http.post(this.usersDB, JSON.stringify(user), options)

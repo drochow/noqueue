@@ -17,6 +17,7 @@ import {ServicesData} from "../providers/data";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import {HttpService} from "../providers/http-service";
+import { AUTH_PROVIDERS } from 'angular2-jwt';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,6 @@ import {HttpService} from "../providers/http-service";
     ForgotPassword,
     SingleService
   ],
-  providers: [HttpService, ServicesData]
+  providers: [HttpService, ServicesData, AUTH_PROVIDERS]
 })
 export class AppModule {}
