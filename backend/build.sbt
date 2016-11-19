@@ -39,7 +39,7 @@ routesGenerator := InjectedRoutesGenerator
 // setting a maintainer which is used for all packaging types
 maintainer := "David Kaatz"
 
-//fork in run := true
+fork in run := false
 
 // exposing the play ports
 dockerExposedPorts in Docker := Seq(9000, 9443)
