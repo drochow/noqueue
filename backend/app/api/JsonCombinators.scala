@@ -16,17 +16,17 @@ object JsonCombinators {
   implicit val dateWrites = Writes.dateWrites("dd-MM-yyyy HH:mm:ss")
   implicit val dateReads = Reads.dateReads("dd-MM-yyyy HH:mm:ss")
 
-  implicit val adresseWrites = new Writes[Adresse] {
-    def writes(a: Adresse) = Json.obj(
-      "id" -> a.id.get.value,
-      "straße" -> a.straße,
-      "hausNummer" -> a.hausNummer,
-      "plz" -> a.plz,
-      "stadt" -> a.stadt
-    )
-  }
-  implicit val addresseReads: Reads[Adresse] =
-    (__ \ "straße").read[String](minLength[String](1)).map(straße => Adresse(straße, null, null, null, Option(PK[Adresse](0L))))
+  //  implicit val adresseWrites = new Writes[Adresse] {
+  //    def writes(a: Adresse) = Json.obj(
+  //      "id" -> a.id.get.value,
+  //      "straße" -> a.straße,
+  //      "hausNummer" -> a.hausNummer,
+  //      "plz" -> a.plz,
+  //      "stadt" -> a.stadt
+  //    )
+  //  }
+  //  implicit val addresseReads: Reads[Adresse] =
+  //    (__ \ "straße").read[String](minLength[String](1)).map(straße => Adresse(straße, null, null, null, Option(PK[Adresse](0L))))
 
   implicit val anwenderWrites = new Writes[Anwender] {
     def writes(a: Anwender) = Json.obj(
@@ -36,6 +36,13 @@ object JsonCombinators {
       "nutzerName" -> a.nutzerName
     )
   }
+
+  implicit val pkAdresseReads = Json.reads[PK[Adresse]]
+  implicit val pkAdresseWrites = Json.writes[PK[Adresse]]
+  implicit val pkAnwenderReads = Json.reads[PK[Anwender]]
+  implicit val pkAnwenderWrites = Json.writes[PK[Anwender]]
+  implicit val adresseReads = Json.reads[Adresse]
+  implicit val adresseWrites = Json.writes[Adresse]
 
   //@todo fix to do real mapping
   implicit val anwenderReads: Reads[Anwender] = (
