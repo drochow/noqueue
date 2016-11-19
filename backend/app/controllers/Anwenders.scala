@@ -6,12 +6,12 @@ import api.JsonCombinators._
 import api.ApiError
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import models.db.{ Adresse, AnwenderRepository, Anwender => AnwenderResource }
+import models.db.{ Adresse, Anwender => AnwenderResource }
 
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class AnwenderC @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create(nutzerName: String) = ApiActionWithBody { implicit request =>
     readFromRequest[AnwenderResource] {
