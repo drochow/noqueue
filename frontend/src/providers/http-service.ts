@@ -14,21 +14,43 @@ export class HttpService {
   private testDB = "http://localhost:9000";
   private token: string;
 
-  constructor(public http: Http, public authHttp: AuthHttp) {
+  constructor(public http: Http) {
   }
 
+  // Auth
+  signIn(user: any, route: String){
+    let headers = new Headers({"Content-Type" : "application/json"});
+    let options = new RequestOptions({headers: headers});
+    let body = JSON.stringify(user);
+
+    let action = function(): Observable<any>{
+      return this.http.post(this.testDB + route, body, options)
+        .map(this.extractJson)
+        .catch(this.handleError);
+    }
+
+    action().subscribe(
+      (token) => this.token = token
+    )
+  }
+
+  getToken(){
+    return this.token
+  }
+
+  // old requests
   fetchToken(): Observable<any>{
     return this.http.get(this.testDB + "/signin")
       .map(this.extractJson)
       .catch(this.handleError);
   }
 
-  getToken(){
-    this.fetchToken().subscribe((token)=>{
-      this.token = token
-    });
-    return this.token;
-  }
+  // getToken(){
+  //   this.fetchToken().subscribe((token)=>{
+  //     this.token = token
+  //   });
+  //   return this.token;
+  // }
 
   testSignIn(){
     let header = new Headers();

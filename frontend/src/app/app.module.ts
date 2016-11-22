@@ -13,6 +13,7 @@ import { ForgotPassword } from '../pages/forgot-password/forgot-password';
 import {SignUpPage} from "../pages/signup/signup";
 import { SingleService } from "../pages/single-service/single-service";
 import {ServicesData} from "../providers/data";
+import { AuthenticationProvider } from "../providers/authentication";
 // import { Data } from '../providers/data.ts';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
@@ -65,7 +66,7 @@ export function getAuthHttp(http) {
     ForgotPassword,
     SingleService
   ],
-  providers: [HttpService, ServicesData, {
+  providers: [HttpService, ServicesData, AuthenticationProvider, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]
