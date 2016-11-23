@@ -1,14 +1,12 @@
-import com.sun.corba.se.impl.orbutil.closure
-import models.db.{ Adresse, Anwender, DAL, PK }
+import models.db.{Anwender, DAL, PK}
+import org.scalatest.Matchers._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatestplus.play._
 import slick.driver.H2Driver
 import slick.jdbc.JdbcBackend.Database
-import org.scalatest.Matchers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Try
-import scala.concurrent.Future
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 /**
  * Created by anwender on 19.11.2016.
@@ -45,14 +43,23 @@ class AccountSpec extends PlaySpec {
         case Failure(e) => fail("can't read " + e)
       }
     }
-    "not allow multiple insertions of the same item" in {
+    "isert items so that they are unique" in {
       db.run(dal.insert(bspAnwenders(0))) onComplete {
         case Success(anw) => fail("this should not have happened")
         //this is what we want
-        //case Failure(e) => intercept(_) //@todo intecept the correct Exc
+        //case Failure(e) => if(e.contains("correctExc")) succeed //@todo intecept the correct Exc
       }
     }
-    "be able to delete items" in {
+    "get all items" in {
+      //@todo implement this test
+    }
+    "update whole items" in {
+      //@todo implement this test
+    }
+    "update items partially" in {
+      //@todo implement this test
+    }
+    "delete items" in {
       //@todo implement this test
     }
   }
