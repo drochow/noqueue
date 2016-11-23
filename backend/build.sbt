@@ -21,7 +21,7 @@ scalariformSettings
 
 libraryDependencies ++= Seq(
   //specs2 is not being used for now
-  //specs2 % Test,
+  specs2 % Test,
 	//"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
   "com.nimbusds"          % "nimbus-jose-jwt"             % "4.11.2",
   "org.postgresql"        % "postgresql"                  % "9.4-1202-jdbc41",
@@ -29,6 +29,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick"    %%  "slick" % "3.1.1",
   //"org.scalatest"         %%  "scalatest"                 %      "2.2.5"       %    "test",
   "org.scalatestplus.play" %% "scalatestplus-play"        % "1.5.0"           % "test",
+  jdbc,
   "com.h2database"        %   "h2"                        %      "1.4.187"     %   "test"
 )
 

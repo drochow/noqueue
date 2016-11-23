@@ -19,12 +19,13 @@ import scala.util.{ Failure, Success, Try }
 import play.api.libs.json._
 import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
+import slick.jdbc.JdbcBackend.Database
 
 /**
  * Controller trait for API controllers
  */
 trait ApiController extends Controller with I18nSupport {
-  val db = PostgresDB.db;
+  val db: Database = PostgresDB.db;
   val dal = PostgresDB.dal;
   val config: Configuration;
   val messagesApi: MessagesApi

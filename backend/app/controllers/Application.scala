@@ -35,7 +35,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   def test2 = ApiAction { implicit request =>
-    db.run(dal.insert(Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](20L))))) flatMap {
+    db.run(dal.insert(Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](2L))))) flatMap {
       case anwender: Anwender => ok[Anwender](anwender)
     } recover {
       case ex: SQLTimeoutException => ApiError.errorInternal("Service Unavailable: Database not reachable.")

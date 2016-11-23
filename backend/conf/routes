@@ -18,7 +18,8 @@ GET           /setup                              controllers.Application.setup
 #POST          /signup                             controllers.Auth.signUp
 
 # ANWENDER
-POST          /anwender                           controllers.AnwenderC.create(name: String)
+POST          /anwender                           controllers.AnwenderC.create
+GET             /anwender/:id                     controllers.AnwenderC.get(id: Long)
 
 
 
