@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
-import { Store } from '../providers/store';
+// import { Store } from '../providers/store';
 import { User } from '../providers/user';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { AuthHttp } from 'angular2-jwt';
 
@@ -66,25 +67,25 @@ export class HttpService {
 
 
 
-  getAllServices(): Observable<Store[]> {
+  getAllServices(): Observable<any> {
     return this.http.get(this.servicesDB + ".json")
       .map(this.extractJson)
       .catch(this.handleError);
   }
 
-  getServiceWithId(id: number): Observable<Store>{
+  getServiceWithId(id: number): Observable<any>{
     return this.http.get(this.servicesDB + (id-1) + ".json")
       .map(this.extractJson)
       .catch(this.handleError);
   }
 
-  getAllUsers(): Observable<User[]> {
+  getAllUsers(): Observable<any> {
     return this.http.get(this.usersDB + ".json")
       .map(this.extractJson)
       .catch(this.handleError);
   }
 
-  addNewUser(username: string, password: string, email: string): Observable<User>{
+  addNewUser(username: string, password: string, email: string): Observable<any>{
     let headers = new Headers({"Content-Type" : "application/json"});
     let options = new RequestOptions({headers: headers});
     let user = {
