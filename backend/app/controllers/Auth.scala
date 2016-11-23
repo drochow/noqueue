@@ -2,7 +2,7 @@ package controllers
 
 import api.ApiError._
 import api.JsonCombinators._
-import models.{ApiToken, User}
+import models.{ ApiToken, User }
 import play.api.mvc._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -17,16 +17,19 @@ import javax.inject.Inject
 import api.jwt.JwtUtil
 import play.api.i18n.MessagesApi
 import play.core.j.JavaWebSocket
+import play.api.Configuration
+import org.joda.time.DateTime
+import api.jwt.TokenPayload
 
-class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends api.ApiController {
+class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
 
   implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
     (__ \ "email").read[String](Reads.email) and
       (__ \ "password").read[String] tupled
   )
 
-  def signIn = ApiActionWithBody { implicit request =>
-    ok(JwtUtil.signJwtPayload("a")) //@TODO nur test
+  def signIn = ApiAction { implicit request =>
+    ok(JwtUtil.signJwtPayload(new TokenPayload(1l, new DateTime()))) //@TODO nur test
     /*readFromRequest[Tuple2[String, String]] {
       case (email, pwd) =>
         User.findByEmail(email).flatMap {
@@ -46,10 +49,10 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
     }*/
   }
 
-  def testSignedIn= SecuredApiAction {implicit  request =>
+  def testSignedIn = SecuredApiAction { implicit request =>
     ok("You are logged in")
   }
-
+  /*
   def signOut = SecuredApiAction { implicit request =>
     ApiToken.delete(request.token).flatMap { _ =>
       noContent()
@@ -81,5 +84,5 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem) extends
         }
     }
   }
-
+*/
 }

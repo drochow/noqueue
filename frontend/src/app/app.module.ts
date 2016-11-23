@@ -13,10 +13,28 @@ import { ForgotPassword } from '../pages/forgot-password/forgot-password';
 import {SignUpPage} from "../pages/signup/signup";
 import { SingleService } from "../pages/single-service/single-service";
 import {ServicesData} from "../providers/data";
+import { UsersProvider } from "../providers/users"
+import { AuthenticationProvider } from "../providers/authentication";
+import { HttpConfig } from "../providers/http-config";
 // import { Data } from '../providers/data.ts';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import {HttpService} from "../providers/http-service";
+import { AUTH_PROVIDERS } from 'angular2-jwt';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+import { Http } from '@angular/http';
+import { Storage } from '@ionic/storage';
+
+let storage = new Storage();
+
+export function getAuthHttp(http) {
+  return new AuthHttp(new AuthConfig({
+    headerPrefix: "X-Auth-Token",
+    noJwtError: true,
+    globalHeaders: [{'Accept': 'application/json'}],
+    tokenGetter: (() => storage.get('id_token')),
+  }), http);
+}
 
 @NgModule({
   declarations: [
@@ -50,6 +68,10 @@ import {HttpService} from "../providers/http-service";
     ForgotPassword,
     SingleService
   ],
-  providers: [HttpService, ServicesData]
+  providers: [HttpService, ServicesData, UsersProvider, AuthenticationProvider, HttpConfig, {
+    provide: AuthHttp,
+    useFactory: getAuthHttp,
+    deps: [Http]
+  }]
 })
 export class AppModule {}
