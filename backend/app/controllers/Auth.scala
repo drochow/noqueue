@@ -3,6 +3,7 @@ package controllers
 import api.ApiError._
 import api.JsonCombinators._
 import models.{ ApiToken, User }
+import models.db.Anwender
 import play.api.mvc._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -64,8 +65,19 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val con
       (__ \ "password").read[String](Reads.minLength[String](6)) and
       (__ \ "user").read[User] tupled
   )
+  */
 
   def signUp = ApiActionWithBody { implicit request =>
+
+    readFromRequest[Anwender] {
+      case anw: Anwender =>
+        db.run(dal.insert(Anwender(anw.nutzerEmail, anw.password, anw.nutzerName) //Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](2L)))
+        )) flatMap {
+          ok(_)
+        }
+      case all => ok("didn't work :" + all)
+
+      /*
     readFromRequest[Tuple3[String, String, User]] {
       case (email, password, user) =>
         User.findByEmail(email).flatMap {
@@ -82,7 +94,9 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val con
               ok(user)
           }
         }
+        */
+
     }
   }
-*/
+
 }

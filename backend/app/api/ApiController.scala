@@ -25,7 +25,7 @@ import slick.jdbc.JdbcBackend.Database
  * Controller trait for API controllers
  */
 trait ApiController extends Controller with I18nSupport {
-  val db: Database = PostgresDB.db;
+  val db = PostgresDB.db;
   val dal = PostgresDB.dal;
   val config: Configuration;
   val messagesApi: MessagesApi
