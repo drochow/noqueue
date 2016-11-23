@@ -5,6 +5,9 @@
 # TEST PAGE
 GET           /test                               controllers.Application.test
 GET           /setup                               controllers.Application.setup
+GET           /test2                                controllers.Application.test2
+GET           /test3                                controllers.Application.test3
+
 
 # SETUP OF DATABASE
 GET           /setup                              controllers.Application.setup
@@ -15,7 +18,8 @@ GET           /setup                              controllers.Application.setup
 #POST          /signup                             controllers.Auth.signUp
 
 # ANWENDER
-POST          /anwender                           controllers.Anwender.create(name: String)
+POST          /anwender                           controllers.AnwenderC.create
+GET             /anwender/:id                     controllers.AnwenderC.get(id: Long)
 
 
 
