@@ -1,21 +1,16 @@
 package controllers
 
 import java.sql.SQLTimeoutException
-
-import play.api.mvc._
 import javax.inject.Inject
 
-import api.{ ApiError, ApiResponse, ApiResult }
-import models.db.{ Adresse, Anwender, PK }
-import org.postgresql.util.PSQLException
+import api.ApiError
+import api.JsonCombinators._
+import models.db.PK
+import models.{ Adresse, Anwender }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ Await, Future }
-import scala.util.{ Failure, Success }
-import scala.concurrent.duration._
-import api.JsonCombinators._
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
@@ -58,7 +53,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
 
   def test3 = ApiAction { implicit request =>
     db.run(dal.getAnwenderWithAdress(PK[Anwender](2L))) flatMap {
-      case anwenderWithAdress: Seq[(models.db.Anwender, models.db.Adresse)] => ok(anwenderWithAdress.head._1)
+      case anwenderWithAdress: Seq[(Anwender, Adresse)] => ok(anwenderWithAdress.head._1)
     } recover {
       case e => ApiError.errorInternal("Something happend: " + e.toString())
     }

@@ -3,7 +3,7 @@ package api
 import models._
 import java.util.Date
 
-import models.db.{ Adresse, Anwender, PK }
+import models.db.PK
 import play.api.libs.json._
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._

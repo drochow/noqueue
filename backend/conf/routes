@@ -19,7 +19,6 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 POST          /anwender                           controllers.AnwenderC.create
-GET             /anwender/:id                     controllers.AnwenderC.get(id: Long)
 
 
 

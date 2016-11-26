@@ -1,10 +1,13 @@
-import models.db.{Anwender, DAL, PK}
+import models.Anwender
+import models.db.{DAL, PK}
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatestplus.play._
 import slick.driver.H2Driver
 import slick.jdbc.JdbcBackend.Database
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
@@ -32,9 +35,20 @@ class AccountSpec extends PlaySpec {
         case Success(anw) =>
           anw.nutzerName should be(bspAnwenders(0).nutzerName)
           anw.id should be(Some(PK(1)))
+          1 should be(2)
         case Failure(e) => fail("can't read " + e)
       }
     }
+    /*   "insert items2" in {
+      val result = db.run(dal.insert(bspAnwenders(0)))
+      Await.result(result, 1 seconds){
+        case Success(anw) =>
+          anw.nutzerName should be(bspAnwenders(0).nutzerName)
+          anw.id should be(Some(PK(1)))
+          1 should be(2)
+        case Failure(e) => fail("can't read " + e)
+      }
+    }*/
     "not give the same id to later inserted items" in {
       db.run(dal.insert(bspAnwenders(1))) onComplete {
         case Success(anw) =>
@@ -51,6 +65,7 @@ class AccountSpec extends PlaySpec {
       }
     }
     "get all items" in {
+      1 should be(2)
       //@todo implement this test
     }
     "update whole items" in {

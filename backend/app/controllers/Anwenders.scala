@@ -3,7 +3,8 @@ package controllers
 import javax.inject.Inject
 
 import api.JsonCombinators._
-import models.db.{ Adresse, Anwender, PK }
+import models._
+import models.db.PK
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 

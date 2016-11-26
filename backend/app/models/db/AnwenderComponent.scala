@@ -1,23 +1,8 @@
 package models.db
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import models.{ Adresse, Anwender }
 
-/**
- * Anwender Representation
- *
- * @param nutzerEmail
- * @param password
- * @param nutzerName
- * @param adresseId
- * @param id
- */
-case class Anwender(
-  nutzerEmail: String,
-  password: String,
-  nutzerName: String,
-  adresseId: Option[PK[Adresse]] = None,
-  id: Option[PK[Anwender]] = None
-) {}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Wrapper case class to return an Anwender including his address, if set

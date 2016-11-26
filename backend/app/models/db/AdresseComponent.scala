@@ -1,9 +1,8 @@
 package models.db
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Try
+import models.Adresse
 
-case class Adresse(strasse: String, hausNummer: String, plz: String, stadt: String, id: Option[PK[Adresse]] = None)
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /** AdresseComponent provides database definitions for Adresse objects */
 trait AdresseComponent {
