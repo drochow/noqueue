@@ -1,18 +1,20 @@
 package models
 
+import java.sql.Timestamp
+
+import models.db.PK
 import org.joda.time.DateTime
 
 /**
  * Created by anwender on 25.11.2016.
  */
 case class WarteSchlangenPlatz(
-    folgeNummer: Int,
-    beginnZeitpunkt: DateTime,
-    schaetzZeitpunkt: DateTime,
-    platzNummer: Int,
-    anwender: Anwender,
-    mitarbeiter: Mitarbeiter,
-    dienstLeistung: DienstLeistung
+    val beginnZeitpunkt: Timestamp,
+    val anwenderId: PK[Anwender],
+    val mitarbeiterId: PK[Mitarbeiter],
+    val dienstLeistungId: PK[Dienstleistung],
+    val folgeNummer: Option[PK[WarteSchlangenPlatz]] = None,
+    val id: Option[PK[WarteSchlangenPlatz]] = None
 ) {
 
 }

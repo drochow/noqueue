@@ -1,4 +1,32 @@
-//package models.db
+package models.db
+
+import models.{ Betrieb, Dienstleistung, DienstleistungsTyp }
+
+trait DienstleistungComponent {
+  this: DriverComponent with BetriebComponent with DienstleistungsTypComponent =>
+  import driver.api._
+
+  class DienstleistungTable(tag: Tag) extends Table[Dienstleistung](tag, "DIENSTLEISTUNG") {
+
+    def id = column[PK[Dienstleistung]]("DL_ID", O.PrimaryKey, O.AutoInc)
+    def dlTypID = column[PK[DienstleistungsTyp]]("DLT_ID")
+    def betriebID = column[PK[Betrieb]]("BETR_ID")
+
+    def tags = column[String]("TAGS")
+    def kommentar = column[String]("KOMMENTAR")
+    def aktion = column[String]("AKTION")
+
+    def * = (kommentar, aktion, tags, betriebID, dlTypID, id.?) <> (Dienstleistung.tupled, Dienstleistung.unapply)
+
+    def dienstleistungsTyp = foreignKey("DLT_FK", dlTypID, dienstleistungsTypen)(_.id.get)
+
+    def betrieb = foreignKey("ANB_FK", betriebID, betriebe)(_.id)
+  }
+
+  val dienstleistungen = TableQuery[DienstleistungTable]
+
+  val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+}
 //
 //import slick.driver.PostgresDriver.api._
 //import slick.lifted.{ ForeignKeyQuery, TableQuery }
