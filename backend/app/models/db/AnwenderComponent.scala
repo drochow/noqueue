@@ -1,11 +1,9 @@
 package models.db
 
-import models.{ Adresse, Anwender }
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
- * Anwender Component Trait including Driver and Adresse Component traits via cake pattern injection
+ * AnwenderEntity Component Trait including Driver and AdresseEntity Component traits via cake pattern injection
  */
 trait AnwenderComponent {
   this: DriverComponent with AdresseComponent =>
@@ -13,13 +11,13 @@ trait AnwenderComponent {
   import driver.api._
 
   /**
-   * Anwender Table Schema definition
+   * AnwenderEntity Table Schema definition
    *
    * @param tag
    */
-  class AnwenderTable(tag: Tag) extends Table[Anwender](tag, "ANWENDER") {
+  class AnwenderTable(tag: Tag) extends Table[AnwenderEntity](tag, "ANWENDER") {
 
-    def id = column[PK[Anwender]]("ID", O.PrimaryKey, O.AutoInc)
+    def id = column[PK[AnwenderEntity]]("ID", O.PrimaryKey, O.AutoInc)
 
     def nutzerEmail = column[String]("NUTZEREMAIL")
 
@@ -27,7 +25,7 @@ trait AnwenderComponent {
 
     def nutzerName = column[String]("NUTZERNAME")
 
-    def adresseId = column[Option[PK[Adresse]]]("ADRESSE_ID")
+    def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
 
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
 
@@ -36,20 +34,20 @@ trait AnwenderComponent {
      *
      * @return
      */
-    def * = (nutzerEmail, password, nutzerName, adresseId, id.?) <> (Anwender.tupled, Anwender.unapply)
+    def * = (nutzerEmail, password, nutzerName, adresseId, id.?) <> (AnwenderEntity.tupled, AnwenderEntity.unapply)
   }
 
   val anwenders = TableQuery[AnwenderTable]
 
   private val anwenderAutoInc = anwenders returning anwenders.map(_.id)
 
-  def insert(anwender: Anwender): DBIO[Anwender] =
+  def insert(anwender: AnwenderEntity): DBIO[AnwenderEntity] =
     if (anwender.adresseId.isEmpty) (anwenderAutoInc += anwender).map(id => anwender.copy(id = Option(id)))
     else (getAdresseById(anwender.adresseId.get) andThen (anwenderAutoInc += anwender).map(id => anwender.copy(id = Option(id))))
 
-  def getAnwenderById(id: PK[Anwender]): DBIO[Anwender] = anwenders.filter(_.id === id).result.head
+  def getAnwenderById(id: PK[AnwenderEntity]): DBIO[AnwenderEntity] = anwenders.filter(_.id === id).result.head
 
-  def getAnwenderWithAdress(id: PK[Anwender]): DBIO[(Anwender, Option[Adresse])] =
+  def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
 }
 

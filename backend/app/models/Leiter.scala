@@ -1,10 +1,8 @@
 package models
 
-import models.db.PK
-
 /**
- * Created by anwender on 25.11.2016.
+ * Created by David on 29.11.16.
  */
-case class Leiter(val anwenderId: PK[Anwender], val betriebId: PK[Betrieb], val id: Option[PK[Leiter]] = None) {
+class Leiter {
 
 }

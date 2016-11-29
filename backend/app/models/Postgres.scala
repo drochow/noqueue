@@ -1,13 +1,23 @@
 package models
 
+import com.google.inject.Singleton
 import models.db.DAL
-import slick.driver.PostgresDriver
+import slick.driver.{ H2Driver, PostgresDriver }
 import slick.driver.PostgresDriver.api._
 
-/**
- * Created by David on 18.11.16.
- */
-object PostgresDB {
-  val db: Database = Database.forConfig("postgres")
-  val dal: DAL = new DAL(PostgresDriver)
+trait DB {
+  val db: Database;
+  val dal: DAL;
+}
+
+@Singleton
+class PostgresDB extends DB {
+  val db = Database.forConfig("postgres")
+  val dal = new DAL(PostgresDriver)
+}
+
+@Singleton
+class H2DB extends DB {
+  val db = Database.forConfig("h2")
+  val dal = new DAL(H2Driver)
 }

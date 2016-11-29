@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import api.JsonCombinators._
 import models._
-import models.db.PK
+import models.db.{ AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 
@@ -16,26 +16,29 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class AnwenderC @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
-    readFromRequest[Anwender] {
-      case anw: Anwender =>
-        db.run(dal.insert(Anwender(anw.nutzerEmail, anw.password, anw.nutzerName) //Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](2L)))
-        )) flatMap {
-          ok(_)
-        }
-      case all => ok("didn't work :" + all)
-      /*readFromRequest[Adresse] {
-          adresse => created("okey")*/
-      //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
-      //              case newAnwenderId => created(newAnwenderId)
-      //              case _ => ApiError.errorInternal("Unable to create User")
-      //            }
-      //}
-    }
+    //    readFromRequest[AnwenderEntity] {
+    //      case anw: AnwenderEntity =>
+    //        db.run(dal.insert(AnwenderEntity(anw.nutzerEmail, anw.password, anw.nutzerName) //AnwenderEntity("hans@gmail.com", "test", "hans", Some(PK[AdresseEntity](2L)))
+    //        )) flatMap {
+    //          ok(_)
+    //        }
+    //      case all => ok("didn't work :" + all)
+    //      /*readFromRequest[AdresseEntity] {
+    //          adresse => created("okey")*/
+    //      //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
+    //      //              case newAnwenderId => created(newAnwenderId)
+    //      //              case _ => ApiError.errorInternal("Unable to create User")
+    //      //            }
+    //      //}
+    //    }
+    ok("Success")
   }
   def get(anwenderId: Long) = ApiAction { implicit request =>
-    db.run(dal.getAnwenderById(PK(anwenderId))).flatMap {
-      case x: Anwender => ok(x)
-      case _ => ok("nope")
-    }
+    //    db.run(dal.getAnwenderById(PK(anwenderId))).flatMap {
+    //      case x: AnwenderEntity => ok(x)
+    //      case _ => ok("nope")
+    //
+    //    }
+    ok("Success")
   }
 }

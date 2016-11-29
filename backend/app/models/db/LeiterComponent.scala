@@ -1,17 +1,15 @@
 package models.db
 
-import models.{ Anwender, Betrieb, Leiter }
-
 trait LeiterComponent {
   this: DriverComponent with AnwenderComponent with BetriebComponent =>
   import driver.api._
 
-  class LeiterTable(tag: Tag) extends Table[Leiter](tag, "LEITER") {
-    def id = column[PK[Leiter]]("LEI_ID", O.PrimaryKey, O.AutoInc)
-    def anwenderId = column[PK[Anwender]]("ANW_ID")
-    def betriebId = column[PK[Betrieb]]("ANB_ID")
+  class LeiterTable(tag: Tag) extends Table[LeiterEntity](tag, "LEITER") {
+    def id = column[PK[LeiterEntity]]("LEI_ID", O.PrimaryKey, O.AutoInc)
+    def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
+    def betriebId = column[PK[BetriebEntity]]("ANB_ID")
 
-    def * = (anwenderId, betriebId, id.?) <> (Leiter.tupled, Leiter.unapply)
+    def * = (anwenderId, betriebId, id.?) <> (LeiterEntity.tupled, LeiterEntity.unapply)
 
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
 

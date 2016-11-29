@@ -1,5 +1,4 @@
-import models.Anwender
-import models.db.{DAL, PK}
+import models.db.{AnwenderEntity, DAL, PK}
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatestplus.play._
@@ -17,9 +16,9 @@ import scala.util.{Failure, Success}
 
 class AccountSpec extends PlaySpec {
   val bspAnwenders = List(
-    Anwender("1@example.com", "Uno", "Nomber1"),
-    Anwender("2@example.com", "Beta", "BetaM"),
-    Anwender("3@example.com", "Three", "Tri")
+    AnwenderEntity("1@example.com", "Uno", "Nomber1"),
+    AnwenderEntity("2@example.com", "Beta", "BetaM"),
+    AnwenderEntity("3@example.com", "Three", "Tri")
   )
   val db = H2DB.db
   val dal = H2DB.dal
