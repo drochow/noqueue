@@ -26,6 +26,8 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
 
   //@todo implement lazy val leiterVon wich is a Future of a Sequence of LeiterEntities
 
+  //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
+
   def abmelden() = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")

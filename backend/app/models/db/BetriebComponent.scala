@@ -20,4 +20,6 @@ trait BetriebComponent {
   val betriebe = TableQuery[BetriebTable]
 
   val betriebeAutoInc = betriebe returning betriebe.map(_.id)
+
+  def getBetriebById(id: PK[BetriebEntity]): DBIO[BetriebEntity] = betriebe.filter(_.id === id).result.head
 }

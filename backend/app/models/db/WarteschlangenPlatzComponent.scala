@@ -27,4 +27,7 @@ trait WarteschlangenPlatzComponent {
   val warteschlangenplaetze = TableQuery[WarteSchlangenPlatzTable]
 
   val warteschlangenplaetzeAutoInc = warteschlangenplaetze returning warteschlangenplaetze.map(_.id)
+
+  def getWarteschlangenPlaetzeOfMitarbeiter(mitarbeiterId: PK[MitarbeiterEntity]): DBIO[Seq[WarteSchlangenPlatzEntity]] =
+    warteschlangenplaetze.filter(_.mitarbeiterId === mitarbeiterId).result
 }
