@@ -4,10 +4,10 @@ import utils.Asserts
 import play.api.libs.json.{ Format, Json }
 
 case class Credentials(
-    email: String,
+    nutzerName: String,
     password: String
 ) {
-  Asserts.argumentIsNotNull(email)
+  Asserts.argumentIsNotNull(nutzerName)
   Asserts.argumentIsNotNull(password)
 }
 

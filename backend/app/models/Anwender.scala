@@ -1,15 +1,19 @@
 package models
 
 import akka.actor.FSM.Failure
+import api.jwt.TokenPayload
 import models.db._
 
 import scala.concurrent.Future
 import scala.util.Success
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 //@todo add return types to methods when implemented (should all return futures)
 class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwender {
+
+  def this(jwtPayload: TokenPayload) = {
+    this((new PostgresDB).db.run((new PostgresDB).dal.getAnwenderById(PK[AnwenderEntity](jwtPayload.userId))))
+  }
   /**
    * Adresse of Anwender with lazy initialization
    */

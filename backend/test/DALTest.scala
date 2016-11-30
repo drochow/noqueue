@@ -1,4 +1,4 @@
-import models.db.{AnwenderEntity, DAL, PK}
+import models.db.{ AnwenderEntity, DAL, PK }
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatestplus.play._
@@ -8,7 +8,7 @@ import slick.jdbc.JdbcBackend.Database
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 /**
  * Created by anwender on 19.11.2016.
@@ -22,6 +22,7 @@ class AccountSpec extends PlaySpec {
   )
   val db = H2DB.db
   val dal = H2DB.dal
+
   //initilisation of our dal, if we're using a h2-DB in Memory we don't need to set that up
   db.run(dal.create) onComplete {
     case Success(_) => "wuhu"

@@ -5,14 +5,23 @@ import javax.inject.Inject
 
 import api.ApiError
 import api.JsonCombinators._
-import models.H2DB
+import models.Base
 import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.ExecutionContext.Implicits.global //@TODO FER NE
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+
+  def setup = ApiAction { implicit request =>
+    val base = Base()
+    base.setupDB flatMap {
+      case _ => ok("Setup complete...")
+    } recover {
+      case e: Exception => ApiError.errorInternal("Unknown error: " + e.toString)
+    }
+  }
 
   def test = ApiAction { implicit request =>
     //    val action = for {
@@ -67,16 +76,6 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     //    //      case _ => ApiError.errorInternal("Service Unavailabl: Unknown error occured")
     //    //    }
     ok("Success")
-  }
-
-  def setup = ApiAction { implicit request =>
-    val h2 = new H2DB
-    h2.db.run(h2.dal.create).flatMap {
-      _ => ok("Setup complete")
-    } recover {
-      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
-    }
-
   }
 
 }

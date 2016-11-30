@@ -1,6 +1,10 @@
 package models
 
+import java.sql.SQLException
+import javax.security.auth.login.CredentialException
+
 import models.db.{ AnwenderEntity, DienstleistungsTypEntity }
+import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.Future
 
@@ -9,8 +13,14 @@ import scala.concurrent.Future
  */
 class UnregistrierterAnwender extends Base {
 
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   def anmelden(nutzerName: String, password: String): Future[AnwenderEntity] = {
-    db.run(dal.getAnwenderByNameAndPW(nutzerName, password))
+    db.run(dal.getAnwenderByName(nutzerName)) map {
+      anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.")
+    } recover {
+      case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.")
+    }
   }
 
   def anbieterSuchen(
@@ -24,7 +34,12 @@ class UnregistrierterAnwender extends Base {
     //@todo implement me
   }
 
-  def registrieren(nutzerEmail: String, nutzerName: String, password: String): Future[AnwenderEntity] = {
-    db.run(dal.insert(AnwenderEntity(nutzerEmail, password, nutzerName)))
+  def registrieren(anwender: AnwenderEntity) = {
+    db.run(dal.insert(AnwenderEntity(anwender.nutzerEmail, BCrypt.hashpw(anwender.password, BCrypt.gensalt()), anwender.nutzerName)))
   }
+
+  def registrieren(nutzerEmail: String, nutzerName: String, password: String): Future[AnwenderEntity] = {
+    db.run(dal.insert(AnwenderEntity(nutzerEmail, BCrypt.hashpw(password, BCrypt.gensalt()), nutzerName)))
+  }
+
 }

@@ -19,7 +19,9 @@ POST          /signin                             controllers.Auth.signIn
 GET           /testSignedIn                         controllers.Auth.testSignedIn
 
 # ANWENDER
-POST          /anwender                           controllers.AnwenderC.create
+GET          /anwender                            controllers.Anwender.profil
+POST          /anwender                           controllers.Anwender.create
+POST          /auth                               controllers.Anwender.auth
 
 
 

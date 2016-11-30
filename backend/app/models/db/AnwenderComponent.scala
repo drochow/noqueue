@@ -46,7 +46,9 @@ trait AnwenderComponent {
 
   def getAnwenderById(id: PK[AnwenderEntity]): DBIO[AnwenderEntity] = anwenders.filter(_.id === id).result.head
 
-  def getAnwenderByNameAndPW(nutzerName: String, password: String): DBIO[AnwenderEntity] = anwenders.filter(x => { x.nutzerName === nutzerName && x.password === password }).result.head
+  def getAnwenderByEmail(email: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerEmail === email).result.head
+
+  def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
