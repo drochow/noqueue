@@ -7,6 +7,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class Mitarbeiter(mitarbeiter: Future[MitarbeiterEntity]) extends Base {
+
   lazy val anwender: Future[AnwenderEntity] = for {
     mta <- mitarbeiter
     anw <- db.run(dal.getAnwenderById(mta.anwenderId))
