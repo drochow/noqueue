@@ -13,8 +13,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import javax.inject.Inject
 
-import api.ApiResponse
+import api.{ ApiError, ApiResponse }
 import api.jwt.{ JwtUtil, TokenPayload }
+import models.UnregistrierterAnwender
+import models.db.AnwenderEntity
 import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -26,26 +28,7 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val con
   //      (__ \ "password").read[String] tupled
   //  )
   //
-  //  def signIn = ApiActionWithBody { implicit request =>
-  //    readFromRequest[Tuple2[String, String]] {
-  //      case (email, pwd) =>
-  //        User.findByEmail(email).flatMap {
-  //          case None => errorUserNotFound
-  //          case Some(user) => {
-  //            if (user.password != pwd) errorUserNotFound //@todo pwd-Hash
-  //            else {
-  //              //@todo get config
-  //              val exp: DateTime = (new DateTime()).plusMinutes(config.getString("jwt.token.minutesToLive").get.toInt)
-  //              val token: String = JwtUtil.signJwtPayload(new TokenPayload(user.id, exp))
-  //              ok(Json.obj(
-  //                "token" -> token,
-  //                "minutes" -> 120
-  //              ))
-  //            }
-  //          }
-  //        }
-  //    }
-  //  }
+  //
   //
   //  def signOut = SecuredApiAction { implicit request => ok(Json.obj("message" -> "Successfully logged out")) }
   //  //
@@ -75,4 +58,7 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val con
   //    }
   //  }
 
+  //  def signUp = ApiActionWithBody { implicit request =>
+  //
+  //  }
 }

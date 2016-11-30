@@ -66,7 +66,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     ok("Success")
   }
 
-  def setup = ApiAction { implicit request =>
+  def setup = SecuredApiAction { implicit request =>
     //    db.run(dal.create) flatMap {
     //      _ => ok("Setup complete")
     //    } recover {

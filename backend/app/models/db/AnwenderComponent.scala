@@ -31,7 +31,6 @@ trait AnwenderComponent {
 
     /**
      * Default Projection Mapping to case Class
-     *
      * @return
      */
     def * = (nutzerEmail, password, nutzerName, adresseId, id.?) <> (AnwenderEntity.tupled, AnwenderEntity.unapply)
