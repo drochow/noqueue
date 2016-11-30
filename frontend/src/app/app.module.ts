@@ -20,7 +20,7 @@ import { HttpConfig } from "../providers/http-config";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import {HttpService} from "../providers/http-service";
-import { AUTH_PROVIDERS } from 'angular2-jwt';
+// import { AUTH_PROVIDERS } from 'angular2-jwt';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
@@ -68,7 +68,7 @@ export function getAuthHttp(http) {
     ForgotPassword,
     SingleService
   ],
-  providers: [HttpService, ServicesData, UsersProvider, AuthenticationProvider, HttpConfig, {
+  providers: [Storage, HttpService, ServicesData, UsersProvider, AuthenticationProvider, HttpConfig, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]

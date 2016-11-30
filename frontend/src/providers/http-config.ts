@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
+import { Http, Response, Headers, RequestOptions} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
+import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 
 
 @Injectable()
@@ -33,7 +34,7 @@ export class HttpConfig {
     return res.json();
   }
 
-  public handleError(error: Response | any){
+  public handleError(error: Response | any): ErrorObservable{
     const message = error.json();
     console.log("HTTP Error: ", message);
     return Observable.throw(message);

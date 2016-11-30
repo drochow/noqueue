@@ -7,6 +7,7 @@ import { MainPage } from '../../pages/main/main';
 import { SignUpPage } from '../../pages/signup/signup';
 import {ForgotPassword} from "../forgot-password/forgot-password";
 import { HttpService } from '../../providers/http-service';
+import { AuthenticationProvider } from '../../providers/authentication';
 
 /*
   Generated class for the Login page.
@@ -27,7 +28,8 @@ export class LoginPage{
   password: any;
   token: any;
 
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController,  public alertCtrl: AlertController, public httpService : HttpService) {
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController,  public alertCtrl: AlertController, public httpService : HttpService, private auth: AuthenticationProvider) {
   }
 
   ionViewDidLoad() {
@@ -43,17 +45,15 @@ export class LoginPage{
     this.navCtrl.push(SignUpPage);
   }
 
-
   logIn(username: string, password: string){
-    console.log(this.httpService.getToken());
-
-    var userExists = false;
-    this.users.forEach(function(u){
-      if(u.username === username && u.password === password){
-        userExists = true;
+    this.auth.signIn(username, password).then(
+      () => {
+        console.log(this.auth.getToken());
+        if(this.auth.isLoggedIn()){
+          this.navCtrl.push(MainPage);
+        }
       }
-    })
-    if(userExists) this.navCtrl.push(MainPage);
+    );
   }
 
   forgotPassword(){
@@ -62,7 +62,7 @@ export class LoginPage{
   }
 
   skip(){
-    this.httpService.testSignIn();
+    // this.httpService.testSignIn();
     let confirm = this.alertCtrl.create({
       title: 'Skip Log In?',
       message: 'Users that are not logged in can not reserve a place in a queue.',

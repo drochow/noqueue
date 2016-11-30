@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
+import { Http, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
 import { HttpConfig } from './http-config';
+import { Storage } from '@ionic/storage';
 
 /*
   Generated class for the Authentication provider.
-
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
@@ -16,7 +16,14 @@ export class AuthenticationProvider {
 
   private token: string;
 
-  constructor(public http: Http, private httpConfig: HttpConfig) {
+  constructor(public http: Http, private httpConfig: HttpConfig, private storage: Storage) {
+    if(storage !== undefined){
+      storage.get('token').then(
+        (token) => {
+          this.token = token;
+        }
+      )
+    }
   }
 
   requestOptionsWithToken(): RequestOptions{
@@ -34,11 +41,13 @@ export class AuthenticationProvider {
       .catch(config.handleError);
   }
 
+  // @TODO - false request?
   signIn(username: String, password: String): Promise<any>{
     var auth = this;
     return new Promise(function(succeed, fail){
       auth.signInRequest(username, password).subscribe(
         (token) => {
+          auth.storage.set('token', token);
           auth.token = token;
           succeed();
         }
@@ -60,8 +69,10 @@ export class AuthenticationProvider {
     return new Promise(function(succeed, fail){
       //@TODO - validate user input
       auth.signUpRequest(username, password, email).subscribe(
-        (token) => {
-          auth.token = token;
+        () => {
+          //@TODO - discuss with backend team if signUp should return a token
+          // auth.storage.set('token', token);
+          //auth.token = token;
           succeed("signed up");
         }
       )
@@ -90,7 +101,8 @@ export class AuthenticationProvider {
   }
 
   isLoggedIn() : boolean {
-    return this.getToken() !== undefined && this.getToken() !== ""
+    console.log("Logged in? - token : " + this.getToken());
+    return this.getToken() !== undefined && this.getToken() !== "" && this.getToken() !== null
   }
 
   getToken() : String {
@@ -99,6 +111,7 @@ export class AuthenticationProvider {
 
   private resetToken(){
     this.token = "";
+    this.storage.remove('token');
   }
 
 }

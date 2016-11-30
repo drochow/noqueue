@@ -1,5 +1,5 @@
-import {TestBed, getTestBed, async, inject} from '@angular/core/testing';
-import {Headers, ResponseOptions, RequestOptions, Response, HttpModule, Http, XHRBackend, RequestMethod} from '@angular/http';
+import {TestBed, async, inject} from '@angular/core/testing';
+import {HttpModule} from '@angular/http';
 import {AuthenticationProvider} from './authentication';
 import {HttpConfig} from './http-config';
 
