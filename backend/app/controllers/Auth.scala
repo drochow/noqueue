@@ -15,38 +15,34 @@ import javax.inject.Inject
 
 import api.ApiResponse
 import api.jwt.{ JwtUtil, TokenPayload }
+import models.db.AnwenderEntity
+import models.{ Anwender, UnregistrierterAnwender }
 import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 
 class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
-  //
-  //  implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
-  //    (__ \ "email").read[String](Reads.email) and
-  //      (__ \ "password").read[String] tupled
-  //  )
-  //
-  //  def signIn = ApiActionWithBody { implicit request =>
-  //    readFromRequest[Tuple2[String, String]] {
-  //      case (email, pwd) =>
-  //        User.findByEmail(email).flatMap {
-  //          case None => errorUserNotFound
-  //          case Some(user) => {
-  //            if (user.password != pwd) errorUserNotFound //@todo pwd-Hash
-  //            else {
-  //              //@todo get config
-  //              val exp: DateTime = (new DateTime()).plusMinutes(config.getString("jwt.token.minutesToLive").get.toInt)
-  //              val token: String = JwtUtil.signJwtPayload(new TokenPayload(user.id, exp))
-  //              ok(Json.obj(
-  //                "token" -> token,
-  //                "minutes" -> 120
-  //              ))
-  //            }
-  //          }
-  //        }
-  //    }
-  //  }
-  //
+
+  implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
+    (__ \ "nutzerName").read[String] and
+      (__ \ "password").read[String] tupled
+  )
+
+  def signIn = ApiActionWithBody { implicit request =>
+    readFromRequest[Tuple2[String, String]] {
+      case (email, password) =>
+        val unregAnw = new UnregistrierterAnwender
+        lazy val anwender = new Anwender(unregAnw.anmelden(email, password))
+        anwender.anwender flatMap {
+          anwender: AnwenderEntity => ok(JwtUtil.signJwtPayload(new TokenPayload(anwender.id.get.value, DateTime.now().plusMinutes(120))))
+        }
+    }
+  }
+
+  def testSignedIn = SecuredApiAction { implicit request =>
+    ok("You are logged in")
+  }
+
   //  def signOut = SecuredApiAction { implicit request => ok(Json.obj("message" -> "Successfully logged out")) }
   //  //
   //  implicit val signUpInfoReads: Reads[Tuple3[String, String, User]] = (

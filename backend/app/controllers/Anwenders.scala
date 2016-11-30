@@ -16,22 +16,21 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class AnwenderC @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
-    //    readFromRequest[AnwenderEntity] {
-    //      case anw: AnwenderEntity =>
-    //        db.run(dal.insert(AnwenderEntity(anw.nutzerEmail, anw.password, anw.nutzerName) //AnwenderEntity("hans@gmail.com", "test", "hans", Some(PK[AdresseEntity](2L)))
-    //        )) flatMap {
-    //          ok(_)
-    //        }
-    //      case all => ok("didn't work :" + all)
-    //      /*readFromRequest[AdresseEntity] {
-    //          adresse => created("okey")*/
-    //      //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
-    //      //              case newAnwenderId => created(newAnwenderId)
-    //      //              case _ => ApiError.errorInternal("Unable to create User")
-    //      //            }
-    //      //}
-    //    }
-    ok("Success")
+    readFromRequest[AnwenderEntity] {
+      case anw: AnwenderEntity =>
+        val unregAnw = new UnregistrierterAnwender
+        unregAnw.registrieren(anw.nutzerEmail, anw.password, anw.nutzerName) flatMap { /*("hans@gmail.com", "test", "hans"))//Test @TODO entfernen*/
+          ok(_)
+        }
+      case all => ok("didn't work :" + all)
+      /*readFromRequest[AdresseEntity] {
+          adresse => created("okey")*/
+      //            AnwenderRepository.createWithAdresse(anwender, adresse).flatMap {
+      //              case newAnwenderId => created(newAnwenderId)
+      //              case _ => ApiError.errorInternal("Unable to create User")
+      //            }
+      //}
+    }
   }
   def get(anwenderId: Long) = ApiAction { implicit request =>
     //    db.run(dal.getAnwenderById(PK(anwenderId))).flatMap {

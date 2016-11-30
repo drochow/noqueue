@@ -5,9 +5,12 @@ import javax.inject.Inject
 
 import api.ApiError
 import api.JsonCombinators._
+import models.H2DB
 import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+
+import scala.concurrent.ExecutionContext.Implicits.global //@TODO FER NE
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
@@ -67,12 +70,13 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   def setup = ApiAction { implicit request =>
-    //    db.run(dal.create) flatMap {
-    //      _ => ok("Setup complete")
-    //    } recover {
-    //      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
-    //    }
-    ok("Success")
+    val h2 = new H2DB
+    h2.db.run(h2.dal.create).flatMap {
+      _ => ok("Setup complete")
+    } recover {
+      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
+    }
+
   }
 
 }

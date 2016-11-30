@@ -1,6 +1,6 @@
 package models
 
-import models.db.DienstleistungsTypEntity
+import models.db.{ AnwenderEntity, DienstleistungsTypEntity }
 
 import scala.concurrent.Future
 
@@ -9,8 +9,8 @@ import scala.concurrent.Future
  */
 class UnregistrierterAnwender extends Base {
 
-  def anmelden(nutzerName: String, password: String) = {
-    //@todo implement me
+  def anmelden(nutzerName: String, password: String): Future[AnwenderEntity] = {
+    db.run(dal.getAnwenderByNameAndPW(nutzerName, password))
   }
 
   def anbieterSuchen(
@@ -24,8 +24,7 @@ class UnregistrierterAnwender extends Base {
     //@todo implement me
   }
 
-  def registrieren(nutzerEmail: String, nutzerName: String, password: String) = {
-    throw new NotImplementedError("Not implemented yet, implement it")
-    //@todo implement me
+  def registrieren(nutzerEmail: String, nutzerName: String, password: String): Future[AnwenderEntity] = {
+    db.run(dal.insert(AnwenderEntity(nutzerEmail, password, nutzerName)))
   }
 }
