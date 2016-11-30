@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions, RequestMethod, Request } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 // import { Store } from '../providers/store';
-import { User } from '../providers/user';
+// import { User } from '../providers/user';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { AuthHttp } from 'angular2-jwt';
 
 @Injectable()
 export class HttpService {
@@ -94,12 +93,12 @@ export class HttpService {
       email: email
     };
 
-    var requestoptions = new RequestOptions({
-      method: RequestMethod.Post,
-      url: this.usersDB,
-      headers: headers,
-      body: JSON.stringify(user)
-    });
+    // var requestoptions = new RequestOptions({
+    //   method: RequestMethod.Post,
+    //   url: this.usersDB,
+    //   headers: headers,
+    //   body: JSON.stringify(user)
+    // });
 
     console.log("test");
     return this.http.post(this.usersDB, JSON.stringify(user), options)

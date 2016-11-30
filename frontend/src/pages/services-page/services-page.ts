@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 // import { ServicesData } from '../../providers/data';
 import { HttpService } from '../../providers/http-service';
+import { AuthenticationProvider } from '../../providers/authentication';
 // import { Data } from '../../providers/data';
-import { Store } from '../../providers/store';
+// import { Store } from '../../providers/store';
 import {SingleService} from "../../pages/single-service/single-service";
 
 /*
@@ -21,8 +22,9 @@ import {SingleService} from "../../pages/single-service/single-service";
 export class ServicesPage {
 
   services: any[];
+  loggedIn = false;
 
-  constructor(public navCtrl: NavController, public httpService: HttpService) {
+  constructor(public navCtrl: NavController, public httpService: HttpService, private auth: AuthenticationProvider) {
 
   }
 
@@ -33,6 +35,7 @@ export class ServicesPage {
 
   ionViewDidLoad() {
     this.fetchAllServices();
+    this.loggedIn = this.auth.isLoggedIn();
   }
 
   private fetchAllServices(){

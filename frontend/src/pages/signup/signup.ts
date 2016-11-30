@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { HttpService } from '../../providers/http-service';
+import { AuthenticationProvider } from '../../providers/authentication';
 
 /*
   Generated class for the Signup page.
@@ -19,8 +20,9 @@ export class SignUpPage {
   email: any;
   password: any;
   confirmedPassword: any;
+  correctData: boolean;
 
-  constructor(public navCtrl: NavController, public httpService: HttpService) {}
+  constructor(public navCtrl: NavController, public httpService: HttpService, private auth: AuthenticationProvider) {}
 
   ionViewDidLoad() {
     console.log('Hello Signup Page');
@@ -28,10 +30,17 @@ export class SignUpPage {
 
   signUp(username: string, email: string, password: string, confirmedPassword: string){
     if(password === confirmedPassword){
-      console.log("YES");
-      this.httpService.addNewUser(username, password, email);
+      console.log("Passwords matching");
+      this.auth.signUp(username, password, email).then(
+        () => {
+          console.log("here");
+          this.correctData = true;
+          this.navCtrl.pop();
+        }
+      )
+    } else {
+      this.correctData = false
     }
-    this.navCtrl.pop();
   }
 
 }
