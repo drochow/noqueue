@@ -8,12 +8,8 @@ import scala.util.Success
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/**
- * Created by David on 29.11.16.
- */
 //@todo add return types to methods when implemented (should all return futures)
 class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwender {
-
   /**
    * Adresse of Anwender with lazy initialization
    */
@@ -69,23 +65,28 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
   }
 
   def wsFuerMitarbeiterBeitreten(mitarbeiterPrimaryKey: PK[MitarbeiterEntity], dlPrimaryKey: PK[DienstleistungEntity]) = {
-    //@todo maybe implement me
+    //@todo maybe implement me Future[WarteschlangenPlatzEntity]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
   def wsVerlassen(wsp: Future[WarteSchlangenPlatzEntity]) = {
-    //@todo implement me
+    //@todo implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
   def betriebBewerten(betrieb: Future[BetriebEntity], bewertung: Int) = {
-    //@todo implement me
+    //@todo implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
   def betriebBewerten(betriebPrimaryKey: PK[BetriebEntity], bewertung: Int) = {
-    //@todo maybe implement me
+    //@todo maybe implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, may implement it")
+  }
+
+  def betriebErstellen(adresse: AdresseEntity, tel: String, oeffnungszeiten: String, kontaktEmail: String) = {
+    //@todo implement me and return Future[(BetriebEntity, LeiterEntity)]
+    throw new NotImplementedError("Not implemented yet, implement it")
   }
 
 }
