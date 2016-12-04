@@ -13,12 +13,15 @@ GET           /test3                                controllers.Application.test
 GET           /setup                              controllers.Application.setup
 
 # AUTHENTICATION
-#POST          /signin                             controllers.Auth.signIn
+POST          /signin                             controllers.Auth.signIn
 #POST          /signout                            controllers.Auth.signOut
 #POST          /signup                             controllers.Auth.signUp
+GET           /testSignedIn                         controllers.Auth.testSignedIn
 
 # ANWENDER
-POST          /anwender                           controllers.AnwenderC.create(name: String)
+GET          /anwender                            controllers.Anwender.profil
+POST          /anwender                           controllers.Anwender.create
+POST          /auth                               controllers.Anwender.auth
 
 
 

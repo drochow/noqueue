@@ -1,82 +1,81 @@
 package controllers
 
 import java.sql.SQLTimeoutException
-
-import play.api.mvc._
 import javax.inject.Inject
 
-import api.{ ApiError, ApiResponse, ApiResult }
-import models.db.{ Adresse, Anwender, PK }
-import org.postgresql.util.PSQLException
+import api.ApiError
+import api.JsonCombinators._
+import models.Base
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ Await, Future }
-import scala.util.{ Failure, Success }
-import scala.concurrent.duration._
-import api.JsonCombinators._
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
-  def test = ApiAction { implicit request =>
-    val action = for {
-      a1 <- dal.insert(Anwender("hans@gmail.com", "test", "hans"))
-      a2 <- dal.insert(Adresse("Bollestraße", "20", "13509", "Berlin"))
-      a3 <- dal.insert(Adresse("Bollestraße", "21", "13509", "Berlin"))
-      a4 <- dal.insert(Anwender("hans@gmail.com", "test", "hans", a3.id))
-    } yield ()
-
-    db.run(action) flatMap {
-      _ => ok("Insertion complete")
+  def setup = ApiAction { implicit request =>
+    val base = Base()
+    base.setupDB flatMap {
+      case _ => ok("Setup complete...")
     } recover {
-      case t => ApiError.errorInternal("Unable to insert:" + t.toString())
+      case e: Exception => ApiError.errorInternal("Unknown error: " + e.toString)
     }
+  }
+
+  def test = ApiAction { implicit request =>
+    //    val action = for {
+    //      a1 <- dal.insert(AnwenderEntity("hans@gmail.com", "test", "hans"))
+    //      a2 <- dal.insert(AdresseEntity("Bollestraße", "20", "13509", "Berlin"))
+    //      a3 <- dal.insert(AdresseEntity("Bollestraße", "21", "13509", "Berlin"))
+    //      a4 <- dal.insert(AnwenderEntity("hans@gmail.com", "test", "hans", a3.id))
+    //    } yield ()
+    //
+    //    db.run(action) flatMap {
+    //      _ => ok("Insertion complete")
+    //    } recover {
+    //      case t => ApiError.errorInternal("Unable to insert:" + t.toString())
+    //    }
+    ok("Success")
   }
 
   def test2 = ApiAction { implicit request =>
-    db.run(dal.insert(Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](20L))))) flatMap {
-      case anwender: Anwender => ok[Anwender](anwender)
-    } recover {
-      case ex: SQLTimeoutException => ApiError.errorInternal("Service Unavailable: Database not reachable.")
-      case ex: NoSuchElementException => ApiError.errorBadRequest("Provided Adress does not exist.")
-      case _ => ApiError.errorInternal("Service Unavailabl: Unknown error occured")
-    }
-
-    //    db.run(dal.insert(Anwender("hans@gmail.com", "test", "hans", Some(PK[Adresse](20L)))).asTry).map {
-    //      result =>
-    //        result match {
-    //          case Success(res) => res
-    //          case Failure(e: PSQLException) => e.
-    //        }
-    //    } flatMap {
-    //      case anwender => ok("Yay")
-    //    } recover {
-    //      case msg => ApiError.errorBadRequest("Unable to insert:" + msg)
-    //    }
-  }
-
-  def test3 = ApiAction { implicit request =>
-    db.run(dal.getAnwenderWithAdress(PK[Anwender](2L))) flatMap {
-      case anwenderWithAdress: Seq[(models.db.Anwender, models.db.Adresse)] => ok(anwenderWithAdress.head._1)
-    } recover {
-      case e => ApiError.errorInternal("Something happend: " + e.toString())
-    }
-    //    db.run(dal.get(PK[Adresse](1L))) flatMap {
-    //      case adresse: Adresse => ok[Adresse](adresse)
+    //    db.run(dal.insert(AnwenderEntity("hans@gmail.com", "test", "hans", Some(PK[AdresseEntity](2L))))) flatMap {
+    //      case anwender: AnwenderEntity => ok[AnwenderEntity](anwender)
     //    } recover {
     //      case ex: SQLTimeoutException => ApiError.errorInternal("Service Unavailable: Database not reachable.")
     //      case ex: NoSuchElementException => ApiError.errorBadRequest("Provided Adress does not exist.")
     //      case _ => ApiError.errorInternal("Service Unavailabl: Unknown error occured")
     //    }
+    //
+    //    //    db.run(dal.insert(AnwenderEntity("hans@gmail.com", "test", "hans", Some(PK[AdresseEntity](20L)))).asTry).map {
+    //    //      result =>
+    //    //        result match {
+    //    //          case Success(res) => res
+    //    //          case Failure(e: PSQLException) => e.
+    //    //        }
+    //    //    } flatMap {
+    //    //      case anwender => ok("Yay")
+    //    //    } recover {
+    //    //      case msg => ApiError.errorBadRequest("Unable to insert:" + msg)
+    //    //    }
+    ok("Success")
   }
 
-  def setup = ApiAction { implicit request =>
-    db.run(dal.create) flatMap {
-      _ => ok("Setup complete")
-    } recover {
-      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
-    }
+  def test3 = ApiAction { implicit request =>
+    //    db.run(dal.getAnwenderWithAdress(PK[AnwenderEntity](2L))) flatMap {
+    //      case anwenderWithAdress: Seq[(AnwenderEntity, AdresseEntity)] => ok(anwenderWithAdress.head._1)
+    //    } recover {
+    //      case e => ApiError.errorInternal("Something happend: " + e.toString())
+    //    }
+    //    //    db.run(dal.get(PK[AdresseEntity](1L))) flatMap {
+    //    //      case adresse: AdresseEntity => ok[AdresseEntity](adresse)
+    //    //    } recover {
+    //    //      case ex: SQLTimeoutException => ApiError.errorInternal("Service Unavailable: Database not reachable.")
+    //    //      case ex: NoSuchElementException => ApiError.errorBadRequest("Provided Adress does not exist.")
+    //    //      case _ => ApiError.errorInternal("Service Unavailabl: Unknown error occured")
+    //    //    }
+    ok("Success")
   }
 
 }

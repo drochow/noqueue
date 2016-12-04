@@ -20,17 +20,22 @@ resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.co
 scalariformSettings
 
 libraryDependencies ++= Seq(
+  //specs2 is not being used for now
   specs2 % Test,
-	"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
+	//"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
   "com.nimbusds"          % "nimbus-jose-jwt"             % "4.11.2",
   "org.postgresql"        % "postgresql"                  % "9.4-1202-jdbc41",
+  "org.mindrot" % "jbcrypt" % "0.3m",
   "com.typesafe.slick"    %% "slick-hikaricp"             %  "3.1.1",
   "com.typesafe.slick"    %%  "slick" % "3.1.1",
-  "org.scalatest"         %%  "scalatest"                 %      "2.2.5"       %    "test",
-  "com.h2database"        %   "h2"                        %      "1.4.187"     %   "test"
+  //"org.scalatest"         %%  "scalatest"                 %      "2.2.5"       %    "test",
+  "org.scalatestplus.play" %% "scalatestplus-play"        % "1.5.0"           % "test",
+  jdbc,
+  "com.h2database"        %   "h2"                        %      "1.4.187"     %   "test",
+  "com.github.nscala-time" %% "nscala-time" % "2.14.0"
 )
 
-fork in run := true
+//fork in run := true
 
 routesGenerator := InjectedRoutesGenerator
 

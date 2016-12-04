@@ -3,7 +3,7 @@ package api
 import models._
 import java.util.Date
 
-import models.db.{ Adresse, Anwender, PK }
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.libs.json._
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
@@ -16,8 +16,8 @@ object JsonCombinators {
   implicit val dateWrites = Writes.dateWrites("dd-MM-yyyy HH:mm:ss")
   implicit val dateReads = Reads.dateReads("dd-MM-yyyy HH:mm:ss")
 
-  //  implicit val adresseWrites = new Writes[Adresse] {
-  //    def writes(a: Adresse) = Json.obj(
+  //  implicit val adresseWrites = new Writes[AdresseEntity] {
+  //    def writes(a: AdresseEntity) = Json.obj(
   //      "id" -> a.id.get.value,
   //      "straße" -> a.straße,
   //      "hausNummer" -> a.hausNummer,
@@ -25,11 +25,11 @@ object JsonCombinators {
   //      "stadt" -> a.stadt
   //    )
   //  }
-  //  implicit val addresseReads: Reads[Adresse] =
-  //    (__ \ "straße").read[String](minLength[String](1)).map(straße => Adresse(straße, null, null, null, Option(PK[Adresse](0L))))
+  //  implicit val addresseReads: Reads[AdresseEntity] =
+  //    (__ \ "straße").read[String](minLength[String](1)).map(straße => AdresseEntity(straße, null, null, null, Option(PK[AdresseEntity](0L))))
 
-  implicit val anwenderWrites = new Writes[Anwender] {
-    def writes(a: Anwender) = Json.obj(
+  implicit val anwenderWrites = new Writes[AnwenderEntity] {
+    def writes(a: AnwenderEntity) = Json.obj(
       "id" -> a.id.get.value,
       "password" -> a.password,
       "nutzerEmail" -> a.nutzerEmail,
@@ -37,20 +37,20 @@ object JsonCombinators {
     )
   }
 
-  implicit val pkAdresseReads = Json.reads[PK[Adresse]]
-  implicit val pkAdresseWrites = Json.writes[PK[Adresse]]
-  implicit val pkAnwenderReads = Json.reads[PK[Anwender]]
-  implicit val pkAnwenderWrites = Json.writes[PK[Anwender]]
-  implicit val adresseReads = Json.reads[Adresse]
-  implicit val adresseWrites = Json.writes[Adresse]
+  implicit val pkAdresseReads = Json.reads[PK[AdresseEntity]]
+  implicit val pkAdresseWrites = Json.writes[PK[AdresseEntity]]
+  implicit val pkAnwenderReads = Json.reads[PK[AnwenderEntity]]
+  implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
+  implicit val adresseReads = Json.reads[AdresseEntity]
+  implicit val adresseWrites = Json.writes[AdresseEntity]
 
   //@todo fix to do real mapping
-  implicit val anwenderReads: Reads[Anwender] = (
+  implicit val anwenderReads: Reads[AnwenderEntity] = (
     (__ \ "nutzerEmail").read[String](minLength[String](1)) and
     (__ \ "password").read[String](minLength[String](1)) and
     (__ \ "nutzerName").read[String](minLength[String](1))
   )((nutzerEmail, password, nutzerName) =>
-      Anwender(nutzerEmail, password, nutzerName, Option(PK[Adresse](0L)), Option(PK[Anwender](0L))))
+      AnwenderEntity(nutzerEmail, password, nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
 
   //
   //  implicit val userWrites = new Writes[User] {

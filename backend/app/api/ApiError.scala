@@ -73,7 +73,7 @@ object ApiError {
   def errorTokenNotFound(implicit m: Messages) = apply(ERROR_TOKEN_HEADER_NOTFOUND, Messages("api.error.token.notfound"))
   def errorTokenUnknown(implicit m: Messages) = apply(ERROR_TOKEN_NOTFOUND, Messages("api.error.token.unknown"))
   def errorTokenExpired(implicit m: Messages) = apply(ERROR_TOKEN_EXPIRED, Messages("api.error.token.expired"))
-  def errorUserNotFound(implicit m: Messages) = apply(ERROR_USER_NOTFOUND, Messages("api.error.user.notfound"))
+  def errorAnwenderNotFound(implicit m: Messages) = apply(ERROR_USER_NOTFOUND, Messages("api.error.user.notfound"))
   def errorUserEmailUnconfirmed(implicit m: Messages) = apply(ERROR_USER_EMAIL_UNCONFIRMED, Messages("api.error.user.email.unconfirmed"))
   def errorUserInactive(implicit m: Messages) = apply(ERROR_USER_INACTIVE, Messages("api.error.user.inactive"))
 
