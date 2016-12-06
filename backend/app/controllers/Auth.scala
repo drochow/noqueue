@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.i18n.MessagesApi
 
 class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
-
+  /*
   implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
     (__ \ "nutzerName").read[String] and
       (__ \ "password").read[String] tupled
@@ -70,5 +70,5 @@ class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val con
   //        }
   //    }
   //  }
-
+*/
 }

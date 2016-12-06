@@ -5,12 +5,16 @@ import javax.inject.Inject
 
 import api.ApiError
 import api.JsonCombinators._
-import models.Base
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import models.{ Base, UnregistrierterAnwender }
+import models.db.{ AdresseEntity, AnwenderEntity, DienstleistungsTypEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Reads._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
@@ -76,6 +80,19 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     //    //      case _ => ApiError.errorInternal("Service Unavailabl: Unknown error occured")
     //    //    }
     ok("Success")
+  }
+
+  implicit val limitAndOffsetReads: Reads[(Long, Long)] = {
+    (__ \ "limit").read[Long] and
+      (__ \ "offset").read[Long] tupled
+  }
+
+  //please put this method where it belongs, but for now i will leave it here
+  def getDienstleistungsTypen = ApiActionWithBody { implicit request =>
+    readFromRequest[(Long, Long)] {
+      case (limit, offset) =>
+        okFuture((new UnregistrierterAnwender).getDienstleistungsTypen(limit, offset))
+    }
   }
 
 }
