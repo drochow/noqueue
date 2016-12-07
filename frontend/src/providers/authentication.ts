@@ -15,11 +15,13 @@ import { Storage } from '@ionic/storage';
 export class AuthenticationProvider {
 
   private token: string;
+  userId: number;
 
   constructor(public http: Http, private httpConfig: HttpConfig, private storage: Storage) {
     if(storage !== undefined){
       storage.get('token').then(
         (token) => {
+          console.log('Reading token from local storage: ', token);
           this.token = token;
         }
       )
@@ -69,10 +71,11 @@ export class AuthenticationProvider {
     return new Promise(function(succeed, fail){
       //@TODO - validate user input
       auth.signUpRequest(username, password, email).subscribe(
-        () => {
+        (data) => {
           //@TODO - discuss with backend team if signUp should return a token
           // auth.storage.set('token', token);
           //auth.token = token;
+          console.log("Response from server on signUp:", data);
           succeed("signed up");
         }
       )
@@ -107,6 +110,10 @@ export class AuthenticationProvider {
 
   getToken() : String {
     return this.token;
+  }
+
+  getUserId() : number{
+    return this.userId || 0;
   }
 
   private resetToken(){

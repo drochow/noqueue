@@ -16,6 +16,7 @@ import {ServicesData} from "../providers/data";
 import { UsersProvider } from "../providers/users"
 import { AuthenticationProvider } from "../providers/authentication";
 import { HttpConfig } from "../providers/http-config";
+import { ProfileInfoPage } from "../pages/profile-info/profile-info";
 // import { Data } from '../providers/data.ts';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
@@ -24,6 +25,8 @@ import {HttpService} from "../providers/http-service";
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
+import {ServicesProvider} from "../providers/services-provider";
+import {NewServicePage} from "../pages/new-service/new-service";
 
 let storage = new Storage();
 
@@ -48,7 +51,9 @@ export function getAuthHttp(http) {
     ServicesPage,
     SignUpPage,
     ForgotPassword,
-    SingleService
+    SingleService,
+    ProfileInfoPage,
+    NewServicePage
   ],
   imports: [
     HttpModule,
@@ -66,9 +71,11 @@ export function getAuthHttp(http) {
     ServicesPage,
     SignUpPage,
     ForgotPassword,
-    SingleService
+    SingleService,
+    ProfileInfoPage,
+    NewServicePage
   ],
-  providers: [Storage, HttpService, ServicesData, UsersProvider, AuthenticationProvider, HttpConfig, {
+  providers: [Storage, HttpService, ServicesData, UsersProvider, ServicesProvider, AuthenticationProvider, HttpConfig, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]

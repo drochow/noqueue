@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
+import {NewServicePage} from "../new-service/new-service";
 
 /*
   Generated class for the MyService page.
@@ -13,10 +15,15 @@ import { NavController } from 'ionic-angular';
 })
 export class MyService {
 
-  constructor(public navCtrl: NavController) {}
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {}
 
   ionViewDidLoad() {
-    console.log('Hello MyService Page');
   }
+
+  newService(){
+    let modal = this.modalCtrl.create(NewServicePage);
+    modal.present();
+  }
+
 
 }

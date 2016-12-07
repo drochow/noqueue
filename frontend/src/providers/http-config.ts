@@ -19,7 +19,8 @@ export class HttpConfig {
     signin: "/signin",
     signup: "/signup",
     token: "/testSignedIn",
-    users: "/anwender"
+    users: "/anwender",
+    services: "/dienstLeistungen"
   };
 
   constructor(public http: Http) {
