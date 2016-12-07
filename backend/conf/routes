@@ -7,6 +7,7 @@ GET           /test                               controllers.Application.test
 GET           /setup                               controllers.Application.setup
 GET           /test2                                controllers.Application.test2
 GET           /test3                                controllers.Application.test3
+GET             /testdlts                           controllers.Application.insertTestDlTs
 
 # SETUP OF DATABASE
 GET           /setup                              controllers.Application.setup

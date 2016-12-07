@@ -28,5 +28,5 @@ trait DienstleistungsTypComponent {
   def getByEntireName(entireName: String) = dienstleistungsTypen.filter(_.name === entireName).result.head
 
   def getAllDlTs(limit: Long = 20, offset: Long = 1): DBIO[Seq[DienstleistungsTypEntity]] =
-    dienstleistungsTypen.filter(_.id === PK[DienstleistungsTypEntity](offset)).filter(_.id < PK[DienstleistungsTypEntity](offset + limit)).result
+    dienstleistungsTypen.filter(_.id > PK[DienstleistungsTypEntity](offset)).filter(_.id < PK[DienstleistungsTypEntity](offset + limit)).result
 }
