@@ -8,6 +8,7 @@ import java.util.Locale
 
 import api.jwt.TokenPayload
 import com.nimbusds.jose.Payload
+import models.Anwender
 
 import scala.util.Try
 import play.api.libs.json._
@@ -54,8 +55,8 @@ object ApiRequest {
  * ApiRequest for authenticated requests
  *
  * @param request the request object
- * @param payload the authentication payload
+ * @param anwender the authenticated anwender(model)
  * @tparam A the type of the request object data
  */
-case class SecuredApiRequest[A](override val request: Request[A], payload: TokenPayload) extends ApiRequest[A](request)
+case class SecuredApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
 

@@ -16,7 +16,6 @@ object PostgresDB extends DB {
   val dal = new DAL(PostgresDriver)
 }
 
-
 object H2DB extends DB {
   val db = Database.forConfig("h2")
   val dal = new DAL(H2Driver)

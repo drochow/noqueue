@@ -54,19 +54,12 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    val anwender: AnwenderModel = new AnwenderModel(request.payload)
-
-    anwender.anwender flatMap {
+    request.anwender.anwender flatMap {
       case anwender: AnwenderEntity => ok(anwender)
     } recover {
       case e: Exception => {
         ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
       }
     }
-    //    db.run(dal.getAnwenderById(PK(anwenderId))).flatMap {
-    //      case x: AnwenderEntity => ok(x)
-    //      case _ => ok("nope")
-    //
-    //    }
   }
 }
