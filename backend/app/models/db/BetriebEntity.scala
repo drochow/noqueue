@@ -11,10 +11,11 @@ package models.db
  * @param id
  */
 case class BetriebEntity(
-  tel: String,
-  oeffnungszeiten: String,
-  kontaktEmail: String,
-  wsOffen: Boolean,
-  adresseId: PK[AdresseEntity],
-  id: Option[PK[BetriebEntity]] = None) {
+    tel: String,
+    oeffnungszeiten: String,
+    kontaktEmail: String,
+    wsOffen: Boolean,
+    adresseId: PK[AdresseEntity],
+    id: Option[PK[BetriebEntity]] = None
+) {
 }

@@ -48,8 +48,11 @@ object JsonCombinators {
 
   implicit val adresseFormat: Format[AdresseEntity] = Json.format[AdresseEntity]
   implicit val adresseReads = Json.reads[AdresseEntity]
+
   implicit val adresseWrites = Json.writes[AdresseEntity]
   implicit val dienstleistungsTypEntityFormat: Format[DienstleistungsTypEntity] = Json.format[DienstleistungsTypEntity]
+
+  implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = ((__ \ "adresse").readNullable[AdresseEntity](adresseReads))
 
   //@todo fix to do real mapping
   implicit val anwenderReads: Reads[AnwenderEntity] = (
@@ -59,13 +62,12 @@ object JsonCombinators {
   )((nutzerEmail, password, nutzerName) =>
       AnwenderEntity(nutzerEmail, password, nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
 
-
   implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
     (__ \ "nutzerEmail").readNullable[String] and
-      (__ \ "nutzerName").readNullable[String]and
-      //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
-      (__ \ "adresse").readNullable[Option[AdresseEntity]]
-    )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
+    (__ \ "nutzerName").readNullable[String] and
+    //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
+    (__ \ "adresse").readNullable[Option[AdresseEntity]]
+  )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(
