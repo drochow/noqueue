@@ -87,6 +87,12 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
       (__ \ "offset").read[Long] tupled
   }
 
+  def insertTestDlTs = ApiAction { implicit request =>
+    val unregistrierterAnwender = new UnregistrierterAnwender
+    unregistrierterAnwender.testDltinserts
+    ok("inserted")
+  }
+
   //please put this method where it belongs, but for now i will leave it here
   def getDienstleistungsTypen = ApiActionWithBody { implicit request =>
     readFromRequest[(Long, Long)] {

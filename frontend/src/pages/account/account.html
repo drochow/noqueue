@@ -15,9 +15,10 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item>Edit Information</ion-item>
-    <ion-item>Log Out</ion-item>
-    <ion-item>Delete Account</ion-item>
+    <ion-item *ngIf="loggedIn" (click)="editInformation()">Edit Information</ion-item>
+    <ion-item *ngIf="loggedIn" (click)="logOut()">Log Out</ion-item>
+    <ion-item *ngIf="loggedIn==false" (click)="logIn()">Log In</ion-item>
+    <ion-item *ngIf="loggedIn" (click)="deleteAccount()">Delete Account</ion-item>
   </ion-list>
 
 </ion-content>

@@ -14,6 +14,7 @@
 
 
 <ion-content padding>
+  <p *ngIf="correctData === false" style="color: red">Your password and confirmation password do not match.</p>
   <ion-list>
     <ion-item>
       <ion-input type="text" placeholder="Username" [(ngModel)]="username"></ion-input>
