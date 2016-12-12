@@ -60,10 +60,10 @@ object JsonCombinators {
       AnwenderEntity(nutzerEmail, password, nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
 
 
-  implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[AdresseEntity])] = (
+  implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
     (__ \ "nutzerEmail").readNullable[String] and
       (__ \ "nutzerName").readNullable[String]and
-      (__ \ "adresse").readNullable[AdresseEntity]
+      (__ \ "adresse").readNullable[Option[AdresseEntity]]
     )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
   //
   //  implicit val userWrites = new Writes[User] {
