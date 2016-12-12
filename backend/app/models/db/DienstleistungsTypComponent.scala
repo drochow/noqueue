@@ -1,5 +1,7 @@
 package models.db
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 trait DienstleistungsTypComponent {
 
   this: DriverComponent with DienstleistungComponent =>
@@ -16,20 +18,15 @@ trait DienstleistungsTypComponent {
   val dienstleistungsTypen = TableQuery[DienstleistungsTypTable]
 
   def dienstleistungsTypAutoInc = dienstleistungsTypen returning dienstleistungsTypen.map(_.id)
+
+  def insert(dlT: DienstleistungsTypEntity): DBIO[DienstleistungsTypEntity] = (dienstleistungsTypAutoInc += dlT).map(id => dlT.copy(id = id))
+
+  def getDlTById(id: PK[DienstleistungsTypEntity]): DBIO[DienstleistungsTypEntity] = dienstleistungsTypen.filter(_.id === id).result.head
+
+  def findByPartialName(partialName: String): DBIO[Seq[DienstleistungsTypEntity]] = dienstleistungsTypen.result //@todo pls implement
+
+  def getByEntireName(entireName: String) = dienstleistungsTypen.filter(_.name === entireName).result.head
+
+  def getAllDlTs(limit: Long = 20, offset: Long = 1): DBIO[Seq[DienstleistungsTypEntity]] =
+    dienstleistungsTypen.filter(_.id === PK[DienstleistungsTypEntity](offset)).filter(_.id < PK[DienstleistungsTypEntity](offset + limit)).result
 }
-//
-//import slick.driver.PostgresDriver.api._
-//import slick.lifted.TableQuery
-//
-//case class DienstleistungsTypEntity(id: Option[Long], name: String)
-//
-//class DienstleistungsTypen(tag: Tag) extends Table[DienstleistungsTypEntity](tag, "DIENSTLEISTUNGSTYP") {
-//  def id = column[Long]("DLT_ID", O.PrimaryKey, O.AutoInc)
-//  def name = column[String]("NAME")
-//
-//  def * = (id.?, name) <> (DienstleistungsTypEntity.tupled, DienstleistungsTypEntity.unapply)
-//}
-//
-//object dienstleistungsTypen extends TableQuery(new DienstleistungsTypen(_)) {
-//  //DOA code here
-//}

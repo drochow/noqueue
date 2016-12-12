@@ -3,7 +3,7 @@ package api
 import models._
 import java.util.Date
 
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import models.db.{ AdresseEntity, AnwenderEntity, DienstleistungsTypEntity, PK }
 import play.api.libs.json._
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
@@ -37,12 +37,20 @@ object JsonCombinators {
     )
   }
 
+  /*//implicit val pkFormat: Format[PK[_]] = Json.format[PK[_]]
+  implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]
+  implicit val pkw: Writes[PK[_]] = Json.writes[PK[_]]*/
+
   implicit val pkAdresseReads = Json.reads[PK[AdresseEntity]]
   implicit val pkAdresseWrites = Json.writes[PK[AdresseEntity]]
   implicit val pkAnwenderReads = Json.reads[PK[AnwenderEntity]]
   implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
+  implicit val pkDlT = Json.format[PK[DienstleistungsTypEntity]]
+
+  implicit val adresseFormat: Format[AdresseEntity] = Json.format[AdresseEntity]
   implicit val adresseReads = Json.reads[AdresseEntity]
   implicit val adresseWrites = Json.writes[AdresseEntity]
+  implicit val dienstleistungsTypEntityFormat: Format[DienstleistungsTypEntity] = Json.format[DienstleistungsTypEntity]
 
   //@todo fix to do real mapping
   implicit val anwenderReads: Reads[AnwenderEntity] = (
