@@ -3,15 +3,20 @@ package models.db
 import java.sql.Timestamp
 
 /**
- * Created by anwender on 25.11.2016.
+ * WarteschlangenPlatzEntity Representation
+ *
+ * @param beginnZeitpunkt
+ * @param anwenderId
+ * @param mitarbeiterId
+ * @param dienstLeistungId
+ * @param folgeNummer
+ * @param id
  */
 case class WarteSchlangenPlatzEntity(
-    val beginnZeitpunkt: Timestamp,
-    val anwenderId: PK[AnwenderEntity],
-    val mitarbeiterId: PK[MitarbeiterEntity],
-    val dienstLeistungId: PK[DienstleistungEntity],
-    val folgeNummer: Option[PK[WarteSchlangenPlatzEntity]] = None,
-    val id: Option[PK[WarteSchlangenPlatzEntity]] = None
-) {
-
+  beginnZeitpunkt: Timestamp,
+  anwenderId: PK[AnwenderEntity],
+  mitarbeiterId: PK[MitarbeiterEntity],
+  dienstLeistungId: PK[DienstleistungEntity],
+  folgeNummer: Option[PK[WarteSchlangenPlatzEntity]] = None,
+  id: Option[PK[WarteSchlangenPlatzEntity]] = None) {
 }

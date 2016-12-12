@@ -1,8 +1,14 @@
 package models.db
 
 /**
- * Created by anwender on 25.11.2016.
+ * LeiterEntity Representation
+ *
+ * @param anwenderId
+ * @param betriebId
+ * @param id
  */
-case class LeiterEntity(val anwenderId: PK[AnwenderEntity], val betriebId: PK[BetriebEntity], val id: Option[PK[LeiterEntity]] = None) {
-
+case class LeiterEntity(
+  anwenderId: PK[AnwenderEntity],
+  betriebId: PK[BetriebEntity],
+  id: Option[PK[LeiterEntity]] = None) {
 }

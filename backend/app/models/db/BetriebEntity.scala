@@ -1,14 +1,20 @@
 package models.db
 
 /**
- * Created by anwender on 25.11.2016.
+ * BetriebEntity Representation
+ *
+ * @param tel
+ * @param oeffnungszeiten
+ * @param kontaktEmail
+ * @param wsOffen
+ * @param adresseId
+ * @param id
  */
 case class BetriebEntity(
-    tel: String,
-    oeffnungszeiten: String,
-    kontaktEmail: String,
-    wsOffen: Boolean,
-    adresseId: PK[AdresseEntity],
-    id: Option[PK[BetriebEntity]] = None
-) {
+  tel: String,
+  oeffnungszeiten: String,
+  kontaktEmail: String,
+  wsOffen: Boolean,
+  adresseId: PK[AdresseEntity],
+  id: Option[PK[BetriebEntity]] = None) {
 }
