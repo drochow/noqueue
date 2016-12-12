@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
 	//"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
   "com.nimbusds"          % "nimbus-jose-jwt"             % "4.11.2",
   "org.postgresql"        % "postgresql"                  % "9.4-1202-jdbc41",
+  "org.mindrot" % "jbcrypt" % "0.3m",
   "com.typesafe.slick"    %% "slick-hikaricp"             %  "3.1.1",
   "com.typesafe.slick"    %%  "slick" % "3.1.1",
   //"org.scalatest"         %%  "scalatest"                 %      "2.2.5"       %    "test",
@@ -40,8 +41,6 @@ routesGenerator := InjectedRoutesGenerator
 
 // setting a maintainer which is used for all packaging types
 maintainer := "David Kaatz"
-
-fork in run := false
 
 // exposing the play ports
 dockerExposedPorts in Docker := Seq(9000, 9443)

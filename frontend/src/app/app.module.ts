@@ -27,6 +27,7 @@ import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import {ServicesProvider} from "../providers/services-provider";
 import {NewServicePage} from "../pages/new-service/new-service";
+import { JwtHelper } from "angular2-jwt";
 
 let storage = new Storage();
 
@@ -75,7 +76,7 @@ export function getAuthHttp(http) {
     ProfileInfoPage,
     NewServicePage
   ],
-  providers: [Storage, HttpService, ServicesData, UsersProvider, ServicesProvider, AuthenticationProvider, HttpConfig, {
+  providers: [Storage, HttpService, ServicesData, UsersProvider, ServicesProvider, JwtHelper, AuthenticationProvider, HttpConfig, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]

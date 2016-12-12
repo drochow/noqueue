@@ -1,8 +1,18 @@
 package models.db
 
 /**
- * Created by anwender on 25.11.2016.
+ * AdresseEntity Representation
+ *
+ * @param strasse
+ * @param hausNummer
+ * @param plz
+ * @param stadt
+ * @param id
  */
-case class AdresseEntity(strasse: String, hausNummer: String, plz: String, stadt: String, id: Option[PK[AdresseEntity]] = None) {
-
+case class AdresseEntity(
+  strasse: String,
+  hausNummer: String,
+  plz: String,
+  stadt: String,
+  id: Option[PK[AdresseEntity]] = None) {
 }

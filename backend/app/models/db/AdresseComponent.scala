@@ -5,15 +5,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /** AdresseComponent provides database definitions for AdresseEntity objects */
 trait AdresseComponent {
   this: DriverComponent =>
+
   import driver.api._
 
   class AdresseTable(tag: Tag) extends Table[AdresseEntity](tag, "ADRESSE") {
 
-    val id = column[PK[AdresseEntity]]("EmployeeId", O.AutoInc, O.PrimaryKey)
+    def id = column[PK[AdresseEntity]]("EmployeeId", O.AutoInc, O.PrimaryKey)
     def strasse = column[String]("STRASSE")
     def hausNummer = column[String]("HAUSNUMMER")
     def plz = column[String]("PLZ")
     def stadt = column[String]("STADT")
+
+
+    /**
+     * Default Projection Mapping to case Class
+     * @return
+     */
     def * = (strasse, hausNummer, plz, stadt, id.?) <> (AdresseEntity.tupled, AdresseEntity.unapply)
   }
 

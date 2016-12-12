@@ -16,5 +16,12 @@ class DAL(val driver: JdbcProfile)
   import driver.api._
 
   def create =
-    (anwenders.schema ++ adresses.schema).create
+    (anwenders.schema
+      ++ adresses.schema
+      ++ betriebe.schema
+      ++ dienstleistungen.schema
+      ++ dienstleistungsTypen.schema
+      ++ mitarbeiters.schema
+      ++ leiters.schema
+      ++ warteschlangenplaetze.schema).create
 }

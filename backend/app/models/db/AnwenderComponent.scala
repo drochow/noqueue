@@ -18,16 +18,12 @@ trait AnwenderComponent {
   class AnwenderTable(tag: Tag) extends Table[AnwenderEntity](tag, "ANWENDER") {
 
     def id = column[PK[AnwenderEntity]]("ID", O.PrimaryKey, O.AutoInc)
-
     def nutzerEmail = column[String]("NUTZEREMAIL")
-
     def password = column[String]("PASSWORD")
-
     def nutzerName = column[String]("NUTZERNAME")
-
     def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
-
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
+
 
     /**
      * Default Projection Mapping to case Class
@@ -46,7 +42,9 @@ trait AnwenderComponent {
 
   def getAnwenderById(id: PK[AnwenderEntity]): DBIO[AnwenderEntity] = anwenders.filter(_.id === id).result.head
 
-  def getAnwenderByNameAndPW(nutzerName: String, password: String): DBIO[AnwenderEntity] = anwenders.filter(x => { x.nutzerName === nutzerName && x.password === password }).result.head
+  def getAnwenderByEmail(email: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerEmail === email).result.head
+
+  def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
