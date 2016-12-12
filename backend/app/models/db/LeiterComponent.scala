@@ -12,7 +12,6 @@ trait LeiterComponent {
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
     def anbieter = foreignKey("ANB_FK", betriebId, betriebe)(_.id)
 
-
     /**
      * Default Projection Mapping to case Class
      * @return

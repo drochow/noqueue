@@ -8,7 +8,8 @@ package models.db
  * @param id
  */
 case class LeiterEntity(
-  anwenderId: PK[AnwenderEntity],
-  betriebId: PK[BetriebEntity],
-  id: Option[PK[LeiterEntity]] = None) {
+    anwenderId: PK[AnwenderEntity],
+    betriebId: PK[BetriebEntity],
+    id: Option[PK[LeiterEntity]] = None
+) {
 }

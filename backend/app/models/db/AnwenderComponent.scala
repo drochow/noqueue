@@ -23,7 +23,8 @@ trait AnwenderComponent {
     def nutzerName = column[String]("NUTZERNAME")
     def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
-
+    def nameUnique = index("nameUnique", nutzerName, unique = true)
+    def emailUnique = index("emailUnique", nutzerEmail, unique = true)
 
     /**
      * Default Projection Mapping to case Class

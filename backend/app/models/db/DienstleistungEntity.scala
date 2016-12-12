@@ -11,11 +11,12 @@ package models.db
  * @param id
  */
 case class DienstleistungEntity(
-  //schaetzdauer
-  kommentar: String,
-  aktion: String,
-  tags: String,
-  betrieb: PK[BetriebEntity],
-  dienstLeistungsTyp: PK[DienstleistungsTypEntity],
-  id: Option[PK[DienstleistungEntity]] = None) {
+    //schaetzdauer
+    kommentar: String,
+    aktion: String,
+    tags: String,
+    betrieb: PK[BetriebEntity],
+    dienstLeistungsTyp: PK[DienstleistungsTypEntity],
+    id: Option[PK[DienstleistungEntity]] = None
+) {
 }

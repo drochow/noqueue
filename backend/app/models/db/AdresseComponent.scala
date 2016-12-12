@@ -16,7 +16,6 @@ trait AdresseComponent {
     def plz = column[String]("PLZ")
     def stadt = column[String]("STADT")
 
-
     /**
      * Default Projection Mapping to case Class
      * @return

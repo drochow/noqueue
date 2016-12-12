@@ -26,7 +26,6 @@ trait WarteschlangenPlatzComponent {
      */
     def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteSchlangenPlatzEntity.tupled, WarteSchlangenPlatzEntity.unapply)
 
-
   }
 
   val warteschlangenplaetze = TableQuery[WarteSchlangenPlatzTable]
