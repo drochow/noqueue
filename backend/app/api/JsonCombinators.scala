@@ -30,8 +30,7 @@ object JsonCombinators {
 
   implicit val anwenderWrites = new Writes[AnwenderEntity] {
     def writes(a: AnwenderEntity) = Json.obj(
-      "id" -> a.id.get.value,
-      "password" -> a.password,
+      "id" -> a.id.getOrElse(PK[AnwenderEntity](0L)).value,
       "nutzerEmail" -> a.nutzerEmail,
       "nutzerName" -> a.nutzerName
     )

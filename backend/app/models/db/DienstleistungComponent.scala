@@ -9,21 +9,25 @@ trait DienstleistungComponent {
     def id = column[PK[DienstleistungEntity]]("DL_ID", O.PrimaryKey, O.AutoInc)
     def dlTypID = column[PK[DienstleistungsTypEntity]]("DLT_ID")
     def betriebID = column[PK[BetriebEntity]]("BETR_ID")
-
     def tags = column[String]("TAGS")
     def kommentar = column[String]("KOMMENTAR")
     def aktion = column[String]("AKTION")
-
-    def * = (kommentar, aktion, tags, betriebID, dlTypID, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
-
     def dienstleistungsTyp = foreignKey("DLT_FK", dlTypID, dienstleistungsTypen)(_.id.get)
-
     def betrieb = foreignKey("ANB_FK", betriebID, betriebe)(_.id)
+
+    /**
+     * Default Projection Mapping to case Class
+     * @return
+     */
+    def * = (kommentar, aktion, tags, betriebID, dlTypID, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
   }
 
   val dienstleistungen = TableQuery[DienstleistungTable]
 
   val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+
+  def getDienstleistungById(id: PK[DienstleistungEntity]): DBIO[DienstleistungEntity] = dienstleistungen.filter(_.id === id).result.head
+
 }
 //
 //import slick.driver.PostgresDriver.api._

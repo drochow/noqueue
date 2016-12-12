@@ -8,7 +8,7 @@ import play.api.Configuration
 import play.api.mvc._
 import javax.inject.Inject
 
-import models.PostgresDB
+import models.{ PostgresDB, UnregistrierterAnwender }
 import models.db.DAL
 
 import scala.concurrent.Future
@@ -130,7 +130,10 @@ trait ApiController extends Controller with I18nSupport {
       case None => errorTokenNotFound
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
-        case Some(payload) => action(SecuredApiRequest(apiRequest.request, payload))
+        case Some(payload) => {
+          val uAnw = new UnregistrierterAnwender()
+          action(SecuredApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
+        }
       }
     }
   }

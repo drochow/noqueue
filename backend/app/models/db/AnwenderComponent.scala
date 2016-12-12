@@ -18,16 +18,12 @@ trait AnwenderComponent {
   class AnwenderTable(tag: Tag) extends Table[AnwenderEntity](tag, "ANWENDER") {
 
     def id = column[PK[AnwenderEntity]]("ID", O.PrimaryKey, O.AutoInc)
-
     def nutzerEmail = column[String]("NUTZEREMAIL")
-
     def password = column[String]("PASSWORD")
-
     def nutzerName = column[String]("NUTZERNAME")
-
     def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
-
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
+
 
     /**
      * Default Projection Mapping to case Class

@@ -45,7 +45,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
         uAnwender.anmelden(credentials.nutzerName, credentials.password) flatMap {
           case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))))
         } recover {
-          case e: CredentialException => ApiError.errorBadRequest("Invalid Credentials.");
+          case e: CredentialException => ApiError.errorBadRequest("Invalid Credentials.")
           case ex: SQLException => ApiError.errorInternal("Databse not reachable...")
         }
       }
@@ -54,18 +54,12 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    val anwender: AnwenderModel = new AnwenderModel(request.payload)
-
-    anwender.anwender flatMap {
-      case anwender: AnwenderModel => anwender.anwender
+    request.anwender.anwender flatMap {
+      case anwender: AnwenderEntity => ok(anwender)
     } recover {
-      case e: Exception => ApiError.errorInternal("Something went wrong")
+      case e: Exception => {
+        ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
+      }
     }
-    //    db.run(dal.getAnwenderById(PK(anwenderId))).flatMap {
-    //      case x: AnwenderEntity => ok(x)
-    //      case _ => ok("nope")
-    //
-    //    }
-    ok("Success")
   }
 }

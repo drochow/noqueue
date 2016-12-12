@@ -3,7 +3,8 @@ package models
 import java.sql.SQLException
 import javax.security.auth.login.CredentialException
 
-import models.db.{ AnwenderEntity, DienstleistungsTypEntity }
+import api.jwt.TokenPayload
+import models.db.{ AnwenderEntity, DienstleistungsTypEntity, PK }
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.Future
@@ -23,6 +24,10 @@ class UnregistrierterAnwender extends Base {
     }
   }
 
+  def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
+    new Anwender(db.run(dal.getAnwenderById(new PK[AnwenderEntity](jwtPayload.userId))))
+  }
+
   def anbieterSuchen(
     suchBegriff: String,
     dienstleistungen: Future[Seq[DienstleistungsTypEntity]],
@@ -38,8 +43,15 @@ class UnregistrierterAnwender extends Base {
     db.run(dal.insert(AnwenderEntity(anwender.nutzerEmail, BCrypt.hashpw(anwender.password, BCrypt.gensalt()), anwender.nutzerName)))
   }
 
+  //Example CallByName Parameter
+  def tryAndClose[A](block: => Future[A]) = try { block } finally { db.close }
+
   def registrieren(nutzerEmail: String, nutzerName: String, password: String): Future[AnwenderEntity] = {
-    db.run(dal.insert(AnwenderEntity(nutzerEmail, BCrypt.hashpw(password, BCrypt.gensalt()), nutzerName)))
+    try {
+      db.run(dal.insert(AnwenderEntity(nutzerEmail, BCrypt.hashpw(password, BCrypt.gensalt()), nutzerName)))
+    } finally {
+      db.close()
+    }
   }
 
   //@todo DELET This
@@ -49,7 +61,11 @@ class UnregistrierterAnwender extends Base {
 
   //no idea where this goes so i'll put it here for now
   def getDienstleistungsTypen(limit: Long, offset: Long): Future[Seq[DienstleistungsTypEntity]] = {
-    db.run(dal.getAllDlTs(limit, offset))
+    try {
+      db.run(dal.getAllDlTs(limit, offset))
+    } finally {
+      db.close()
+    }
   }
 
 }

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { NavController } from 'ionic-angular';
 
 @Component({
@@ -8,8 +7,13 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
+  message:string = "Hi";
+
+
   constructor(public navCtrl: NavController) {
-    
+    console.log(this.message);
   }
+
+
 
 }
