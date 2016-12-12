@@ -1,7 +1,8 @@
 import models.db.{ AnwenderEntity, DAL, PK }
+import org.scalatest.{ AsyncFlatSpec, AsyncWordSpec }
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatestplus.play._
+import org.scalatestplus.play.MixedPlaySpec
 import slick.driver.H2Driver
 import slick.jdbc.JdbcBackend.Database
 
@@ -14,7 +15,7 @@ import scala.util.{ Failure, Success }
  * Created by anwender on 19.11.2016.
  */
 
-class AccountSpec extends PlaySpec {
+class AccountSpec extends AsyncWordSpec {
   val bspAnwenders = List(
     AnwenderEntity("1@example.com", "Uno", "Nomber1"),
     AnwenderEntity("2@example.com", "Beta", "BetaM"),
@@ -28,43 +29,36 @@ class AccountSpec extends PlaySpec {
     case Success(_) => "wuhu"
     case Failure(e) => fail(e)
   }
-  //print(x)
   "Our DAL" must {
     "insert items" in {
-      db.run(dal.insert(bspAnwenders(0))) onComplete {
-        case Success(anw) =>
+      db.run(dal.insert(bspAnwenders(0))) map {
+        anw: AnwenderEntity =>
           anw.nutzerName should be(bspAnwenders(0).nutzerName)
           anw.id should be(Some(PK(1)))
           1 should be(2)
-        case Failure(e) => fail("can't read " + e)
+      }recover{
+        case err: Throwable =>
+          fail(err);
       }
     }
-    /*   "insert items2" in {
-      val result = db.run(dal.insert(bspAnwenders(0)))
-      Await.result(result, 1 seconds){
-        case Success(anw) =>
-          anw.nutzerName should be(bspAnwenders(0).nutzerName)
-          anw.id should be(Some(PK(1)))
-          1 should be(2)
-        case Failure(e) => fail("can't read " + e)
-      }
-    }*/
-    "not give the same id to later inserted items" in {
-      db.run(dal.insert(bspAnwenders(1))) onComplete {
-        case Success(anw) =>
+    "give the a different id to later inserted items" in {
+      db.run(dal.insert(bspAnwenders(1))) map {
+        anw:AnwenderEntity =>
           anw.nutzerName should be(bspAnwenders(1).nutzerName)
           anw.id should not be (Some(PK(1)))
-        case Failure(e) => fail("can't read " + e)
       }
     }
-    "isert items so that they are unique" in {
-      db.run(dal.insert(bspAnwenders(0))) onComplete {
-        case Success(anw) => fail("this should not have happened")
-        //this is what we want
-        //case Failure(e) => if(e.contains("correctExc")) succeed //@todo intecept the correct Exc
+    "not insert items if they are not unique" in {
+      db.run(dal.insert(bspAnwenders(0))) map {
+        anw: AnwenderEntity =>
+          fail("this should not have happened")
+          
+      }recover{
+        case err: Throwable=>
+          fail(err)//succeed //@todo intecept the correct Exc
       }
     }
-    "get all items" in {
+    /*"get all items" in {
       1 should be(2)
       //@todo implement this test
     }
@@ -76,7 +70,7 @@ class AccountSpec extends PlaySpec {
     }
     "delete items" in {
       //@todo implement this test
-    }
+    }*/
   }
 }
 
