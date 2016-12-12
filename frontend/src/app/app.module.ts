@@ -13,10 +13,32 @@ import { ForgotPassword } from '../pages/forgot-password/forgot-password';
 import {SignUpPage} from "../pages/signup/signup";
 import { SingleService } from "../pages/single-service/single-service";
 import {ServicesData} from "../providers/data";
+import { UsersProvider } from "../providers/users"
+import { AuthenticationProvider } from "../providers/authentication";
+import { HttpConfig } from "../providers/http-config";
+import { ProfileInfoPage } from "../pages/profile-info/profile-info";
 // import { Data } from '../providers/data.ts';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import {HttpService} from "../providers/http-service";
+// import { AUTH_PROVIDERS } from 'angular2-jwt';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+import { Http } from '@angular/http';
+import { Storage } from '@ionic/storage';
+import {ServicesProvider} from "../providers/services-provider";
+import {NewServicePage} from "../pages/new-service/new-service";
+import { JwtHelper } from "angular2-jwt";
+
+let storage = new Storage();
+
+export function getAuthHttp(http) {
+  return new AuthHttp(new AuthConfig({
+    headerPrefix: "X-Auth-Token",
+    noJwtError: true,
+    globalHeaders: [{'Accept': 'application/json'}],
+    tokenGetter: (() => storage.get('id_token')),
+  }), http);
+}
 
 @NgModule({
   declarations: [
@@ -30,7 +52,9 @@ import {HttpService} from "../providers/http-service";
     ServicesPage,
     SignUpPage,
     ForgotPassword,
-    SingleService
+    SingleService,
+    ProfileInfoPage,
+    NewServicePage
   ],
   imports: [
     HttpModule,
@@ -48,8 +72,14 @@ import {HttpService} from "../providers/http-service";
     ServicesPage,
     SignUpPage,
     ForgotPassword,
-    SingleService
+    SingleService,
+    ProfileInfoPage,
+    NewServicePage
   ],
-  providers: [HttpService, ServicesData]
+  providers: [Storage, HttpService, ServicesData, UsersProvider, ServicesProvider, JwtHelper, AuthenticationProvider, HttpConfig, {
+    provide: AuthHttp,
+    useFactory: getAuthHttp,
+    deps: [Http]
+  }]
 })
 export class AppModule {}

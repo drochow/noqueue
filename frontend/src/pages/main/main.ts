@@ -4,6 +4,7 @@ import {ServicesPage} from "../services-page/services-page";
 import {QueuePosition} from "../queue-position/queue-position";
 import {MyService} from "../my-service/my-service";
 import {Account} from "../account/account";
+import {LoginPage} from "../login/login";
 
 /*
   Generated class for the Main page.
