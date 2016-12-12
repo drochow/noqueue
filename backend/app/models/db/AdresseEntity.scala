@@ -10,9 +10,10 @@ package models.db
  * @param id
  */
 case class AdresseEntity(
-  strasse: String,
-  hausNummer: String,
-  plz: String,
-  stadt: String,
-  id: Option[PK[AdresseEntity]] = None) {
+    strasse: String,
+    hausNummer: String,
+    plz: String,
+    stadt: String,
+    id: Option[PK[AdresseEntity]] = None
+) {
 }

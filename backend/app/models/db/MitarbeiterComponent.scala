@@ -13,7 +13,6 @@ trait MitarbeiterComponent {
     def anbieter = foreignKey("BETR_FK", betriebId, betriebe)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
 
-
     /**
      * Default Projection Mapping to case Class
      * @return
@@ -26,7 +25,5 @@ trait MitarbeiterComponent {
   def mitarbeitersAutoInc = mitarbeiters returning mitarbeiters.map(_.id)
 
   def getMitarbeiterById(id: PK[MitarbeiterEntity]): DBIO[MitarbeiterEntity] = mitarbeiters.filter(_.id === id).result.head
-
-
 
 }

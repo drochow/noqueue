@@ -14,7 +14,6 @@ trait BetriebComponent {
     def wsOffen = column[Boolean]("WSOFFEN")
     def adresse = foreignKey("ADR_FK", adresseId, adresses)(_.id)
 
-
     /**
      * Default Projection Mapping to case Class
      * @return

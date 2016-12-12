@@ -24,7 +24,6 @@ trait AnwenderComponent {
     def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
 
-
     /**
      * Default Projection Mapping to case Class
      * @return
