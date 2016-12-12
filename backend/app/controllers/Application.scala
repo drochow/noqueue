@@ -6,6 +6,7 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models.H2DB
+import models.PostgresDB
 import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -70,7 +71,8 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   def setup = ApiAction { implicit request =>
-    val h2 = new H2DB
+    //val h2 = new H2DB
+    val h2 = new PostgresDB
     h2.db.run(h2.dal.create).flatMap {
       _ => ok("Setup complete")
     } recover {
