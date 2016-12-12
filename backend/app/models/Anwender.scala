@@ -3,24 +3,36 @@ package models
 import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
+import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.util.Success
 import scala.concurrent.ExecutionContext.Implicits.global
 
 //@todo add return types to methods when implemented (should all return futures)
-class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwender {
+class Anwender(val anwenderAction: DBIO[AnwenderEntity]) extends UnregistrierterAnwender {
 
   def this(jwtPayload: TokenPayload) = {
-    this((new PostgresDB).db.run((new PostgresDB).dal.getAnwenderById(PK[AnwenderEntity](jwtPayload.userId))))
+    this(PostgresDB.dal.getAnwenderById(PK[AnwenderEntity](jwtPayload.userId)))
   }
-  /**
-   * Adresse of Anwender with lazy initialization
-   */
-  lazy val adresse: Future[AdresseEntity] = for {
-    anw <- anwender
-    adr <- db.run(dal.getAdresseById(anw.adresseId.get)) map { adresse => adresse }
-  } yield (adr)
+
+  lazy val anwender: Future[AnwenderEntity] = db.run(anwenderAction)
+  ////  try {
+  ////    db.run(anwenderAction)
+  ////  } finally {
+  ////    db.close()
+  //  }
+  //  /**
+  //   * Adresse of Anwender with lazy initialization
+  //   */
+  //  lazy val adresse: Future[AdresseEntity] = try {
+  //    for {
+  //      anw <- anwender
+  //      adr <- db.run(dal.getAdresseById(anw.adresseId.get)) map { adresse => adresse }
+  //    } yield (adr)
+  //  } finally {
+  //    db.close()
+  //  }
 
   //@todo implement lazy val mitarbeiterVon wich is a Future of a Sequence of MitarbeiterEntities
 
@@ -34,6 +46,11 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
   }
 
   def accountLoeschen() = {
+    //@todo implement me
+    throw new NotImplementedError("Not implemented yet, implement it")
+  }
+
+  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[AdresseEntity]): Unit = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
   }
@@ -53,42 +70,29 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def wsBeitreten(dl: Future[DienstleistungEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
   def wsBeitreten(dlPrimaryKey: PK[DienstleistungEntity]) = {
     //@todo maybe implement me
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wsFuerMitarbeiterBeitreten(mitarbeiter: Future[MitarbeiterEntity], dl: Future[DienstleistungEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
 
   def wsFuerMitarbeiterBeitreten(mitarbeiterPrimaryKey: PK[MitarbeiterEntity], dlPrimaryKey: PK[DienstleistungEntity]) = {
     //@todo maybe implement me Future[WarteschlangenPlatzEntity]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wsVerlassen(wsp: Future[WarteSchlangenPlatzEntity]) = {
+  def wsVerlassen(wsp: PK[WarteSchlangenPlatzEntity]) = {
     //@todo implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def betriebBewerten(betrieb: Future[BetriebEntity], bewertung: Int) = {
-    //@todo implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
 
   def betriebBewerten(betriebPrimaryKey: PK[BetriebEntity], bewertung: Int) = {
     //@todo maybe implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def betriebErstellen(adresse: AdresseEntity, tel: String, oeffnungszeiten: String, kontaktEmail: String) = {
+  def betriebErstellen(adresse: AdresseEntity,name: String,  tel: String, oeffnungszeiten: String, kontaktEmail: String) = {
     //@todo implement me and return Future[(BetriebEntity, LeiterEntity)]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
