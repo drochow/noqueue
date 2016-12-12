@@ -7,13 +7,28 @@ import api.ApiError
 import api.JsonCombinators._
 import models.H2DB
 import models.PostgresDB
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import models.{ Base, UnregistrierterAnwender }
+import models.db.{ AdresseEntity, AnwenderEntity, DienstleistungsTypEntity, PK }
+
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Reads._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
-import scala.concurrent.ExecutionContext.Implicits.global //@TODO FER NE
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class Application @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+
+  def setup = ApiAction { implicit request =>
+    val base = Base()
+    base.setupDB flatMap {
+      case _ => ok("Setup complete...")
+    } recover {
+      case e: Exception => ApiError.errorInternal("Unknown error: " + e.toString)
+    }
+  }
 
   def test = ApiAction { implicit request =>
     //    val action = for {
@@ -70,6 +85,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     ok("Success")
   }
 
+
   def setup = ApiAction { implicit request =>
     //val h2 = new H2DB
     val h2 = new PostgresDB
@@ -79,6 +95,18 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
       case t => ApiError.errorInternal("Unable to setup:" + t.toString())
     }
 
+  implicit val limitAndOffsetReads: Reads[(Long, Long)] = {
+    (__ \ "limit").read[Long] and
+      (__ \ "offset").read[Long] tupled
+  }
+
+
+  //please put this method where it belongs, but for now i will leave it here
+  def getDienstleistungsTypen = ApiActionWithBody { implicit request =>
+    readFromRequest[(Long, Long)] {
+      case (limit, offset) =>
+        okFuture((new UnregistrierterAnwender).getDienstleistungsTypen(limit, offset))
+    }
   }
 
 }

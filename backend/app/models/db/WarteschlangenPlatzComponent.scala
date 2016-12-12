@@ -15,13 +15,18 @@ trait WarteschlangenPlatzComponent {
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
     def beginnZeitpunkt = column[Timestamp]("BEGINNZEIT", SqlType("timestamp"));
-
-    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteSchlangenPlatzEntity.tupled, WarteSchlangenPlatzEntity.unapply)
-
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
     def folgePlatz = foreignKey("NEXT_FK", folgePlatzId, warteschlangenplaetze)(_.id)
+
+    /**
+     * Default Projection Mapping to case Class
+     * @return
+     */
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteSchlangenPlatzEntity.tupled, WarteSchlangenPlatzEntity.unapply)
+
+
   }
 
   val warteschlangenplaetze = TableQuery[WarteSchlangenPlatzTable]

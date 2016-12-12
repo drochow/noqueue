@@ -1,11 +1,12 @@
 package models.db
 
 /**
- * Created by anwender on 25.11.2016.
+ * DienstleistungsTypEntity Representation
+ *
+ * @param name
+ * @param id
  */
 case class DienstleistungsTypEntity(
-    val name: String,
-    val id: Option[PK[DienstleistungsTypEntity]] = None
-) {
-
+  name: String,
+  id: Option[PK[DienstleistungsTypEntity]] = None) {
 }
