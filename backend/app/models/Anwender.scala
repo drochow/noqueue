@@ -37,20 +37,13 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[AdresseEntity]): Unit = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[AdresseEntity]) = {
+    for {
+      anw <- anwender
+      updated <-  db.run(dal.update(new AnwenderEntity(nutzerEmail.getOrElse(anw.nutzerEmail), anw.password, nutzerName.getOrElse(anw.nutzerName), anw.adresseId, anw.id)))
+    } yield(updated)
   }
 
-  def namenAendern(nutzerName: String) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  def emailAendern(nutzerEmail: String) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
 
   def passwordAendern(password: String) = {
     //@todo implement me
