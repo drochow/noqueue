@@ -7,6 +7,7 @@ package models.db
  * @param id
  */
 case class DienstleistungsTypEntity(
-  name: String,
-  id: Option[PK[DienstleistungsTypEntity]] = None) {
+    name: String,
+    id: Option[PK[DienstleistungsTypEntity]] = None
+) {
 }

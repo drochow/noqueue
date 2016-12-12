@@ -13,10 +13,11 @@ import java.sql.Timestamp
  * @param id
  */
 case class WarteSchlangenPlatzEntity(
-  beginnZeitpunkt: Timestamp,
-  anwenderId: PK[AnwenderEntity],
-  mitarbeiterId: PK[MitarbeiterEntity],
-  dienstLeistungId: PK[DienstleistungEntity],
-  folgeNummer: Option[PK[WarteSchlangenPlatzEntity]] = None,
-  id: Option[PK[WarteSchlangenPlatzEntity]] = None) {
+    beginnZeitpunkt: Timestamp,
+    anwenderId: PK[AnwenderEntity],
+    mitarbeiterId: PK[MitarbeiterEntity],
+    dienstLeistungId: PK[DienstleistungEntity],
+    folgeNummer: Option[PK[WarteSchlangenPlatzEntity]] = None,
+    id: Option[PK[WarteSchlangenPlatzEntity]] = None
+) {
 }
