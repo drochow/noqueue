@@ -28,7 +28,7 @@ trait AdresseComponent {
 
   private val adressesAutoInc = adresses returning adresses.map(_.id.?)
 
-  def insert(adresse: AdresseEntity): DBIO[AdresseEntity] = (for {
+  def findOrInsert(adresse: AdresseEntity): DBIO[AdresseEntity] = (for {
     //only create adresse if adresse with same straße/hausnummer/zip/stadt does not already exists
     adresseFound: Option[AdresseEntity] <- adresses
       .filter(_.strasse === adresse.strasse)

@@ -6,11 +6,11 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models._
-import models.db.{ AnwenderEntity, PK }
+import models.db.{AdresseEntity, AnwenderEntity, PK}
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import models.{ Anwender => AnwenderModel }
-import api.jwt.{ JwtUtil, TokenPayload }
+import models.{Anwender => AnwenderModel}
+import api.jwt.{JwtUtil, TokenPayload}
 import org.joda.time.DateTime
 import javax.security.auth.login.CredentialException
 
@@ -61,5 +61,17 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
         ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
       }
     }
+  }
+
+  def profilBearbeiten = SecuredApiAction { implicit request =>
+    readFromRequest[(Option[String], Option[String], Option[AdresseEntity])] {
+      case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[AdresseEntity]) =>
+        request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
+          case ae: AnwenderEntity => ok(ae)
+        } recover {
+          case e: Exception => ApiError.errorInternal("Unknown Exception...")
+        }
+    }
+
   }
 }
