@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Loading } from 'ionic-angular';
 // import { ServicesData } from '../../providers/data';
 import { HttpService } from '../../providers/http-service';
 import { AuthenticationProvider } from '../../providers/authentication';
@@ -24,6 +24,7 @@ export class ServicesPage {
   services: any[];
   loggedIn = false;
 
+
   constructor(public navCtrl: NavController, public httpService: HttpService, private auth: AuthenticationProvider) {
 
   }
@@ -39,8 +40,11 @@ export class ServicesPage {
   }
 
   private fetchAllServices(){
+
     this.httpService.getAllServices().subscribe(
-      (services) => this.services = services);
+      (services) => {
+        this.services = services
+      });
   }
 
 }

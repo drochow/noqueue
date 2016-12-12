@@ -24,7 +24,7 @@ export class Account {
   constructor(public navCtrl: NavController, private auth: AuthenticationProvider, private modalCtrl: ModalController, private users: UsersProvider) {
     this.loggedIn = this.auth.isLoggedIn();
     // for testing purposes:
-    this.loggedIn = true;
+    // this.loggedIn = true;
   }
 
   ionViewDidLoad() {

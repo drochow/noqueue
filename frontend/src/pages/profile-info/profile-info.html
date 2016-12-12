@@ -15,33 +15,34 @@
 
 <ion-content padding>
   <h4>Change Public Data</h4>
-  <ion-list>
+  <form #dataForm="ngForm" (ngSubmit)="changeData(profile.username, profile.email)">
     <ion-item>
-      <ion-input type="text" placeholder="Username" [(ngModel)]="username"></ion-input>
+      <ion-input type="text" placeholder="Username" [(ngModel)]="profile.username" name="username"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="email" placeholder="Email" [(ngModel)]="email"></ion-input>
+      <ion-input type="email" placeholder="Email" [(ngModel)]="profile.email"  name="email"></ion-input>
     </ion-item>
-  </ion-list>
+    <button ion-button clear type="submit">Change Data</button>
+  </form>
 
-  <button ion-button clear (click)="changeData(username, email)">Change Data</button>
+
 
   <h4>Change Password</h4>
   <ion-list>
     <ion-item>
-      <ion-input type="password" placeholder="Old Password" [(ngModel)]="oldPassword"></ion-input>
+      <ion-input type="password" placeholder="Old Password" [(ngModel)]="profile.oldPassword" name="oldPassword"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="password" placeholder="New Password" [(ngModel)]="newPassword"></ion-input>
+      <ion-input type="password" placeholder="New Password" [(ngModel)]="profile.newPassword" name="newPassword"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input type="password" placeholder="Confirm New Password" [(ngModel)]="confirmPassword"></ion-input>
+      <ion-input type="password" placeholder="Confirm New Password" [(ngModel)]="profile.confirmPassword" name="confirmPassword"></ion-input>
     </ion-item>
   </ion-list>
 
-  <button ion-button clear (click)="changePassword(oldPassword, newPassword, confirmPassword)">Change Password</button>
+  <button ion-button clear (click)="changePassword(profile.oldPassword, profile.newPassword, profile.confirmPassword)">Change Password</button>
 
 
 </ion-content>

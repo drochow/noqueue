@@ -15,6 +15,8 @@ import {UsersProvider} from "../../providers/users";
 })
 export class ProfileInfoPage {
 
+  profile: {username?: string, email?: string, oldPassword?: string, newPassword?: string, confirmPassword?: string} = {};
+  
   incorrectUsername = false;
   incorrectEmail = false;
   incorrectOldPassword = false;

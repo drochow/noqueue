@@ -6,11 +6,11 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models._
-import models.db.{AdresseEntity, AnwenderEntity, PK}
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import models.{Anwender => AnwenderModel}
-import api.jwt.{JwtUtil, TokenPayload}
+import models.{ Anwender => AnwenderModel }
+import api.jwt.{ JwtUtil, TokenPayload }
 import org.joda.time.DateTime
 import javax.security.auth.login.CredentialException
 

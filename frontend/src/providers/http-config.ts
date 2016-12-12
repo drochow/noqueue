@@ -20,7 +20,7 @@ export class HttpConfig {
     signup: "/signup",
     token: "/testSignedIn",
     users: "/anwender",
-    services: "/dienstLeistungen"
+    services: "/dlts"
   };
 
   constructor(public http: Http) {

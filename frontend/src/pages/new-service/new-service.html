@@ -16,19 +16,19 @@
 <ion-content padding>
   <ion-list>
     <ion-item>
-      <ion-input type="text" placeholder="Name" [(ngModel)]="name"></ion-input>
+      <ion-input type="text" placeholder="Name" [(ngModel)]="this.service.name"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="Phone Number" [(ngModel)]="phone"></ion-input>
+      <ion-input type="text" placeholder="Phone Number" [(ngModel)]="this.service.phone"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="Opening Hours" [(ngModel)]="openingHours"></ion-input>
+      <ion-input type="text" placeholder="Opening Hours" [(ngModel)]="this.service.openingHours"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="Email" [(ngModel)]="email"></ion-input>
+      <ion-input type="text" placeholder="Email" [(ngModel)]="this.service.email"></ion-input>
     </ion-item>
   </ion-list>
 
@@ -36,23 +36,23 @@
 
   <ion-list>
     <ion-item>
-      <ion-input type="text" placeholder="Street" [(ngModel)]="street"></ion-input>
+      <ion-input type="text" placeholder="Street" [(ngModel)]="this.service.street"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="Number" [(ngModel)]="streetNumber"></ion-input>
+      <ion-input type="text" placeholder="Number" [(ngModel)]="this.service.streetNumber"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="ZIP Code" [(ngModel)]="zip"></ion-input>
+      <ion-input type="text" placeholder="ZIP Code" [(ngModel)]="this.service.zip"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input type="text" placeholder="City" [(ngModel)]="city"></ion-input>
+      <ion-input type="text" placeholder="City" [(ngModel)]="this.service.city"></ion-input>
     </ion-item>
   </ion-list>
 
-  <button ion-button round (click)="create(name, phone, openingHours, email, street, streetNumber, zip, city)">Create New Service</button>
+  <button ion-button round (click)="create()">Create New Service</button>
 
 
 </ion-content>

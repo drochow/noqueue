@@ -85,7 +85,6 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     ok("Success")
   }
 
-
   def setup = ApiAction { implicit request =>
     //val h2 = new H2DB
     val h2 = new PostgresDB
@@ -94,12 +93,12 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     } recover {
       case t => ApiError.errorInternal("Unable to setup:" + t.toString())
     }
+  }
 
   implicit val limitAndOffsetReads: Reads[(Long, Long)] = {
     (__ \ "limit").read[Long] and
       (__ \ "offset").read[Long] tupled
   }
-
 
   //please put this method where it belongs, but for now i will leave it here
   def getDienstleistungsTypen = ApiActionWithBody { implicit request =>

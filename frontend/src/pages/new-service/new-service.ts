@@ -13,14 +13,31 @@ import { ServicesProvider } from '../../providers/services-provider';
 })
 export class NewServicePage {
 
+  service: {
+    name?: string,
+    phone?: string,
+    openingHours?: string,
+    email?: string,
+    street?: string,
+    streetNumber?: string,
+    zip?: string,
+    city?: string} = {};
+
   constructor(public navCtrl: NavController, private servicesProvider: ServicesProvider) {}
 
   ionViewDidLoad() {
   }
 
-  create(name: String, phone : String, openingHours : String, email : String, street : String, streetNumber : String, zip : String, city: String){
+  create(){
     this.servicesProvider.postNewService(
-      {name, phone, openingHours, email, street, streetNumber, zip, city}
+      {name: this.service.name,
+        phone: this.service.phone,
+        openinigHours: this.service.openingHours,
+        email: this.service.email,
+        street: this.service.street,
+        streetNumber: this.service.streetNumber,
+        zip: this.service.zip,
+        city: this.service.city}
     ).then(
       () => {
         

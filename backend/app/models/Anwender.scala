@@ -40,17 +40,18 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
   def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[Option[AdresseEntity]]) = {
     for {
       anw <- anwender
-      adr:Option[Option[PK[AdresseEntity]]] <- if(adress.isEmpty) None else if(adress.get.isEmpty) Some(None) else db.run(dal.findOrInsert(adress.get.get)).map(_.id)
-      updated <-  db.run(dal.update(
+      adr: Option[Option[PK[AdresseEntity]]] <- if (adress.isEmpty) None else if (adress.get.isEmpty) Some(None) else db.run(dal.findOrInsert(adress.get.get)).map(_.id)
+      updated <- db.run(dal.update(
         new AnwenderEntity(
           nutzerEmail.getOrElse(anw.nutzerEmail),
           anw.password,
           nutzerName.getOrElse(anw.nutzerName),
           adr.getOrElse(anw.adresseId),
-          anw.id)))
-    } yield(updated)
+          anw.id
+        )
+      ))
+    } yield (updated)
   }
-
 
   def passwordAendern(password: String) = {
     //@todo implement me
