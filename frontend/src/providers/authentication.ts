@@ -5,6 +5,7 @@ import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
 import { HttpConfig } from './http-config';
 import { Storage } from '@ionic/storage';
+import { JwtHelper } from 'angular2-jwt';
 
 /*
   Generated class for the Authentication provider.
@@ -17,7 +18,7 @@ export class AuthenticationProvider {
   private token: string;
   userId: number;
 
-  constructor(public http: Http, private httpConfig: HttpConfig, private storage: Storage) {
+  constructor(public http: Http, private httpConfig: HttpConfig, private storage: Storage, private jwtHelper: JwtHelper) {
     if(storage !== undefined){
       storage.get('token').then(
         (token) => {
@@ -108,12 +109,12 @@ export class AuthenticationProvider {
     return this.getToken() !== undefined && this.getToken() !== "" && this.getToken() !== null
   }
 
-  getToken() : String {
+  getToken() : string {
     return this.token;
   }
 
   getUserId() : number{
-    return this.userId || 0;
+    return this.jwtHelper.decodeToken(this.getToken()).id;
   }
 
   private resetToken(){
