@@ -49,6 +49,7 @@ class AccountSpec extends AsyncWordSpec {
           anw.id should not be (Some(PK(1)))
       }
     }
+<<<<<<< Updated upstream
     "not insert items if they are not unique" in {
       db.run(dal.insert(bspAnwenders(0))) map {
         anw: AnwenderEntity =>
@@ -71,6 +72,28 @@ class AccountSpec extends AsyncWordSpec {
   "delete items" in {
   //@todo implement this test
   }*/
+=======
+    /*"isert items so that they are unique" in {
+      db.run(dal.insert(bspAnwenders(0))) onComplete {
+        case Success(anw) => fail("this should not have happened")
+        //this is what we want
+        //case Failure(e) => if(e.contains("correctExc")) succeed //@todo intecept the correct Exc
+      }
+    }*/
+    /*"get all items" in {
+      1 should be(2)
+      //@todo implement this test
+    }*/
+    "update whole items" in {
+      //@todo implement this test
+    }
+    "update items partially" in {
+      //@todo implement this test
+    }
+    "delete items" in {
+      //@todo implement this test
+    }
+>>>>>>> Stashed changes
   }
 }
 

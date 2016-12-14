@@ -20,6 +20,7 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 GET          /anwender                            controllers.Anwender.profil
+PUT          /anwender                            controllers.Anwender.profilBearbeiten
 
 
 # UNREGISTRIERTERANWENDER

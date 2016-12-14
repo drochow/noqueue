@@ -37,25 +37,35 @@ class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwe
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  //  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[Option[AdresseEntity]]) = {
-  //    for {
-  //      anw <- anwender
-  //      adr: Option[Option[PK[AdresseEntity]]] <-
-  //        if (adress.isEmpty) None //case do nothing
-  //        else if (adress.get.isEmpty) Some(None) //case delete adress
-  //        else db.run(dal.findOrInsert(adress.get.get)).map(_.id)
-  //      } //case update adress
-  //      updated <- db.run(dal.update(
-  //        new AnwenderEntity(
-  //          nutzerEmail.getOrElse(anw.nutzerEmail),
-  //          anw.password,
-  //          nutzerName.getOrElse(anw.nutzerName),
-  //          adr.getOrElse(anw.adresseId),
-  //          anw.id
-  //        )
-  //      ))
-  //    } yield (updated)
-  //  }
+  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[Option[AdresseEntity]]) = {
+    for {
+      anw: AnwenderEntity <- anwender
+      adr <- (if (adress.isEmpty) { //case do nothing
+        Future.successful(None)
+      } else {
+        if (adress.get.isEmpty) { //case delete adress
+          Future.successful(Some(None))
+        } else {
+          db.run(dal.findOrInsert(adress.get.get))
+        }
+      })
+      //case update adress
+      rowsChanged <- db.run(dal.update(
+        new AnwenderEntity(
+          nutzerEmail.getOrElse(anw.nutzerEmail),
+          anw.password,
+          nutzerName.getOrElse(anw.nutzerName),
+          anw.adresseId, //@todo
+          anw.id
+        )
+      ))
+      updated <- if (rowsChanged == 1) {
+        db.run(dal.getAnwenderById(anw.id.get))
+      } else {
+        Future.failed(new Exception("too few or too many rows where updated"))
+      }
+    } yield (updated)
+  }
 
   def passwordAendern(password: String) = {
     //@todo implement me
