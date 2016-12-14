@@ -54,11 +54,12 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    request.anwender.anwender flatMap {
-      case anwender: AnwenderEntity => ok(anwender)
+    request.anwender.profil flatMap {
+      case (anwender: AnwenderEntity, adresse: Option[AdresseEntity]) => ok((anwender, adresse))
     } recover {
       case e: Exception => {
-        ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
+        e.printStackTrace()
+        ApiError.errorInternal("Something went wrong!")
       }
     }
   }
