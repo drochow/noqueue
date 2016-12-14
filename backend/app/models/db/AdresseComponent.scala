@@ -39,5 +39,5 @@ trait AdresseComponent {
     else DBIO.successful(adresseFound.get)
   } yield (adresse))
 
-  def getAdresseById(id: PK[AdresseEntity]): DBIO[AdresseEntity] = adresses.filter(_.id === id).result.head
+  def getAdresseById(id: PK[AdresseEntity]): DBIO[Option[AdresseEntity]] = adresses.filter(_.id === id).result.headOption
 }

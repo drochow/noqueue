@@ -36,6 +36,41 @@ object JsonCombinators {
     )
   }
 
+  /**
+   * @Todo maybe simplify
+   */
+  implicit val anwenderWithADresseWrites = new Writes[(AnwenderEntity, Option[AdresseEntity])] {
+    def writes(anw: (AnwenderEntity, Option[AdresseEntity])) =
+      if (anw._1.adresseId.isEmpty)
+        Json.obj(
+          "id" -> anw._1.id.getOrElse(PK[AnwenderEntity](0L)).value,
+          "nutzerEmail" -> anw._1.nutzerEmail,
+          "nutzerName" -> anw._1.nutzerName,
+          "adresse" ->
+            Json.obj(
+              "id" -> "",
+              "straße" -> "",
+              "hausNummer" -> "",
+              "plz" -> "",
+              "stadt" -> ""
+            )
+        )
+      else
+        Json.obj(
+          "id" -> anw._1.id.getOrElse(PK[AnwenderEntity](0L)).value,
+          "nutzerEmail" -> anw._1.nutzerEmail,
+          "nutzerName" -> anw._1.nutzerName,
+          "adresse" ->
+            Json.obj(
+              "id" -> anw._2.get.id.getOrElse(PK[AdresseEntity](0L)).value,
+              "straße" -> anw._2.get.strasse,
+              "hausNummer" -> anw._2.get.hausNummer,
+              "plz" -> anw._2.get.plz,
+              "stadt" -> anw._2.get.stadt
+            )
+        )
+  }
+
   /*//implicit val pkFormat: Format[PK[_]] = Json.format[PK[_]]
   implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]
   implicit val pkw: Writes[PK[_]] = Json.writes[PK[_]]*/
