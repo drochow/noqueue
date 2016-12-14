@@ -17,7 +17,9 @@ class UnregistrierterAnwender extends Base {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def anmelden(nutzerName: String, password: String): Future[AnwenderEntity] = {
-    db.run(dal.getAnwenderByName(nutzerName)) map {
+    db.run(
+      dal.getAnwenderByName(nutzerName)
+    ) map {
       anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.")
     } recover {
       case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.")
@@ -25,7 +27,7 @@ class UnregistrierterAnwender extends Base {
   }
 
   def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
-    new Anwender(db.run(dal.getAnwenderById(new PK[AnwenderEntity](jwtPayload.userId))))
+    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.userId)))
   }
 
   def anbieterSuchen(

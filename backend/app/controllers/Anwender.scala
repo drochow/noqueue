@@ -33,6 +33,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
         } recover {
           //failure
+
           case psqlE: PSQLException => {
             if (psqlE.getMessage.contains("emailUnique")) {
               ApiError.errorBadRequest("Diese Email wird bereits verwendet bereits!")
@@ -67,11 +68,12 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    request.anwender.anwender flatMap {
-      case anwender: AnwenderEntity => ok(anwender)
+    request.anwender.profil flatMap {
+      case (anwender: AnwenderEntity, adresse: Option[AdresseEntity]) => ok((anwender, adresse))
     } recover {
       case e: Exception => {
-        ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
+        e.printStackTrace()
+        ApiError.errorInternal("Something went wrong!")
       }
     }
   }

@@ -9,18 +9,22 @@ import scala.concurrent.Future
 import scala.util.Success
 import scala.concurrent.ExecutionContext.Implicits.global
 
-//@todo add return types to methods when implemented (should all return futures)
-class Anwender(val anwender: Future[AnwenderEntity]) extends UnregistrierterAnwender {
+class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
+
+  lazy val anwender: Future[AnwenderEntity] = profil map(_._1)
+  lazy val adresse: Future[Option[AdresseEntity]] = profil map(_._2)
 
   /**
    * Adresse of Anwender with lazy initialization
    */
-  lazy val adresse: Future[AdresseEntity] =
-    for {
-      anw <- anwender
-      adr <- db.run(dal.getAdresseById(anw.adresseId.get)) map { adresse => adresse }
-    } yield (adr)
+  lazy val profil: Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
+    /*for {
+    anw <- anwender
+    //tup <- db.run(dal.getAnwenderWithAdress(anw.id.get))  // version with join
+    adrO <- if (anw.adresseId.isEmpty) Future.successful(None) else db.run(dal.getAdresseById(anw.adresseId.get))
+  } yield (anw, adrO)
+*/
   //@todo implement lazy val mitarbeiterVon wich is a Future of a Sequence of MitarbeiterEntities
 
   //@todo implement lazy val leiterVon wich is a Future of a Sequence of LeiterEntities
