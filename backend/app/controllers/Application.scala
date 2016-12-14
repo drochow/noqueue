@@ -85,16 +85,6 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     ok("Success")
   }
 
-  def setup = ApiAction { implicit request =>
-    //val h2 = new H2DB
-    val h2 = new PostgresDB
-    h2.db.run(h2.dal.create).flatMap {
-      _ => ok("Setup complete")
-    } recover {
-      case t => ApiError.errorInternal("Unable to setup:" + t.toString())
-    }
-  }
-
   implicit val limitAndOffsetReads: Reads[(Long, Long)] = {
     (__ \ "limit").read[Long] and
       (__ \ "offset").read[Long] tupled

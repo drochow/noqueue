@@ -63,15 +63,15 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
     }
   }
 
-  def profilBearbeiten = SecuredApiAction { implicit request =>
-    readFromRequest[(Option[String], Option[String], Option[AdresseEntity])] {
-      case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[AdresseEntity]) =>
-        request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
-          case ae: AnwenderEntity => ok(ae)
-        } recover {
-          case e: Exception => ApiError.errorInternal("Unknown Exception...")
-        }
-    }
+  //  def profilBearbeiten = SecuredApiAction { implicit request =>
+  //    readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
+  //      case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
+  //        request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
+  //          case ae: AnwenderEntity => ok(ae)
+  //        } recover {
+  //          case e: Exception => ApiError.errorInternal("Unknown Exception...")
+  //        }
+  //    }
+  //  }
 
-  }
 }
