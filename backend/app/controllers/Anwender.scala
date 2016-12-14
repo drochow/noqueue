@@ -32,7 +32,9 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
         } recover {
           //failure
-          case e: Exception => ApiError.errorBadRequest("Invalid data..")
+          //@todo distincnt sql
+          case e: SQLException  => ApiError.errorBadRequest(e.getMessage)
+          case e: Exception => ApiError.errorInternal("Internal Server error")
         }
       }
     }
