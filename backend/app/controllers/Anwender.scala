@@ -6,7 +6,7 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models._
-import models.db.{ AnwenderEntity, PK }
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi

@@ -24,8 +24,10 @@ class AccountSpec extends AsyncWordSpec {
     AnwenderEntity("2@example.com", "Beta", "BetaM"),
     AnwenderEntity("3@example.com", "Three", "Tri")
   )
-  val db = H2DB.db
-  val dal = H2DB.dal
+
+  val h2= new H2DB
+  val db = h2.db
+  val dal = h2.dal
 
   var test = "before creation of the DAL"
   //initilisation of our dal, if we're using a h2-DB in Memory we don't need to set that up
@@ -74,7 +76,11 @@ class AccountSpec extends AsyncWordSpec {
   }
 }
 
-object H2DB {
+class ProfilPatchRequestSpec extends AsyncWordSpec {
+
+}
+
+class H2DB {
   val db: Database = Database.forConfig("h2")
   val dal: DAL = new DAL(H2Driver)
 }
