@@ -6,7 +6,8 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models._
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import models.db.{ AnwenderEntity, PK }
+import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import models.{ Anwender => AnwenderModel }
@@ -32,7 +33,20 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
         } recover {
           //failure
-          case e: Exception => ApiError.errorBadRequest("Invalid data..")
+
+          case psqlE: PSQLException => {
+            if (psqlE.getMessage.contains("emailUnique")) {
+              ApiError.errorBadRequest("Diese Email wird bereits verwendet bereits!")
+            }
+            if (psqlE.getMessage.contains("nameUnique")) {
+              ApiError.errorBadRequest("Dieser nutzerName existiert bereits!")
+            } else
+              ApiError.errorBadRequest(psqlE.getMessage)
+          }
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Invalid data..")
+          }
         }
       }
     }
@@ -54,11 +68,12 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    request.anwender.anwender flatMap {
-      case anwender: AnwenderEntity => ok(anwender)
+    request.anwender.profil flatMap {
+      case (anwender: AnwenderEntity, adresse: Option[AdresseEntity]) => ok((anwender, adresse))
     } recover {
       case e: Exception => {
-        ApiError.errorInternal("Something went wrong" + e.getMessage.toString)
+        e.printStackTrace()
+        ApiError.errorInternal("Something went wrong!")
       }
     }
   }

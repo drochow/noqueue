@@ -23,7 +23,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     base.setupDB flatMap {
       case _ => ok("Setup complete...")
     } recover {
-      case e: Exception => ApiError.errorInternal("Unknown error: " + e.toString)
+      case e: IndexOutOfBoundsException => ApiError.errorInternal("Unknown error: " + e.toString)
     }
   }
 
