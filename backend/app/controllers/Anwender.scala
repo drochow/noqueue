@@ -3,10 +3,10 @@ package controllers
 import java.sql.SQLException
 import javax.inject.Inject
 
-import api.ApiError
+import api.{ ApiError, ApiResponse }
 import api.JsonCombinators._
 import models._
-import models.db.{ AnwenderEntity, PK }
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -18,6 +18,7 @@ import javax.security.auth.login.CredentialException
 import api.auth.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
  * Created by anwender on 06.11.2016.
@@ -68,8 +69,8 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    request.anwender.profil flatMap {
-      case (anwender: AnwenderEntity, adresse: Option[AdresseEntity]) => ok((anwender, adresse))
+    request.anwender.profilAnzeigen() flatMap {
+      case anwender: AnwenderEntity => ok(anwender)
     } recover {
       case e: Exception => {
         e.printStackTrace()
@@ -78,14 +79,32 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
     }
   }
 
+  def profilAustauschen = SecuredApiActionWithBody { implicit request =>
+    readFromRequest[AnwenderEntity] {
+      anw =>
+        request.anwender.profilAustauschen(anw) flatMap {
+          bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
+        }
+    }
+  }
+
   def profilBearbeiten = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
       case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
         request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
-          case ae: Any => ok(ae)
+          updated =>
+            if (updated) {
+              accepted("Your Input was Accepted")
+            } else {
+              ApiError.errorInternal("Could not Update with given parameters")
+            }
         } recover {
-          case e: Exception => ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+          }
         }
+      case _ => throw new Exception("no case matched in profilbearbeiten")
     }
   }
 

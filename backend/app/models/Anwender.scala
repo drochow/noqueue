@@ -8,18 +8,20 @@ import slick.dbio.DBIO
 import scala.concurrent.Future
 import scala.util.Success
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
 
-  lazy val anwender: Future[AnwenderEntity] = profil map(_._1)
-  lazy val adresse: Future[Option[AdresseEntity]] = profil map(_._2)
+  lazy val anwender: Future[PK[AnwenderEntity]] = profil map (_._1.id.get)
+  lazy val adresse: Future[Option[AdresseEntity]] = profil map (_._2)
 
   /**
    * Adresse of Anwender with lazy initialization
    */
   lazy val profil: Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
-    /*for {
+  /*for {
     anw <- anwender
     //tup <- db.run(dal.getAnwenderWithAdress(anw.id.get))  // version with join
     adrO <- if (anw.adresseId.isEmpty) Future.successful(None) else db.run(dal.getAdresseById(anw.adresseId.get))
@@ -31,6 +33,12 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
 
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
+  def profilAnzeigen(): Future[AnwenderEntity] = {
+    anwender flatMap {
+      anwId => db.run(dal.getAnwenderById(anwId))
+    }
+  }
+
   def abmelden() = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
@@ -41,34 +49,34 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[Option[AdresseEntity]]) = {
+  def profilAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
     for {
-      anw: AnwenderEntity <- anwender
-      adr <- (if (adress.isEmpty) { //case do nothing
+      anwId <- anwender
+      updated <- db.run(dal.update((anwId), anwenderEntity))
+    } yield updated == 1
+  }
+
+  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]): Future[Boolean] = {
+    for {
+      //traverse for parallel completion of futures, since regular for{anw<-...; adr <- ...} would work sequentially
+      //contains the id of this Anwender and his persisted AdresseEntity
+      seq <- Future.sequence(Seq(anwender, if (!adresse.isEmpty && !adresse.get.isEmpty) {
+        db.run(dal.findOrInsert(adresse.get.get))
+      } else { //case adresse
+        Future.successful(AdresseEntity) //you can ignore this, because we won't use it later
+      }))
+      adrIdOptOpt <- if (adresse.isEmpty) { //case do nothing (on no adress field provided)
         Future.successful(None)
       } else {
-        if (adress.get.isEmpty) { //case delete adress
+        if (adresse.get.isEmpty) { //case delete adresse (on adress field provided but empty)
           Future.successful(Some(None))
-        } else {
-          db.run(dal.findOrInsert(adress.get.get))
+        } else { //case adresse
+          Future.successful(Some(Some(seq(1).asInstanceOf[AdresseEntity].id.get))) //asInstance is typecasting
         }
-      })
-      //case update adress
-      rowsChanged <- db.run(dal.update(
-        new AnwenderEntity(
-          nutzerEmail.getOrElse(anw.nutzerEmail),
-          anw.password,
-          nutzerName.getOrElse(anw.nutzerName),
-          anw.adresseId, //@todo
-          anw.id
-        )
-      ))
-      updated <- if (rowsChanged == 1) {
-        db.run(dal.getAnwenderById(anw.id.get))
-      } else {
-        Future.failed(new Exception("too few or too many rows where updated"))
       }
-    } yield (updated)
+      updated <- db.run(dal.partialUpdate(seq(0).asInstanceOf[PK[AnwenderEntity]], nutzerName, nutzerEmail, adrIdOptOpt)) //Future.failed(new Exception("too few or too many rows where updated"))
+      /*db.run(dal.partialUpdate(x)) == 1*/
+    } yield (updated == 1)
   }
 
   def passwordAendern(password: String) = {

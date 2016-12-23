@@ -90,18 +90,17 @@ object JsonCombinators {
   //@todo fix to do real mapping
   implicit val anwenderReads: Reads[AnwenderEntity] = (
     (__ \ "nutzerEmail").read[String](minLength[String](1)) and
-    (__ \ "password").read[String](minLength[String](1)) and
     (__ \ "nutzerName").read[String](minLength[String](1))
-  )((nutzerEmail, password, nutzerName) =>
-      AnwenderEntity(nutzerEmail, password, nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
+  )((nutzerEmail, nutzerName) => //the other values will be ignored anyway
+      AnwenderEntity(nutzerEmail, "", nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
 
   implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = (
     (__ \ "adresse").readNullable[AdresseEntity]
   ).map(adresseOpt => adresseOpt)
 
   implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
-    (__ \ "nutzerEmail").readNullable[String] and
     (__ \ "nutzerName").readNullable[String] and
+    (__ \ "nutzerEmail").readNullable[String] and
     //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
     (__ \ "adresse").readNullable[Option[AdresseEntity]]
   )((nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt) => (nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt))

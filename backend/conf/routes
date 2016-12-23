@@ -20,8 +20,8 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 GET          /anwender                            controllers.Anwender.profil
-PUT          /anwender                            controllers.Anwender.profilBearbeiten
-
+PUT          /anwender                            controllers.Anwender.profilAustauschen
+PATCH        /anwender                            controllers.Anwender.profilBearbeiten
 
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
