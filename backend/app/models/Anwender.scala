@@ -49,14 +49,14 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def profilAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
+  def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
     for {
       anwId <- anwender
       updated <- db.run(dal.update((anwId), anwenderEntity))
     } yield updated == 1
   }
 
-  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]): Future[Boolean] = {
+  def anwenderInformationenVeraendern(nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]): Future[Boolean] = {
     for {
       //traverse for parallel completion of futures, since regular for{anw<-...; adr <- ...} would work sequentially
       //contains the id of this Anwender and his persisted AdresseEntity
