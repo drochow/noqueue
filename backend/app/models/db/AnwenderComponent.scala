@@ -47,10 +47,8 @@ trait AnwenderComponent {
 
   def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
-  private def getIfSome[A](option: Option[A]) = if (option.isEmpty) "" else option.get
-
   /**
-   * this full update currently only updates the nutzerName and the nutzerEmail of one Anwender
+   * full update of an AnwenderEntity (currently only updates the nutzerName and the nutzerEmail)
    * @param id
    * @param anwenderEntity
    * @return

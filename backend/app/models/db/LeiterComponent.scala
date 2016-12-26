@@ -26,4 +26,12 @@ trait LeiterComponent {
 
   def getLeiterById(id: PK[LeiterEntity]): DBIO[LeiterEntity] = leiters.filter(_.id === id).result.head
 
+  /*def getBetriebListByAnwender(anwenderId: PK[AnwenderEntity]) = {
+    (leiters joinLeft betriebe on (_.betriebId === _.id)).filter { case (leiter, betrieb) => leiter.anwenderId === anwenderId }.result.head.nonFusedEquivalentAction
+  }*/
+
+  def getLeiterByAnwenderIDAndBetriebId(anwenderId: PK[AnwenderEntity], betriebId: PK[BetriebEntity]): DBIO[LeiterEntity] = {
+    leiters.filter(leiter => leiter.anwenderId === anwenderId && leiter.betriebId === betriebId).result.head
+  }
+
 }

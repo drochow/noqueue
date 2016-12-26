@@ -82,7 +82,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   def profilAustauschen = SecuredApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
       anw =>
-        request.anwender.profilAustauschen(anw) flatMap {
+        request.anwender.anwenderInformationenAustauschen(anw) flatMap {
           bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
         }
     }
@@ -91,7 +91,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   def profilBearbeiten = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
       case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
-        request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
+        request.anwender.anwenderInformationenVeraendern(nutzerName, nutzerEmail, adresse) flatMap {
           updated =>
             if (updated) {
               accepted("Your Input was Accepted")

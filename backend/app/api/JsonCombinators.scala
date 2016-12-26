@@ -3,7 +3,7 @@ package api
 import models._
 import java.util.Date
 
-import models.db.{ AdresseEntity, AnwenderEntity, DienstleistungsTypEntity, PK }
+import models.db._
 import play.api.libs.json._
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
@@ -72,14 +72,24 @@ object JsonCombinators {
   }
 
   /*//implicit val pkFormat: Format[PK[_]] = Json.format[PK[_]]
-  implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]
-  implicit val pkw: Writes[PK[_]] = Json.writes[PK[_]]*/
+  implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]*/
+  implicit val pkw: Writes[PK[_]] = new Writes[PK[_]] {
+    override def writes(pk: PK[_]) = Json.obj {
+      "id" -> pk.value
+    }
+  }
+
+  //implicit val optFormat: Format[Option[_]] = Json.format[Option[_]]
+  implicit val optFormat: Writes[Option[PK[_]]] = (
+    (__ \ "id").writeNullable[PK[_]]
+  )
 
   implicit val pkAdresseReads = Json.reads[PK[AdresseEntity]]
-  implicit val pkAdresseWrites = Json.writes[PK[AdresseEntity]]
+  //implicit val pkAdresseWrites = Json.writes[PK[AdresseEntity]]
   implicit val pkAnwenderReads = Json.reads[PK[AnwenderEntity]]
-  implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
-  implicit val pkDlT = Json.format[PK[DienstleistungsTypEntity]]
+  //implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
+  implicit val pkDlR = Json.reads[PK[DienstleistungsTypEntity]]
+  implicit val pkBetriebR = Json.reads[PK[BetriebEntity]]
 
   //implicit val adresseFormat: Format[AdresseEntity] = Json.format[AdresseEntity]
   implicit val adresseReads = Json.reads[AdresseEntity]
@@ -98,12 +108,21 @@ object JsonCombinators {
     (__ \ "adresse").readNullable[AdresseEntity]
   ).map(adresseOpt => adresseOpt)
 
-  implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
+  implicit val anwenderInformationenVeraendernReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
     (__ \ "nutzerName").readNullable[String] and
     (__ \ "nutzerEmail").readNullable[String] and
     //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
     (__ \ "adresse").readNullable[Option[AdresseEntity]]
   )((nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt) => (nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt))
+
+  implicit val dienstleistungAnlegenReads: Reads[(PK[DienstleistungsTypEntity], String, Int, String)] = (
+    (__ \ "dienstleistungstyp").read[PK[DienstleistungsTypEntity]] and
+    (__ \ "name").read[String] and
+    (__ \ "dauer").read[Int] and
+    (__ \ "kommentar").read[String]
+  )((dlt, name, dauer, kommentar) => (dlt, name, dauer, kommentar))
+
+  implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

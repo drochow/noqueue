@@ -9,7 +9,7 @@ import play.api.mvc._
 import javax.inject.Inject
 
 import models.{ PostgresDB, UnregistrierterAnwender }
-import models.db.DAL
+import models.db.{ BetriebEntity, DAL, PK }
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -74,7 +74,7 @@ trait ApiController extends Controller with I18nSupport {
    * @param action callback action
    * @return
    */
-  def SecuredApiAction(action: SecuredApiRequest[Unit] => Future[ApiResult]) = SecuredApiActionWithParser(parse.empty)(action)
+  def SecuredApiAction(action: SecuredAnwenderApiRequest[Unit] => Future[ApiResult]) = SecuredApiActionWithParser(parse.empty)(action)
 
   /**
    * Api Action that requires authentication and a Body
@@ -82,7 +82,22 @@ trait ApiController extends Controller with I18nSupport {
    * @param action callback action
    * @return
    */
-  def SecuredApiActionWithBody(action: SecuredApiRequest[JsValue] => Future[ApiResult]) = SecuredApiActionWithParser(parse.json)(action)
+  def SecuredApiActionWithBody(action: SecuredAnwenderApiRequest[JsValue] => Future[ApiResult]) = SecuredApiActionWithParser(parse.json)(action)
+
+  /**
+   * Leiter Api Action that requires authentication
+   * @param action callback action
+   * @return
+   */
+  def SecuredLeiterApiAction(betriebId: PK[BetriebEntity])(action: SecuredLeiterApiRequest[Unit] => Future[ApiResult]) = SecuredLeiterApiActionWithParser(betriebId)(parse.empty)(action)
+
+  /**
+   * Leiter Api Action that requires authentication and a Body
+   *
+   * @param action callback action
+   * @return
+   */
+  def SecuredLeiterApiActionWithBody(betriebId: PK[BetriebEntity])(action: SecuredLeiterApiRequest[JsValue] => Future[ApiResult]) = SecuredLeiterApiActionWithParser(betriebId)(parse.json)(action)
 
   /**
    * Creates an Action checking that the Request has all the common necessary headers with their correct values
@@ -117,22 +132,45 @@ trait ApiController extends Controller with I18nSupport {
     action(apiRequest)
   }
 
+  //@todo is it possible to extract common parts of the next two methods
   /**
-   * Secured API action that verifies a
+   * Secured API action that verifies an Anwender
    *
    * @param parser bodyparser that parses the request body
    * @param action callback action
    * @tparam A Type of body data
    * @return
    */
-  private def SecuredApiActionWithParser[A](parser: BodyParser[A])(action: SecuredApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
+  private def SecuredApiActionWithParser[A](parser: BodyParser[A])(action: SecuredAnwenderApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
     apiRequest.tokenOpt match {
       case None => errorTokenNotFound
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
           val uAnw = new UnregistrierterAnwender()
-          action(SecuredApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
+          action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
+        }
+      }
+    }
+  }
+
+  /**
+   * Secured API action that verifies a Leiter
+   *
+   * @param parser bodyparser that parses the request body
+   * @param action callback action
+   * @tparam A Type of body data
+   * @return
+   */
+  private def SecuredLeiterApiActionWithParser[A](betriebId: PK[BetriebEntity])(parser: BodyParser[A])(action: SecuredLeiterApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
+    apiRequest.tokenOpt match {
+      case None => errorTokenNotFound
+      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
+        case None => errorTokenUnknown
+        case Some(payload) => {
+          val uAnw = new UnregistrierterAnwender()
+          val anw = uAnw.anmeldenMitPayload(payload)
+          action(SecuredLeiterApiRequest(apiRequest.request, anw.leitet(betriebId)))
         }
       }
     }

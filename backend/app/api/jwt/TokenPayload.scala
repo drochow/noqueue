@@ -5,10 +5,10 @@ import org.joda.time.DateTime
 import play.api.libs.json.{ Json, Format }
 
 case class TokenPayload(
-    val userId: Long,
+    val anwenderId: Long,
     val expiration: DateTime
 ) {
-  Asserts.argumentIsNotNull(userId)
+  Asserts.argumentIsNotNull(anwenderId)
   Asserts.argumentIsNotNull(expiration)
 }
 

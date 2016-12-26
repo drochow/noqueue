@@ -5,8 +5,7 @@ import api.jwt.TokenPayload
 import models.db._
 import slick.dbio.DBIO
 
-import scala.concurrent.Future
-import scala.util.Success
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
@@ -32,6 +31,14 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   //@todo implement lazy val leiterVon wich is a Future of a Sequence of LeiterEntities
 
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
+
+  def leitet(betriebId: PK[BetriebEntity]): Leiter = {
+    val leiterEntityFuture = for {
+      anwId <- anwender
+      leiterEntity <- db.run(dal.getLeiterByAnwenderIDAndBetriebId(anwId, betriebId))
+    } yield (leiterEntity)
+    new Leiter(leiterEntityFuture)
+  }
 
   def profilAnzeigen(): Future[AnwenderEntity] = {
     anwender flatMap {
