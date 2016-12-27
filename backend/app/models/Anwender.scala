@@ -5,13 +5,15 @@ import api.jwt.TokenPayload
 import models.db._
 import slick.dbio.{ DBIO, DBIOAction }
 
-import scala.concurrent.Future
-import scala.util.Success
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
 
-  lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
+  lazy val anwender: Future[PK[AnwenderEntity]] = profil map (_._1.id.get)
+  
   lazy val adresse: Future[Option[AdresseEntity]] = profil map (_._2)
 
   /**
@@ -31,6 +33,20 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
 
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
+  def leitet(betriebId: PK[BetriebEntity]): Leiter = {
+    val leiterEntityFuture = for {
+      anwId <- anwender
+      leiterEntity <- db.run(dal.getLeiterByAnwenderIDAndBetriebId(anwId, betriebId))
+    } yield (leiterEntity)
+    new Leiter(leiterEntityFuture)
+  }
+
+  def profilAnzeigen(): Future[AnwenderEntity] = {
+    anwender flatMap {
+      anwId => db.run(dal.getAnwenderById(anwId))
+    }
+  }
+
   def abmelden() = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
@@ -41,25 +57,35 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  //  def profilBearbeiten(nutzerName: Option[String], nutzerEmail: Option[String], adress: Option[Option[AdresseEntity]]) = {
-  //    for {
-  //      anw <- anwender
-  //      adr: Option[Option[PK[AdresseEntity]]] <-
-  //        if (adress.isEmpty) None //case do nothing
-  //        else if (adress.get.isEmpty) Some(None) //case delete adress
-  //        else db.run(dal.findOrInsert(adress.get.get)).map(_.id)
-  //      } //case update adress
-  //      updated <- db.run(dal.update(
-  //        new AnwenderEntity(
-  //          nutzerEmail.getOrElse(anw.nutzerEmail),
-  //          anw.password,
-  //          nutzerName.getOrElse(anw.nutzerName),
-  //          adr.getOrElse(anw.adresseId),
-  //          anw.id
-  //        )
-  //      ))
-  //    } yield (updated)
-  //  }
+  def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
+    for {
+      anwId <- anwender
+      updated <- db.run(dal.update((anwId), anwenderEntity))
+    } yield updated == 1
+  }
+
+  def anwenderInformationenVeraendern(nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]): Future[Boolean] = {
+    for {
+      //traverse for parallel completion of futures, since regular for{anw<-...; adr <- ...} would work sequentially
+      //contains the id of this Anwender and his persisted AdresseEntity
+      seq <- Future.sequence(Seq(anwender, if (!adresse.isEmpty && !adresse.get.isEmpty) {
+        db.run(dal.findOrInsert(adresse.get.get))
+      } else { //case adresse
+        Future.successful(AdresseEntity) //you can ignore this, because we won't use it later
+      }))
+      adrIdOptOpt <- if (adresse.isEmpty) { //case do nothing (on no adress field provided)
+        Future.successful(None)
+      } else {
+        if (adresse.get.isEmpty) { //case delete adresse (on adress field provided but empty)
+          Future.successful(Some(None))
+        } else { //case adresse
+          Future.successful(Some(Some(seq(1).asInstanceOf[AdresseEntity].id.get))) //asInstance is typecasting
+        }
+      }
+      updated <- db.run(dal.partialUpdate(seq(0).asInstanceOf[PK[AnwenderEntity]], nutzerName, nutzerEmail, adrIdOptOpt)) //Future.failed(new Exception("too few or too many rows where updated"))
+      /*db.run(dal.partialUpdate(x)) == 1*/
+    } yield (updated == 1)
+  }
 
   def passwordAendern(password: String) = {
     //@todo implement me

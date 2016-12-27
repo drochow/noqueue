@@ -54,4 +54,12 @@ trait LeiterComponent {
     (query zip (DBIO.successful(anwender))).map(tuple => (tuple._1._1, tuple._1._2, tuple._2))
   }
 
+  /*def getBetriebListByAnwender(anwenderId: PK[AnwenderEntity]) = {
+    (leiters joinLeft betriebe on (_.betriebId === _.id)).filter { case (leiter, betrieb) => leiter.anwenderId === anwenderId }.result.head.nonFusedEquivalentAction
+  }*/
+
+  def getLeiterByAnwenderIDAndBetriebId(anwenderId: PK[AnwenderEntity], betriebId: PK[BetriebEntity]): DBIO[LeiterEntity] = {
+    leiters.filter(leiter => leiter.anwenderId === anwenderId && leiter.betriebId === betriebId).result.head
+  }
+
 }

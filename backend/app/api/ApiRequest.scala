@@ -52,12 +52,23 @@ object ApiRequest {
 }
 
 /**
- * ApiRequest for authenticated requests
+ * ApiRequest for authenticated Anwender requests
  *
  * @param request the request object
- * @param anwender the authenticated anwender(model)
+ * @param anwender the authenticated Anwender(model)
  * @tparam A the type of the request object data
  */
+case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
+
+/**
+ * ApiRequest for authenticated Leiter requests
+ *
+ * @param request the request object
+ * @param leiter the authenticated Leiter(model)
+ * @tparam A the type of the request object data
+ */
+case class SecuredLeiterApiRequest[A](override val request: Request[A], leiter: Leiter) extends ApiRequest[A](request)
+
 case class SecuredApiRequest[A](override val request: Request[A], val anwender: Anwender) extends ApiRequest[A](request)
 
 case class BetriebAwareApiRequest[A](

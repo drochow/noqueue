@@ -25,11 +25,11 @@ trait DienstleistungComponent {
 
   val dienstleistungen = TableQuery[DienstleistungTable]
 
-  val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+  private val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+
+  def insert(dl: DienstleistungEntity): DBIO[DienstleistungEntity] = (dienstleistungenAutoInc += dl).map(id => dl.copy(id = Option(id)))
 
   def getDienstleistungById(id: PK[DienstleistungEntity]): DBIO[DienstleistungEntity] = dienstleistungen.filter(_.id === id).result.head
-
-  def insert(dienstleistung: DienstleistungEntity): DBIO[DienstleistungEntity] = (dienstleistungenAutoInc += dienstleistung).map(id => dienstleistung.copy(id = Option(id)))
 
   def deleteDienstleistung(dienstleistungId: PK[DienstleistungEntity]): DBIO[Int] = dienstleistungen.filter(_.id === dienstleistungId).delete
 }

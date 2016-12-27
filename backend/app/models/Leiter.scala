@@ -8,6 +8,7 @@ import slick.dbio.{ DBIO, DBIOAction }
 import scala.concurrent.Future
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
 /**
  * Created by David on 29.11.16.
  */
@@ -29,9 +30,22 @@ class Leiter(val leiterAction: DBIO[(LeiterEntity, BetriebEntity, Anwender)]) ex
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def dienstleistungAnbieten(dienstleistungstypPK: PK[DienstleistungsTypEntity], dauer: Int, kommentar: String) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def dienstleistungAnbieten(
+    dienstleistungstypPK: PK[DienstleistungsTypEntity],
+    name: String,
+    dauer: Int,
+    kommentar: String
+  ): Future[DienstleistungEntity] = {
+    for {
+      betriebAndDLT <- Future.sequence(Seq(betrieb, db.run(dal.getDlTById(dienstleistungstypPK))))
+      dienstleistung <- db.run(dal.insert(DienstleistungEntity(
+        kommentar,
+        "",
+        "",
+        betriebAndDLT(0).asInstanceOf[BetriebEntity].id.get,
+        betriebAndDLT(1).asInstanceOf[DienstleistungsTypEntity].id.get
+      )))
+    } yield (dienstleistung)
   }
 
   def dienstleistungsInformationVeraendern(diensleistungPK: PK[DienstleistungEntity], dauer: Int, kommentar: String) = {

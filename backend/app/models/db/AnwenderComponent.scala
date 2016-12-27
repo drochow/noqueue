@@ -1,5 +1,7 @@
 package models.db
 
+import slick.jdbc.SetParameter
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -43,11 +45,32 @@ trait AnwenderComponent {
 
   def getAnwenderById(id: PK[AnwenderEntity]): DBIO[AnwenderEntity] = anwenders.filter(_.id === id).result.head
 
-  def getAnwenderByEmail(email: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerEmail === email).result.head
-
   def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
-  def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(models.db.AnwenderEntity, Option[models.db.AdresseEntity])] =
+  /**
+   * full update of an AnwenderEntity (currently only updates the nutzerName and the nutzerEmail)
+   * @param id
+   * @param anwenderEntity
+   * @return
+   */
+  def update(id: PK[AnwenderEntity], anwenderEntity: AnwenderEntity): DBIO[Int] =
+    anwenders.filter(_.id === id).map(anw => (anw.nutzerName, anw.nutzerEmail)).update((anwenderEntity.nutzerName, anwenderEntity.nutzerEmail))
+
+  //this helps sqlu undestand what it maps the PK[_] to
+  private implicit val setPK = SetParameter[PK[_]](
+    (pk, pp) => pp.setLong(pk.value)
+  )
+  def partialUpdate(
+    id: PK[AnwenderEntity],
+    nutzerNameOpt: Option[String],
+    nutzerEmailOpt: Option[String],
+    adresseOpt: Option[Option[PK[AdresseEntity]]]
+  ): DBIO[Int] = {
+    //@todo DRY, Reusable Code for other partialUpdates, Make more Readable
+    sqlu"UPDATE ANWENDER SET NUTZERNAME = (CASE WHEN ${!nutzerNameOpt.isEmpty} THEN ${nutzerNameOpt.getOrElse("Whoops")} ELSE NUTZERNAME END), NUTZEREMAIL = (CASE WHEN ${!nutzerEmailOpt.isEmpty} THEN ${nutzerEmailOpt.getOrElse("Whoops")} ELSE NUTZEREMAIL END), ADRESSE_ID = (CASE WHEN ${!adresseOpt.isEmpty} THEN ${adresseOpt.getOrElse(Some(PK[AdresseEntity](9001))).get} ELSE ADRESSE_ID END) WHERE ID = $id"
+  }
+
+  def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
 
 }

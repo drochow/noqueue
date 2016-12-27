@@ -72,8 +72,17 @@ object JsonCombinators {
   }
 
   /*//implicit val pkFormat: Format[PK[_]] = Json.format[PK[_]]
-  implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]
-  implicit val pkw: Writes[PK[_]] = Json.writes[PK[_]]*/
+  implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]*/
+  implicit val pkw: Writes[PK[_]] = new Writes[PK[_]] {
+    override def writes(pk: PK[_]) = Json.obj {
+      "id" -> pk.value
+    }
+  }
+
+  //implicit val optFormat: Format[Option[_]] = Json.format[Option[_]]
+  implicit val optFormat: Writes[Option[PK[_]]] = (
+    (__ \ "id").writeNullable[PK[_]]
+  )
 
   implicit val pkAdresseReads = Json.reads[PK[AdresseEntity]]
 
@@ -84,31 +93,43 @@ object JsonCombinators {
   }
 
   implicit val pkAnwenderReads = Json.reads[PK[AnwenderEntity]]
-  implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
-  implicit val pkDlT = Json.format[PK[DienstleistungsTypEntity]]
+  //implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
+  implicit val pkDlR = Json.reads[PK[DienstleistungsTypEntity]]
+  implicit val pkBetriebR = Json.reads[PK[BetriebEntity]]
 
-  //  implicit val adresseFormat: Format[AdresseEntity] = Json.format[AdresseEntity]
   implicit val adresseReads = Json.reads[AdresseEntity]
 
   implicit val adresseWrites = Json.writes[AdresseEntity]
 
   implicit val dienstleistungsTypEntityFormat: Format[DienstleistungsTypEntity] = Json.format[DienstleistungsTypEntity]
 
-  implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = ((__ \ "adresse").readNullable[AdresseEntity](adresseReads))
-
   //@todo fix to do real mapping
   implicit val anwenderReads: Reads[AnwenderEntity] = (
     (__ \ "nutzerEmail").read[String](minLength[String](1)) and
-    (__ \ "password").read[String](minLength[String](1)) and
     (__ \ "nutzerName").read[String](minLength[String](1))
-  )((nutzerEmail, password, nutzerName) =>
-      AnwenderEntity(nutzerEmail, password, nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
+  )((nutzerEmail, nutzerName) => //the other values will be ignored anyway
+      AnwenderEntity(nutzerEmail, "", nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
 
-  implicit val profilBearbeitenReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
-    (__ \ "nutzerEmail").readNullable[String] and
+  implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = (
+    (__ \ "adresse").readNullable[AdresseEntity]
+  ).map(adresseOpt => adresseOpt)
+
+  implicit val anwenderInformationenVeraendernReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
     (__ \ "nutzerName").readNullable[String] and
+    (__ \ "nutzerEmail").readNullable[String] and
     //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
     (__ \ "adresse").readNullable[Option[AdresseEntity]]
+  )((nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt) => (nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt))
+
+  implicit val dienstleistungAnlegenReads: Reads[(PK[DienstleistungsTypEntity], String, Int, String)] = (
+    (__ \ "dienstleistungstyp").read[PK[DienstleistungsTypEntity]] and
+    (__ \ "name").read[String] and
+    (__ \ "dauer").read[Int] and
+    (__ \ "kommentar").read[String]
+  )((dlt, name, dauer, kommentar) => (dlt, name, dauer, kommentar))
+
+  implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
+
   )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
 
   implicit val betriebAndAdresseWrites: Writes[BetriebAndAdresse] = new Writes[BetriebAndAdresse] {
@@ -130,6 +151,7 @@ object JsonCombinators {
     (__ \ "tel").read[String](minLength[String](1)) and
     (__ \ "adresse").read[AdresseEntity](adresseReads)
   )((name, oeffnugszeiten, kontaktEmail, tel, adresseEntity) => (BetriebAndAdresse(BetriebEntity(name, tel, oeffnugszeiten, kontaktEmail, PK[AdresseEntity](0L)), adresseEntity)))
+
 
   //
   //  implicit val userWrites = new Writes[User] {
