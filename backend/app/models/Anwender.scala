@@ -3,7 +3,7 @@ package models
 import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
-import slick.dbio.DBIO
+import slick.dbio.{ DBIO, DBIOAction }
 
 import scala.concurrent.Future
 import scala.util.Success
@@ -11,15 +11,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
 
-  lazy val anwender: Future[AnwenderEntity] = profil map(_._1)
-  lazy val adresse: Future[Option[AdresseEntity]] = profil map(_._2)
+  lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
+  lazy val adresse: Future[Option[AdresseEntity]] = profil map (_._2)
 
   /**
    * Adresse of Anwender with lazy initialization
    */
   lazy val profil: Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
-    /*for {
+  /*for {
     anw <- anwender
     //tup <- db.run(dal.getAnwenderWithAdress(anw.id.get))  // version with join
     adrO <- if (anw.adresseId.isEmpty) Future.successful(None) else db.run(dal.getAdresseById(anw.adresseId.get))
@@ -86,9 +86,27 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def betriebErstellen(adresse: AdresseEntity, name: String, tel: String, oeffnungszeiten: String, kontaktEmail: String) = {
-    //@todo implement me and return Future[(BetriebEntity, LeiterEntity)]
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def betriebAnzeigen(id: PK[BetriebEntity]) = {
+    db.run(dal.getBetriebWithAdresseById(id))
   }
+  /**
+   *
+   * @param betriebEntity
+   * @param adresseEntity
+   * @return
+   */
+  def betriebErstellen(
+    betriebEntity: BetriebEntity,
+    adresseEntity: AdresseEntity
+  ): Future[(BetriebEntity, AdresseEntity)] =
+    db.run(dal.insert(
+      betrieb = betriebEntity, adresse = adresseEntity, anwender = DBIO.from(anwender)
+    ))
+
+  def getLeiterFor(betriebId: PK[BetriebEntity]): Future[(LeiterEntity, BetriebEntity, AnwenderEntity)] =
+    for {
+      anw <- anwender
+      leiter <- db.run(dal.getLeiterOf(betriebId, anw))
+    } yield (leiter)
 
 }

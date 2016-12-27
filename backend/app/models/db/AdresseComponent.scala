@@ -10,7 +10,7 @@ trait AdresseComponent {
 
   class AdresseTable(tag: Tag) extends Table[AdresseEntity](tag, "ADRESSE") {
 
-    def id = column[PK[AdresseEntity]]("EmployeeId", O.AutoInc, O.PrimaryKey)
+    def id = column[PK[AdresseEntity]]("ID", O.AutoInc, O.PrimaryKey)
     def strasse = column[String]("STRASSE")
     def hausNummer = column[String]("HAUSNUMMER")
     def plz = column[String]("PLZ")

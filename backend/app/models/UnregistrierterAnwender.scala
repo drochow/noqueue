@@ -20,10 +20,10 @@ class UnregistrierterAnwender extends Base {
     db.run(
       dal.getAnwenderByName(nutzerName)
     ) map {
-      anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.")
-    } recover {
-      case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.")
-    }
+        anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.")
+      } recover {
+        case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.")
+      }
   }
 
   def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {

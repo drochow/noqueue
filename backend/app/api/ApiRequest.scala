@@ -8,7 +8,7 @@ import java.util.Locale
 
 import api.jwt.TokenPayload
 import com.nimbusds.jose.Payload
-import models.Anwender
+import models.{ Anwender, Leiter, Mitarbeiter }
 
 import scala.util.Try
 import play.api.libs.json._
@@ -58,5 +58,11 @@ object ApiRequest {
  * @param anwender the authenticated anwender(model)
  * @tparam A the type of the request object data
  */
-case class SecuredApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
+case class SecuredApiRequest[A](override val request: Request[A], val anwender: Anwender) extends ApiRequest[A](request)
 
+case class BetriebAwareApiRequest[A](
+  override val request: Request[A],
+  val anwender: Anwender,
+  val mitarbeiter: Option[Mitarbeiter] = None,
+  val leiter: Option[Leiter] = None
+) extends ApiRequest[A](request);

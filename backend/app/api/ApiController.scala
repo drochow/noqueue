@@ -85,6 +85,13 @@ trait ApiController extends Controller with I18nSupport {
   def SecuredApiActionWithBody(action: SecuredApiRequest[JsValue] => Future[ApiResult]) = SecuredApiActionWithParser(parse.json)(action)
 
   /**
+   * Api Action that requires authentication
+   * @param action callback action
+   * @return
+   */
+  def BetriebAwareAction(betriebId: Int, action: SecuredApiRequest[Unit] => Future[ApiResult]) = SecuredApiActionWithParser(parse.empty)(action)
+
+  /**
    * Creates an Action checking that the Request has all the common necessary headers with their correct values
    *
    * @param parser body parser to parse request body
@@ -126,6 +133,27 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def SecuredApiActionWithParser[A](parser: BodyParser[A])(action: SecuredApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
+    apiRequest.tokenOpt match {
+      case None => errorTokenNotFound
+      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
+        case None => errorTokenUnknown
+        case Some(payload) => {
+          val uAnw = new UnregistrierterAnwender()
+          action(SecuredApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
+        }
+      }
+    }
+  }
+
+  /**
+   * Secured API action that verifies a
+   *
+   * @param parser bodyparser that parses the request body
+   * @param action callback action
+   * @tparam A Type of body data
+   * @return
+   */
+  private def BetriebAwareActionWithParser[A](parser: BodyParser[A])(action: SecuredApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
     apiRequest.tokenOpt match {
       case None => errorTokenNotFound
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {

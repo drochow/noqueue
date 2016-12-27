@@ -47,7 +47,8 @@ trait AnwenderComponent {
 
   def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
-  def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
+  def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(models.db.AnwenderEntity, Option[models.db.AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
+
 }
 

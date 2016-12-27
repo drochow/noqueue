@@ -20,7 +20,8 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 GET          /anwender                            controllers.Anwender.profil
-
+POST          /betrieb                           controllers.Betrieb.create
+GET          /betrieb/:id                           controllers.Betrieb.show(id: Long)
 
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
