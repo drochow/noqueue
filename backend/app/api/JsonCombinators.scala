@@ -7,7 +7,7 @@ import models.db._
 import play.api.libs.json._
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
-
+import play.api.libs.json.Writes.{ DefaultDateWrites => _, _ }
 /*
 * Set of every Writes[A] and Reads[A] for render and parse JSON objects
 */
@@ -85,16 +85,22 @@ object JsonCombinators {
   )
 
   implicit val pkAdresseReads = Json.reads[PK[AdresseEntity]]
-  //implicit val pkAdresseWrites = Json.writes[PK[AdresseEntity]]
+
+  implicit val pkAdresseWrites = new Writes[PK[AdresseEntity]] {
+    def writes(btr: PK[AdresseEntity]) = {
+      Json.toJson(btr.value)
+    }
+  }
+
   implicit val pkAnwenderReads = Json.reads[PK[AnwenderEntity]]
   //implicit val pkAnwenderWrites = Json.writes[PK[AnwenderEntity]]
   implicit val pkDlR = Json.reads[PK[DienstleistungsTypEntity]]
   implicit val pkBetriebR = Json.reads[PK[BetriebEntity]]
 
-  //implicit val adresseFormat: Format[AdresseEntity] = Json.format[AdresseEntity]
   implicit val adresseReads = Json.reads[AdresseEntity]
 
   implicit val adresseWrites = Json.writes[AdresseEntity]
+
   implicit val dienstleistungsTypEntityFormat: Format[DienstleistungsTypEntity] = Json.format[DienstleistungsTypEntity]
 
   //@todo fix to do real mapping
@@ -123,6 +129,30 @@ object JsonCombinators {
   )((dlt, name, dauer, kommentar) => (dlt, name, dauer, kommentar))
 
   implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
+
+  )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
+
+  implicit val betriebAndAdresseWrites: Writes[BetriebAndAdresse] = new Writes[BetriebAndAdresse] {
+    def writes(btr: BetriebAndAdresse) =
+      Json.obj(
+        "id" -> btr.betriebEntity.id.getOrElse(PK[BetriebEntity](0L)).value,
+        "name" -> btr.betriebEntity.name,
+        "kontaktEmail" -> btr.betriebEntity.kontaktEmail,
+        "tel" -> btr.betriebEntity.tel,
+        "oeffnungszeiten" -> btr.betriebEntity.oeffnungszeiten,
+        "adresse" -> Json.toJson(btr.adresseEntity)
+      )
+  }
+
+  implicit val betriebReads: Reads[BetriebAndAdresse] = (
+    (__ \ "name").read[String](minLength[String](1)) and
+    (__ \ "oeffnungszeiten").read[String](minLength[String](1)) and
+    (__ \ "kontaktEmail").read[String](minLength[String](1)) and
+    (__ \ "tel").read[String](minLength[String](1)) and
+    (__ \ "adresse").read[AdresseEntity](adresseReads)
+  )((name, oeffnugszeiten, kontaktEmail, tel, adresseEntity) => (BetriebAndAdresse(BetriebEntity(name, tel, oeffnugszeiten, kontaktEmail, PK[AdresseEntity](0L)), adresseEntity)))
+
+
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

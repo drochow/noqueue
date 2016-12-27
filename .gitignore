@@ -1,6 +1,7 @@
 .idea
 project
 target
+backend/conf/application.conf
 backend/.idea
 backend/target
 backend/project/target

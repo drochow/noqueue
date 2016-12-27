@@ -3,6 +3,7 @@ package models
 import java.sql.Timestamp
 
 import models.db._
+import slick.dbio.{ DBIO, DBIOAction }
 
 import scala.concurrent.Future
 
@@ -11,17 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by David on 29.11.16.
  */
-class Leiter(val leiter: Future[LeiterEntity]) extends Base {
-
-  lazy val anwender: Future[AnwenderEntity] = for {
-    lt <- leiter
-    anw <- db.run(dal.getAnwenderById(lt.anwenderId))
-  } yield (anw)
-
-  lazy val betrieb: Future[BetriebEntity] = for {
-    lt <- leiter
-    btr <- db.run(dal.getBetriebById(lt.betriebId))
-  } yield (btr)
+class Leiter(val leiterAction: DBIO[(LeiterEntity, BetriebEntity, Anwender)]) extends Base {
 
   def betriebsInformationenVeraendern(betrieb: Future[BetriebEntity]) = {
     //@todo implement me
@@ -77,10 +68,9 @@ class Leiter(val leiter: Future[LeiterEntity]) extends Base {
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def mitarbeiterAnstellen(mitarbeiterPK: PK[MitarbeiterEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
+  //  def mitarbeiterAnstellen(mitarbeiterPK: PK[MitarbeiterEntity]): Future[MitarbeiterEntity] = {
+  //
+  //  }
 
   def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity]) = {
     //@todo implement me

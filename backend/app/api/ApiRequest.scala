@@ -4,7 +4,13 @@ import Api._
 import play.api.mvc._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import models.{ Anwender, Leiter }
+import java.util.Locale
+
+import api.jwt.TokenPayload
+import com.nimbusds.jose.Payload
+import models.{ Anwender, Leiter, Mitarbeiter }
+
+import scala.util.Try
 import play.api.libs.json._
 
 /*
@@ -63,3 +69,11 @@ case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwend
  */
 case class SecuredLeiterApiRequest[A](override val request: Request[A], leiter: Leiter) extends ApiRequest[A](request)
 
+case class SecuredApiRequest[A](override val request: Request[A], val anwender: Anwender) extends ApiRequest[A](request)
+
+case class BetriebAwareApiRequest[A](
+  override val request: Request[A],
+  val anwender: Anwender,
+  val mitarbeiter: Option[Mitarbeiter] = None,
+  val leiter: Option[Leiter] = None
+) extends ApiRequest[A](request);

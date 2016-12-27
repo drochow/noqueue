@@ -20,8 +20,13 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 GET          /anwender                            controllers.Anwender.profil
+
 PUT          /anwender                            controllers.Anwender.profilAustauschen
 PATCH        /anwender                            controllers.Anwender.profilBearbeiten
+
+POST          /betrieb                           controllers.Betrieb.create
+GET          /betrieb/:id                           controllers.Betrieb.show(id: Long)
+
 
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
