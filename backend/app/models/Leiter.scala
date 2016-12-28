@@ -1,9 +1,11 @@
 package models
 
 import java.sql.Timestamp
+import java.util.NoSuchElementException
 
 import models.db._
 import slick.dbio.{ DBIO, DBIOAction }
+import utils.UnauthorizedException
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,6 +37,21 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
   ) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
+  }
+
+  def mitarbeiterAnstellen(mitarbeiter: MitarbeiterEntity): Future[MitarbeiterEntity] =
+    leiterComposition flatMap {
+      case (betrieb, anwender, leiter) => db.run(dal.insert(mitarbeiter))
+    } recover {
+      case nse: NoSuchElementException => throw new UnauthorizedException
+    }
+
+  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity]) = {
+    leiterComposition flatMap {
+      case (betrieb, anwender, leiter) => db.run(dal.deleteMitarbeiter(mitarbeiterPK))
+    } recover {
+      case nse: NoSuchElementException => throw new UnauthorizedException
+    }
   }
 
   def dienstleistungAnbieten(
@@ -75,15 +92,6 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
   }
 
   def dlMitAktionAnbieten(dienstleistungPK: PK[DienstleistungEntity], aktion: String, von: Timestamp, bis: Timestamp) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  //  def mitarbeiterAnstellen(mitarbeiterPK: PK[MitarbeiterEntity]): Future[MitarbeiterEntity] = {
-  //
-  //  }
-
-  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity]) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
   }

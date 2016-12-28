@@ -14,6 +14,7 @@ trait MitarbeiterComponent {
     def anwesend = column[Boolean]("ANWESEND")
     def anbieter = foreignKey("BETR_FK", betriebId, betriebe)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
+    def relationUnique = index("mitarbeiterUnique", (betriebId, anwenderId), unique = true)
 
     /**
      * Default Projection Mapping to case Class
@@ -29,6 +30,8 @@ trait MitarbeiterComponent {
   def getMitarbeiterById(id: PK[MitarbeiterEntity]): DBIO[MitarbeiterEntity] = mitarbeiters.filter(_.id === id).result.head
 
   def insert(mitarbeiter: MitarbeiterEntity): DBIO[MitarbeiterEntity] = (mitarbeitersAutoInc += mitarbeiter).map(id => mitarbeiter.copy(id = Option(id)))
+
+  def deleteMitarbeiter(id: PK[MitarbeiterEntity]): DBIO[Int] = mitarbeiters.filter(_.id === id).delete
 
   def getMitarbeiterOfById(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)] = {
     (for {

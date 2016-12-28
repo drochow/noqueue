@@ -150,6 +150,22 @@ object JsonCombinators {
     (__ \ "adresse").read[AdresseEntity](adresseReads)
   )((name, oeffnugszeiten, kontaktEmail, tel, adresseEntity) => (BetriebAndAdresse(BetriebEntity(name, tel, oeffnugszeiten, kontaktEmail, PK[AdresseEntity](0L)), adresseEntity)))
 
+  implicit val mitarbeiterReads: Reads[MitarbeiterEntity] = (
+    (__ \ "anwenderId").read[Long] and
+    (__ \ "betriebId").read[Long] and
+    (__ \ "anwesend").read[Boolean]
+  )((anw, btr, anwesend) => MitarbeiterEntity(anwenderId = PK[AnwenderEntity](anw), betriebId = PK[BetriebEntity](btr), anwesend = anwesend))
+
+  implicit val mitarbeiterWrites: Writes[MitarbeiterEntity] = new Writes[MitarbeiterEntity] {
+    def writes(mitarbeiter: MitarbeiterEntity) =
+      Json.obj(
+        "id" -> mitarbeiter.id.getOrElse(PK[MitarbeiterEntity](0L)).value,
+        "anwesend" -> mitarbeiter.anwesend,
+        "anwenderId" -> mitarbeiter.anwenderId,
+        "betriebId" -> mitarbeiter.betriebId
+      )
+  }
+
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

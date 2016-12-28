@@ -14,6 +14,7 @@ import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import utils.UnauthorizedException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -56,6 +57,64 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     request.anwender.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
       btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
     } recover {
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
+  def addMitarbeiter(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+    readFromRequest[MitarbeiterEntity] {
+      case mitarbeiter: MitarbeiterEntity => {
+        request.leiter.mitarbeiterAnstellen(mitarbeiter) flatMap {
+          case mitarbeiter: MitarbeiterEntity => created()
+        } recover {
+          case ua: UnauthorizedException => ApiError.errorUnauthorized
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternalServer("Something went wrong")
+          }
+        }
+      }
+    }
+  }
+
+  def removeMitarbeiter(betriebId: Long, mitarbeiterId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](mitarbeiterId)) flatMap {
+      case count: Int => if (count < 1) ApiError.errorItemNotFound else ok("Success")
+    } recover {
+      case ua: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternalServer("Something went wrong")
+      }
+    }
+  }
+
+  /**
+   * TEST METHODS  JUST FOR BOILERPLATE TESTS
+   * TEST METHODS  JUST FOR BOILERPLATE TESTS
+   * TEST METHODS  JUST FOR BOILERPLATE TESTS
+   */
+
+  def mitarbeiterOnlyTest(betriebId: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.mitarbeiter.mitarbeiter flatMap {
+      case _ => ok("Success")
+    } recover {
+      case nse: NoSuchElementException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
+  def leiterOnlyTest(betriebId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.leiter flatMap {
+      case _ => ok("Success")
+    } recover {
+      case nse: NoSuchElementException => ApiError.errorUnauthorized
       case e: Exception => {
         e.printStackTrace()
         ApiError.errorBadRequest("Invalid data..")
