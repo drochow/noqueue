@@ -100,6 +100,21 @@ trait ApiController extends Controller with I18nSupport {
   def SecuredLeiterApiActionWithBody(betriebId: PK[BetriebEntity])(action: SecuredLeiterApiRequest[JsValue] => Future[ApiResult]) = SecuredLeiterApiActionWithParser(betriebId)(parse.json)(action)
 
   /**
+   * Leiter Api Action that requires authentication
+   * @param action callback action
+   * @return
+   */
+  def SecuredMitarbeiterApiAction(betriebId: PK[BetriebEntity])(action: SecuredMitarbeiterApiRequest[Unit] => Future[ApiResult]) = SecuredMitarbeiterApiActionWithParser(betriebId)(parse.empty)(action)
+
+  /**
+   * Leiter Api Action that requires authentication and a Body
+   *
+   * @param action callback action
+   * @return
+   */
+  def SecuredMitarbeiterApiActionWithBody(betriebId: PK[BetriebEntity])(action: SecuredMitarbeiterApiRequest[JsValue] => Future[ApiResult]) = SecuredMitarbeiterApiActionWithParser(betriebId)(parse.json)(action)
+
+  /**
    * Creates an Action checking that the Request has all the common necessary headers with their correct values
    *
    * @param parser body parser to parse request body
@@ -132,7 +147,7 @@ trait ApiController extends Controller with I18nSupport {
     action(apiRequest)
   }
 
-  //@todo is it possible to extract common parts of the next two methods
+  //@todo is it possible to extract common parts of the next three methods
   /**
    * Secured API action that verifies an Anwender
    *
@@ -169,31 +184,28 @@ trait ApiController extends Controller with I18nSupport {
         case None => errorTokenUnknown
         case Some(payload) => {
           val uAnw = new UnregistrierterAnwender()
-          for {
-            anw <- uAnw.anmeldenMitPayload(payload)
-            result <- action(SecuredLeiterApiRequest(apiRequest.request, anw.leitet(betriebId)))
-          } yield (result)
+          action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
         }
       }
     }
   }
 
   /**
-   * Secured API action that verifies a
+   * Secured API action that verifies a Mitarbeiter
    *
    * @param parser bodyparser that parses the request body
    * @param action callback action
    * @tparam A Type of body data
    * @return
    */
-  private def BetriebAwareActionWithParser[A](parser: BodyParser[A])(action: SecuredApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
+  private def SecuredMitarbeiterApiActionWithParser[A](betriebId: PK[BetriebEntity])(parser: BodyParser[A])(action: SecuredMitarbeiterApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
     apiRequest.tokenOpt match {
       case None => errorTokenNotFound
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
           val uAnw = new UnregistrierterAnwender()
-          action(SecuredApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
+          action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
         }
       }
     }

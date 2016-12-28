@@ -11,13 +11,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by David on 29.11.16.
  */
-class Leiter(val leiterAction: DBIO[(LeiterEntity, BetriebEntity, AnwenderEntity)]) extends Base {
+class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)]) extends Base {
 
-  lazy val leiter = leiterComposition map (_._1)
+  lazy val betrieb = leiterComposition map (_._1)
 
-  lazy val betrieb = leiterComposition map (_._2)
+  lazy val anwender = leiterComposition map (_._2)
 
-  lazy val anwender = leiterComposition map (_._3)
+  lazy val leiter = leiterComposition map (_._3)
 
   lazy private val leiterComposition = db.run(leiterAction)
 

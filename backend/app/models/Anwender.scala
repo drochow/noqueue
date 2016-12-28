@@ -34,7 +34,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
   def leitet(betriebId: PK[BetriebEntity]): Future[Leiter] =
-    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOf(betriebId = betriebId, anwender = anw)))
+    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get)))
 
   def profilAnzeigen(): Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
@@ -106,6 +106,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   def betriebAnzeigen(id: PK[BetriebEntity]) = {
     db.run(dal.getBetriebWithAdresseById(id))
   }
+
   /**
    *
    * @param betriebEntity
@@ -120,10 +121,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       betrieb = betriebEntity, adresse = adresseEntity, anwender = DBIO.from(anwender)
     ))
 
-  def getLeiterFor(betriebId: PK[BetriebEntity]): Future[(LeiterEntity, BetriebEntity, AnwenderEntity)] =
+  def getLeiterFor(betriebId: PK[BetriebEntity]): Future[(BetriebEntity, AnwenderEntity, LeiterEntity)] =
     for {
       anw <- anwender
-      leiter <- db.run(dal.getLeiterOf(betriebId, anw))
+      leiter <- db.run(dal.getLeiterOfById(betriebId, anw.id.get))
     } yield (leiter)
 
 }

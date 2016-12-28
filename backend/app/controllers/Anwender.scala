@@ -66,50 +66,41 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    for {
-      anw <- request.anwender
-      result <- anw.profilAnzeigen() flatMap {
-        case anwender: (AnwenderEntity, Option[AdresseEntity]) => ok(anwender)
-      } recover {
-        case e: Exception => {
-          e.printStackTrace()
-          ApiError.errorInternal("Something went wrong!")
-        }
+    request.anwender.profilAnzeigen() flatMap {
+      case anwender: (AnwenderEntity, Option[AdresseEntity]) => ok(anwender)
+    } recover {
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Something went wrong!")
       }
-    } yield (result)
+    }
   }
 
   def profilAustauschen = SecuredApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
       anw =>
-        for {
-          anwModel: AnwenderModel <- request.anwender
-          result <- anwModel.anwenderInformationenAustauschen(anw) flatMap {
-            bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
-          }
-        } yield (result)
+        request.anwender.anwenderInformationenAustauschen(anw) flatMap {
+          bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
+        }
     }
   }
 
   def profilBearbeiten = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
       case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
-        for {
-          anw <- request.anwender
-          result <- anw.anwenderInformationenVeraendern(nutzerName, nutzerEmail, adresse) flatMap {
-            updated =>
-              if (updated) {
-                accepted("Your Input was Accepted")
-              } else {
-                ApiError.errorInternal("Could not Update with given parameters")
-              }
-          } recover {
-            case e: Exception => {
-              e.printStackTrace()
-              ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+        request.anwender.anwenderInformationenVeraendern(nutzerName, nutzerEmail, adresse) flatMap {
+          updated =>
+            if (updated) {
+              accepted("Your Input was Accepted")
+            } else {
+              ApiError.errorInternal("Could not Update with given parameters")
             }
+        } recover {
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
           }
-        } yield (result)
+        }
       case _ => throw new Exception("no case matched in profilbearbeiten")
     }
   }

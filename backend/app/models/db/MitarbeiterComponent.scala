@@ -30,6 +30,21 @@ trait MitarbeiterComponent {
 
   def insert(mitarbeiter: MitarbeiterEntity): DBIO[MitarbeiterEntity] = (mitarbeitersAutoInc += mitarbeiter).map(id => mitarbeiter.copy(id = Option(id)))
 
+  def getMitarbeiterOfById(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)] = {
+    (for {
+      ((betrieb, anwender), mitarbeiter) <- (betriebe join anwenders join mitarbeiters on {
+        case ((betrieb: BetriebTable, anwender: AnwenderTable), mitarbeiter: MitarbeiterTable) =>
+          betrieb.id === mitarbeiter.betriebId && anwender.id === mitarbeiter.anwenderId
+      })
+        .filter {
+          case ((betrieb, anwender), mitarbeiter) => anwender.id === anwenderId
+        }
+        .filter {
+          case ((betrieb, anwender), mitarbeiter) => betrieb.id === betriebId
+        }
+    } yield (betrieb, anwender, mitarbeiter)).result.head.nonFusedEquivalentAction
+  }
+
   def addDienstleistung(dienstleistungEntity: DienstleistungEntity): DBIO[DienstleistungEntity] = insert(dienstleistungEntity)
 
 }

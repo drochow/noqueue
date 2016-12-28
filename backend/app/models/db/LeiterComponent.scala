@@ -36,16 +36,31 @@ trait LeiterComponent {
 
   def getLeiterById(id: PK[LeiterEntity]) = leiters.filter(_.id === id).result
 
-  def getLeiterOf(betriebId: PK[BetriebEntity], anwender: AnwenderEntity): DBIO[(LeiterEntity, BetriebEntity, AnwenderEntity)] = {
+  //  def getLeiterOf(betriebId: PK[BetriebEntity], anwender: AnwenderEntity): DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)] = {
+  //
+  //    val query: DBIO[(LeiterEntity, BetriebEntity)] = (leiters join betriebe on (
+  //      (ltd: LeiterTable, btr: BetriebTable) => ltd.betriebId === btr.id
+  //    )).filter {
+  //        case (ltd: LeiterTable, btr: BetriebTable) => ltd.anwenderId === anwender.id.get && ltd.betriebId === betriebId
+  //      }.result.head
+  //
+  //    //Add the given Anwender tot he DBIO result and transform result to single tuple
+  //    (query zip (DBIO.successful(anwender))).map(tuple => (tuple._1._1, tuple._1._2, tuple._2))
+  //  }
 
-    val query: DBIO[(LeiterEntity, BetriebEntity)] = (leiters join betriebe on (
-      (ltd: LeiterTable, btr: BetriebTable) => ltd.betriebId === btr.id
-    )).filter {
-        case (ltd: LeiterTable, btr: BetriebTable) => ltd.anwenderId === anwender.id.get && ltd.betriebId === betriebId
-      }.result.head
-
-    //Add the given Anwender tot he DBIO result and transform result to single tuple
-    (query zip (DBIO.successful(anwender))).map(tuple => (tuple._1._1, tuple._1._2, tuple._2))
+  def getLeiterOfById(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)] = {
+    (for {
+      ((betrieb, anwender), leiter) <- (betriebe join anwenders join leiters on {
+        case ((betrieb: BetriebTable, anwender: AnwenderTable), leiter: LeiterTable) =>
+          betrieb.id === leiter.betriebId && anwender.id === leiter.anwenderId
+      })
+        .filter {
+          case ((betrieb, anwender), leiter) => anwender.id === anwenderId
+        }
+        .filter {
+          case ((betrieb, anwender), leiter) => betrieb.id === betriebId
+        }
+    } yield (betrieb, anwender, leiter)).result.head.nonFusedEquivalentAction
   }
 
   /*def getBetriebListByAnwender(anwenderId: PK[AnwenderEntity]) = {

@@ -16,10 +16,7 @@ class Leiter @Inject() (val messagesApi: MessagesApi, val config: Configuration)
   def dienstleistungAnbieten(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
     readFromRequest[(PK[DienstleistungsTypEntity], String, Int, String)] {
       case (dltId: PK[DienstleistungsTypEntity], name: String, dauer: Int, kommentar: String) =>
-        for {
-          leiter <- request.leiter
-          result <- okF(leiter.dienstleistungAnbieten(dltId, name, dauer, kommentar))
-        } yield (result)
+        okF(request.leiter.dienstleistungAnbieten(dltId, name, dauer, kommentar))
     }
   }
 }

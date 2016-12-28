@@ -8,7 +8,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * AnwenderEntity Component Trait including Driver and AdresseEntity Component traits via cake pattern injection
  */
 trait AnwenderComponent {
-  this: DriverComponent with AdresseComponent =>
+  this: DriverComponent with AdresseComponent with BetriebComponent with MitarbeiterComponent with LeiterComponent =>
 
   import driver.api._
 
@@ -73,5 +73,30 @@ trait AnwenderComponent {
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction
 
+  /**
+   * Creates DBIOAction wich joins BetriebTable(by betriebID) with AnwenderTable(by anwenderID) and make a leftjoin to optionally
+   * find mitarbeiter and and Leiter entities
+   *
+   * @param betriebId
+   * @param anwenderId
+   * @return
+   *
+   */
+  def getFullRelationOf(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[(BetriebEntity, AnwenderEntity, Option[LeiterEntity], Option[MitarbeiterEntity])] = {
+    (for {
+      (((betrieb, anwender), leiter), mitarbeiter) <- (betriebe join anwenders joinLeft leiters on {
+        case ((betrieb: BetriebTable, anwender: AnwenderTable), leiter: LeiterTable) =>
+          betrieb.id === leiter.betriebId && anwender.id === leiter.anwenderId
+      } joinLeft mitarbeiters on {
+        case (((betrieb: BetriebTable, anwender: AnwenderTable), leiter: Rep[Option[LeiterTable]]), mitarbeiter: MitarbeiterTable) => betrieb.id === mitarbeiter.betriebId && anwender.id === mitarbeiter.anwenderId
+      })
+        .filter {
+          case (((betrieb, anwender), leiter), mitarbeiter) => anwender.id === anwenderId
+        }
+        .filter {
+          case (((betrieb, anwender), leiter), mitarbeiter) => betrieb.id === betriebId
+        }
+    } yield (betrieb, anwender, leiter, mitarbeiter)).result.head.nonFusedEquivalentAction
+  }
 }
 
