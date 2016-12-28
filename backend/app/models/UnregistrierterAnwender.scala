@@ -26,8 +26,8 @@ class UnregistrierterAnwender extends Base {
       }
   }
 
-  def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
-    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)))
+  def anmeldenMitPayload(jwtPayload: TokenPayload): Future[Anwender] = {
+    Future.successful(new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId))))
   }
 
   def anbieterSuchen(

@@ -13,6 +13,8 @@ import models.{ Anwender, Leiter, Mitarbeiter }
 import scala.util.Try
 import play.api.libs.json._
 
+import scala.concurrent.Future
+
 /*
 * Wrapped Request with additional information for the API
 */
@@ -58,7 +60,7 @@ object ApiRequest {
  * @param anwender the authenticated Anwender(model)
  * @tparam A the type of the request object data
  */
-case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
+case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwender: Future[Anwender]) extends ApiRequest[A](request)
 
 /**
  * ApiRequest for authenticated Leiter requests
@@ -67,13 +69,13 @@ case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwend
  * @param leiter the authenticated Leiter(model)
  * @tparam A the type of the request object data
  */
-case class SecuredLeiterApiRequest[A](override val request: Request[A], leiter: Leiter) extends ApiRequest[A](request)
+case class SecuredLeiterApiRequest[A](override val request: Request[A], leiter: Future[Leiter]) extends ApiRequest[A](request)
 
-case class SecuredApiRequest[A](override val request: Request[A], val anwender: Anwender) extends ApiRequest[A](request)
+case class SecuredApiRequest[A](override val request: Request[A], anwender: Future[Anwender]) extends ApiRequest[A](request)
 
 case class BetriebAwareApiRequest[A](
   override val request: Request[A],
-  val anwender: Anwender,
-  val mitarbeiter: Option[Mitarbeiter] = None,
-  val leiter: Option[Leiter] = None
+  anwender: Anwender,
+  mitarbeiter: Option[Mitarbeiter] = None,
+  leiter: Option[Leiter] = None
 ) extends ApiRequest[A](request);

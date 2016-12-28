@@ -42,13 +42,7 @@ trait LeiterComponent {
       (ltd: LeiterTable, btr: BetriebTable) => ltd.betriebId === btr.id
     )).filter {
         case (ltd: LeiterTable, btr: BetriebTable) => ltd.anwenderId === anwender.id.get && ltd.betriebId === betriebId
-      }
-      .result.head
-    //          .filter(_.anwenderId === anwender.id.get && _.betriebId === betriebId)
-    //        join betriebe on((ltd: LeiterEntity, btr: BetriebEntity) => ltd.betriebId === btr.id.get).result.head
-    //    val query: DBIO[(LeiterEntity, BetriebEntity)] = leiters
-    //      .filter(_.anwenderId === anwender.id.get && _.betriebId === betriebId)
-    //    join betriebe on((ltd: LeiterEntity, btr: BetriebEntity) => ltd.betriebId === btr.id.get).result.head
+      }.result.head
 
     //Add the given Anwender tot he DBIO result and transform result to single tuple
     (query zip (DBIO.successful(anwender))).map(tuple => (tuple._1._1, tuple._1._2, tuple._2))

@@ -100,13 +100,6 @@ trait ApiController extends Controller with I18nSupport {
   def SecuredLeiterApiActionWithBody(betriebId: PK[BetriebEntity])(action: SecuredLeiterApiRequest[JsValue] => Future[ApiResult]) = SecuredLeiterApiActionWithParser(betriebId)(parse.json)(action)
 
   /**
-   * Api Action that requires authentication
-   * @param action callback action
-   * @return
-   */
-  def BetriebAwareAction(betriebId: Int, action: SecuredApiRequest[Unit] => Future[ApiResult]) = SecuredApiActionWithParser(parse.empty)(action)
-
-  /**
    * Creates an Action checking that the Request has all the common necessary headers with their correct values
    *
    * @param parser body parser to parse request body
@@ -176,8 +169,10 @@ trait ApiController extends Controller with I18nSupport {
         case None => errorTokenUnknown
         case Some(payload) => {
           val uAnw = new UnregistrierterAnwender()
-          val anw = uAnw.anmeldenMitPayload(payload)
-          action(SecuredLeiterApiRequest(apiRequest.request, anw.leitet(betriebId)))
+          for {
+            anw <- uAnw.anmeldenMitPayload(payload)
+            result <- action(SecuredLeiterApiRequest(apiRequest.request, anw.leitet(betriebId)))
+          } yield (result)
         }
       }
     }

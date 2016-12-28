@@ -130,8 +130,6 @@ object JsonCombinators {
 
   implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
 
-  )((nutzerEmail, nutzerName, adresseEntity) => (nutzerEmail, nutzerName, adresseEntity))
-
   implicit val betriebAndAdresseWrites: Writes[BetriebAndAdresse] = new Writes[BetriebAndAdresse] {
     def writes(btr: BetriebAndAdresse) =
       Json.obj(
@@ -151,7 +149,6 @@ object JsonCombinators {
     (__ \ "tel").read[String](minLength[String](1)) and
     (__ \ "adresse").read[AdresseEntity](adresseReads)
   )((name, oeffnugszeiten, kontaktEmail, tel, adresseEntity) => (BetriebAndAdresse(BetriebEntity(name, tel, oeffnugszeiten, kontaktEmail, PK[AdresseEntity](0L)), adresseEntity)))
-
 
   //
   //  implicit val userWrites = new Writes[User] {

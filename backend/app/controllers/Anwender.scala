@@ -2,23 +2,20 @@ package controllers
 
 import java.sql.SQLException
 import javax.inject.Inject
+import javax.security.auth.login.CredentialException
 
-import api.{ ApiError, ApiResponse }
+import api.ApiError
 import api.JsonCombinators._
-import models._
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import api.auth.Credentials
+import api.jwt.{ JwtUtil, TokenPayload }
+import models.db.{ AdresseEntity, AnwenderEntity }
+import models.{ Anwender => AnwenderModel, _ }
+import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import models.{ Anwender => AnwenderModel }
-import api.jwt.{ JwtUtil, TokenPayload }
-import org.joda.time.DateTime
-import javax.security.auth.login.CredentialException
-
-import api.auth.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 /**
  * Created by anwender on 06.11.2016.
@@ -69,41 +66,50 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profil = SecuredApiAction { implicit request =>
-    request.anwender.profilAnzeigen() flatMap {
-      case anwender: AnwenderEntity => ok(anwender)
-    } recover {
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Something went wrong!")
+    for {
+      anw <- request.anwender
+      result <- anw.profilAnzeigen() flatMap {
+        case anwender: (AnwenderEntity, Option[AdresseEntity]) => ok(anwender)
+      } recover {
+        case e: Exception => {
+          e.printStackTrace()
+          ApiError.errorInternal("Something went wrong!")
+        }
       }
-    }
+    } yield (result)
   }
 
   def profilAustauschen = SecuredApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
       anw =>
-        request.anwender.anwenderInformationenAustauschen(anw) flatMap {
-          bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
-        }
+        for {
+          anwModel: AnwenderModel <- request.anwender
+          result <- anwModel.anwenderInformationenAustauschen(anw) flatMap {
+            bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
+          }
+        } yield (result)
     }
   }
 
   def profilBearbeiten = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
       case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
-        request.anwender.anwenderInformationenVeraendern(nutzerName, nutzerEmail, adresse) flatMap {
-          updated =>
-            if (updated) {
-              accepted("Your Input was Accepted")
-            } else {
-              ApiError.errorInternal("Could not Update with given parameters")
+        for {
+          anw <- request.anwender
+          result <- anw.anwenderInformationenVeraendern(nutzerName, nutzerEmail, adresse) flatMap {
+            updated =>
+              if (updated) {
+                accepted("Your Input was Accepted")
+              } else {
+                ApiError.errorInternal("Could not Update with given parameters")
+              }
+          } recover {
+            case e: Exception => {
+              e.printStackTrace()
+              ApiError.errorInternal("Unknown Exception..." + e.getMessage)
             }
-        } recover {
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
           }
-        }
+        } yield (result)
       case _ => throw new Exception("no case matched in profilbearbeiten")
     }
   }

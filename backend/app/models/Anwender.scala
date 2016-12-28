@@ -12,8 +12,8 @@ import scala.concurrent.duration.Duration
 
 class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
 
-  lazy val anwender: Future[PK[AnwenderEntity]] = profil map (_._1.id.get)
-  
+  lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
+
   lazy val adresse: Future[Option[AdresseEntity]] = profil map (_._2)
 
   /**
@@ -33,19 +33,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
 
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
-  def leitet(betriebId: PK[BetriebEntity]): Leiter = {
-    val leiterEntityFuture = for {
-      anwId <- anwender
-      leiterEntity <- db.run(dal.getLeiterByAnwenderIDAndBetriebId(anwId, betriebId))
-    } yield (leiterEntity)
-    new Leiter(leiterEntityFuture)
-  }
+  def leitet(betriebId: PK[BetriebEntity]): Future[Leiter] =
+    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOf(betriebId = betriebId, anwender = anw)))
 
-  def profilAnzeigen(): Future[AnwenderEntity] = {
-    anwender flatMap {
-      anwId => db.run(dal.getAnwenderById(anwId))
-    }
-  }
+  def profilAnzeigen(): Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
   def abmelden() = {
     //@todo implement me
@@ -59,8 +50,8 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
 
   def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
     for {
-      anwId <- anwender
-      updated <- db.run(dal.update((anwId), anwenderEntity))
+      anw <- anwender
+      updated <- db.run(dal.update((anw.id.get), anwenderEntity))
     } yield updated == 1
   }
 

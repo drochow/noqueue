@@ -30,37 +30,44 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
   def create = SecuredApiActionWithBody { implicit request =>
     readFromRequest[BetriebAndAdresse] {
       case btrAndAdr: BetriebAndAdresse => {
-        request.anwender.betriebErstellen(btrAndAdr.betriebEntity, btrAndAdr.adresseEntity) flatMap {
-          baa: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = baa._1, adresseEntity = baa._2));
-        } recover {
-          //failure
-          case sqlE: SQLException => {
-            if (sqlE.getMessage.contains("betriebNameUnique")) {
-              ApiError.errorBadRequest("Ein Betrieb mit diesem Namen existiert bereits!")
+        for {
+          anw <- request.anwender
+          result <- anw.betriebErstellen(btrAndAdr.betriebEntity, btrAndAdr.adresseEntity) flatMap {
+            baa: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = baa._1, adresseEntity = baa._2));
+          } recover {
+            //failure
+            case sqlE: SQLException => {
+              if (sqlE.getMessage.contains("betriebNameUnique")) {
+                ApiError.errorBadRequest("Ein Betrieb mit diesem Namen existiert bereits!")
+              }
+              if (sqlE.getMessage.contains("betriebTelUnique")) {
+                ApiError.errorBadRequest("Ein Betrieb mit dieser Telefonnummer existiert bereits!")
+              } else
+                ApiError.errorBadRequest(sqlE.getMessage)
             }
-            if (sqlE.getMessage.contains("betriebTelUnique")) {
-              ApiError.errorBadRequest("Ein Betrieb mit dieser Telefonnummer existiert bereits!")
-            } else
-              ApiError.errorBadRequest(sqlE.getMessage)
+            case e: Exception => {
+              e.printStackTrace()
+              ApiError.errorBadRequest("Invalid data..")
+            }
           }
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorBadRequest("Invalid data..")
-          }
-        }
+        } yield (result)
+
       }
     }
   }
 
   def show(id: Long) = SecuredApiAction { implicit request =>
-    request.anwender.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
-      btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
-    } recover {
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorBadRequest("Invalid data..")
+    for {
+      anw <- request.anwender
+      result <- anw.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
+        btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
+      } recover {
+        case e: Exception => {
+          e.printStackTrace()
+          ApiError.errorBadRequest("Invalid data..")
+        }
       }
-    }
+    } yield (result)
   }
 
   //  def addMitarbeiter(betriebId: Long, mitarbeiterId: Long) = SecuredApiActionWithBody {
