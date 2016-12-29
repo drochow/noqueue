@@ -48,6 +48,14 @@ trait MitarbeiterComponent {
     } yield (betrieb, anwender, mitarbeiter)).result.head.nonFusedEquivalentAction
   }
 
+  def listMitarbeiterOf(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[AnwenderEntity]] =
+    (for {
+      (mitarbeiter, anwender) <- (mitarbeiters join anwenders on (_.anwenderId === _.id)).filter {
+        case (mitarbeiter, anwender) => mitarbeiter.betriebId === betriebId
+      }
+        .drop(page * size).take(size)
+    } yield anwender).result
+
   def addDienstleistung(dienstleistungEntity: DienstleistungEntity): DBIO[DienstleistungEntity] = insert(dienstleistungEntity)
 
 }

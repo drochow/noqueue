@@ -15,13 +15,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)]) extends Base {
 
-  lazy val betrieb = leiterComposition map (_._1)
+  lazy val betrieb: Future[BetriebEntity] = leiterComposition map (_._1)
 
-  lazy val anwender = leiterComposition map (_._2)
+  lazy val anwender: Future[AnwenderEntity] = leiterComposition map (_._2)
 
-  lazy val leiter = leiterComposition map (_._3)
+  lazy val leiter: Future[LeiterEntity] = leiterComposition map (_._3)
 
-  lazy private val leiterComposition = db.run(leiterAction)
+  lazy private val leiterComposition: Future[(BetriebEntity, AnwenderEntity, LeiterEntity)] = db.run(leiterAction)
 
   /**
    * Ensures that the leiterAction is performed before calling the provided action
@@ -51,6 +51,13 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
 
   def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): Future[Int] =
     authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK, betriebId)), betriebId)
+
+  def mitarbeiterAnzeigen(page: Int, size: Int): Future[Seq[AnwenderEntity]] =
+    betrieb flatMap {
+      case betrieb => db.run(dal.listMitarbeiterOf(betrieb.id.get, page, size))
+    } recover {
+      case nse: NoSuchElementException => throw new UnauthorizedException
+    }
 
   def dienstleistungAnbieten(
     dienstleistungstypPK: PK[DienstleistungsTypEntity],

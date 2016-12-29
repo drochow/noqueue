@@ -110,6 +110,18 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     }
   }
 
+  def listMitarbeiter(betriebId: Long, page: Int, size: Int) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.mitarbeiterAnzeigen(page, size) flatMap {
+      mitarbeiter => ok(mitarbeiter)
+    } recover {
+      case nse: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
   /**
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
