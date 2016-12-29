@@ -8,7 +8,7 @@ import api.ApiError
 import api.JsonCombinators._
 import api.auth.Credentials
 import api.jwt.{ JwtUtil, TokenPayload }
-import models.db.{ AdresseEntity, AnwenderEntity }
+import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import models.{ Anwender => AnwenderModel, _ }
 import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
@@ -102,6 +102,29 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
           }
         }
       case _ => throw new Exception("no case matched in profilbearbeiten")
+    }
+  }
+
+  def search(q: Option[String], page: Int, size: Int) = SecuredApiAction { implicit request =>
+    request.anwender.anwenderSuchen(q, page, size) flatMap {
+      listOfAnwender => ok(listOfAnwender)
+    } recover {
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+      }
+    }
+  }
+
+  def show(id: Long) = SecuredApiAction { implicit request =>
+    request.anwender.anwenderAnzeigen(PK[AnwenderEntity](id)) flatMap {
+      anwender => ok(anwender)
+    } recover {
+      case nfe: NoSuchElementException => ApiError.errorAnwenderNotFound
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+      }
     }
   }
 

@@ -47,6 +47,20 @@ trait AnwenderComponent {
 
   def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
 
+  def listAnwender(page: Int, size: Int): DBIO[Seq[AnwenderEntity]] = anwenders.sortBy(_.nutzerName).drop(page * size).take(size).result
+
+  def searchAnwender(query: String, page: Int, size: Int): DBIO[Seq[AnwenderEntity]] = {
+    val tokenizedQuery = Option("%" + query + "%")
+    anwenders.filter {
+      (a: AnwenderTable) =>
+        List(
+          tokenizedQuery.map(a.nutzerName.like(_)),
+          tokenizedQuery.map(a.nutzerEmail.like(_))
+        ).collect({ case Some(c) => c }).reduceLeftOption(_ || _).getOrElse(true: Rep[Boolean])
+    }.sortBy(_.nutzerName).drop(page * size).take(size).result
+
+  }
+
   /**
    * full update of an AnwenderEntity (currently only updates the nutzerName and the nutzerEmail)
    * @param id
