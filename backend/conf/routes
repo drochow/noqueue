@@ -33,8 +33,11 @@ GET             /betrieb/:id                            controllers.Betrieb.show
 PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
 POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)
 DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
-
 GET            /betrieb/:id/mitarbeiter                controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
+
+POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter(id: Long)
+DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLeiter(id: Long, lid: Long)
+GET            /betrieb/:id/leiter                controllers.Betrieb.listLeiter(id: Long, page: Int ?=0, size: Int ?= 10)
 
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
 GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)

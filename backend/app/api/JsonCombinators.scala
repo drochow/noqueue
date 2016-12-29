@@ -166,6 +166,20 @@ object JsonCombinators {
       )
   }
 
+  implicit val leiterReads: Reads[LeiterEntity] = (
+    (__ \ "anwenderId").read[Long] and
+    (__ \ "betriebId").read[Long]
+  )((anw, btr) => LeiterEntity(anwenderId = PK[AnwenderEntity](anw), betriebId = PK[BetriebEntity](btr)))
+
+  implicit val leiterWrites: Writes[LeiterEntity] = new Writes[LeiterEntity] {
+    def writes(leiter: LeiterEntity) =
+      Json.obj(
+        "id" -> leiter.id.getOrElse(PK[MitarbeiterEntity](0L)).value,
+        "anwenderId" -> leiter.anwenderId,
+        "betriebId" -> leiter.betriebId
+      )
+  }
+
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

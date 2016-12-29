@@ -1,5 +1,7 @@
 package models.db
 
+import utils.OneLeiterRequiredException
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait LeiterComponent {
@@ -34,7 +36,20 @@ trait LeiterComponent {
    */
   def insert(leiter: LeiterEntity) = (leitersAutoInc += leiter).map(id => leiter.copy(id = Option(id)))
 
+  def deleteLeiter(leiterId: PK[LeiterEntity], betriebId: PK[BetriebEntity]): DBIO[Int] =
+    (for {
+      currentLeiterCount <- (leiters filter (_.betriebId === betriebId)).length.result
+      affectedRows <- if (currentLeiterCount < 2) throw new OneLeiterRequiredException else leiters.filter(_.id === leiterId).filter(_.betriebId === betriebId).delete
+    } yield affectedRows)
+
   def getLeiterById(id: PK[LeiterEntity]) = leiters.filter(_.id === id).result
+
+  def listLeiterOf(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[AnwenderEntity]] =
+    (for {
+      (leiter, anwender) <- (leiters join anwenders on (_.anwenderId === _.id)).filter {
+        case (mitarbeiter, anwender) => mitarbeiter.betriebId === betriebId
+      }.drop(page * size).take(size)
+    } yield anwender).result
 
   //  def getLeiterOf(betriebId: PK[BetriebEntity], anwender: AnwenderEntity): DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)] = {
   //

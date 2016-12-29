@@ -14,7 +14,7 @@ import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import utils.UnauthorizedException
+import utils.{ OneLeiterRequiredException, UnauthorizedException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -122,6 +122,47 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     }
   }
 
+  def addLeiter(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+    readFromRequest[LeiterEntity] {
+      case leiter: LeiterEntity => {
+        request.leiter.leiterEinstellen(leiter, PK[BetriebEntity](betriebId)) flatMap {
+          leiter => ok(leiter)
+        } recover {
+          case ua: UnauthorizedException => ApiError.errorUnauthorized
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Invalid data..")
+          }
+        }
+      }
+    }
+  }
+
+  def removeLeiter(betriebId: Long, leiterId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.leiterEntlassen(PK[LeiterEntity](leiterId), PK[BetriebEntity](betriebId)) flatMap {
+      affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
+    } recover {
+      case ua: UnauthorizedException => ApiError.errorUnauthorized
+      case nse: NoSuchElementException => ApiError.errorUnauthorized
+      case olre: OneLeiterRequiredException => ApiError.errorBadRequest("Atleast 1 Leiter is required. You can not delete the last Leiter.")
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
+  def listLeiter(betriebId: Long, page: Int, size: Int) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.leiterAnzeigen(page, size) flatMap {
+      leiter => ok(leiter)
+    } recover {
+      case nse: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
   /**
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
