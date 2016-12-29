@@ -23,36 +23,34 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
 
   lazy private val leiterComposition = db.run(leiterAction)
 
-  def betriebsInformationenVeraendern(betrieb: Future[BetriebEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
+  /**
+   * Ensures that the leiterAction is performed before calling the provided action
+   *
+   * Background:
+   *
+   * Since the LeiterModel is created without the need of performing the "leiterAction" given in the constructor
+   * we need to ensure the authorization of all actions by calling leiterAction
+   *
+   * @param action database action to perform
+   * @param betriebId the id of the Betrieb that is affected
+   * @tparam T return type of database action
+   * @return the result of the given action
+   */
+  private def authorizedAction[T](action: () => Future[T], betriebId: PK[BetriebEntity]): Future[T] =
+    leiterComposition flatMap {
+      case (betrieb, anwender, leiter) => if (betrieb.id.get == betriebId) action() else throw new UnauthorizedException
+    } recover {
+      case nse: NoSuchElementException => throw new UnauthorizedException
+    }
 
-  def betriebsInformationenVeraendern(
-    betriebPrimaryKey: PK[BetriebEntity],
-    adressePrimaryKey: PK[AdresseEntity],
-    tel: String,
-    oeffnungszeiten: String,
-    kontaktEmail: String
-  ) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
+  def betriebsInformationenVeraendern(id: PK[BetriebEntity], betrieb: BetriebEntity, adresse: AdresseEntity) =
+    authorizedAction(() => db.run(dal.update(id, betrieb, adresse)), id)
 
   def mitarbeiterAnstellen(mitarbeiter: MitarbeiterEntity): Future[MitarbeiterEntity] =
-    leiterComposition flatMap {
-      case (betrieb, anwender, leiter) => db.run(dal.insert(mitarbeiter))
-    } recover {
-      case nse: NoSuchElementException => throw new UnauthorizedException
-    }
+    authorizedAction(() => db.run(dal.insert(mitarbeiter)), mitarbeiter.betriebId)
 
-  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity]) = {
-    leiterComposition flatMap {
-      case (betrieb, anwender, leiter) => db.run(dal.deleteMitarbeiter(mitarbeiterPK))
-    } recover {
-      case nse: NoSuchElementException => throw new UnauthorizedException
-    }
-  }
+  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): Future[Int] =
+    authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK, betriebId)), betriebId)
 
   def dienstleistungAnbieten(
     dienstleistungstypPK: PK[DienstleistungsTypEntity],

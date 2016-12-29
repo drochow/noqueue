@@ -53,6 +53,24 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     }
   }
 
+  def modify(id: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](id)) { implicit request =>
+    readFromRequest[BetriebAndAdresse] {
+      case btrAndAdr: BetriebAndAdresse => {
+        request.leiter.betriebsInformationenVeraendern(PK[BetriebEntity](id), btrAndAdr.betriebEntity, btrAndAdr.adresseEntity)
+          .flatMap {
+            case affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
+          } recover {
+            case ua: UnauthorizedException => ApiError.errorUnauthorized
+            case e: Exception => {
+              e.printStackTrace()
+              ApiError.errorBadRequest("Invalid data..")
+            }
+          }
+
+      }
+    }
+  }
+
   def show(id: Long) = SecuredApiAction { implicit request =>
     request.anwender.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
       btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
@@ -81,7 +99,7 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
   }
 
   def removeMitarbeiter(betriebId: Long, mitarbeiterId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
-    request.leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](mitarbeiterId)) flatMap {
+    request.leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](mitarbeiterId), PK[BetriebEntity](betriebId)) flatMap {
       case count: Int => if (count < 1) ApiError.errorItemNotFound else ok("Success")
     } recover {
       case ua: UnauthorizedException => ApiError.errorUnauthorized

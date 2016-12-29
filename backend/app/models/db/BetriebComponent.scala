@@ -1,6 +1,7 @@
 package models.db
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait BetriebComponent {
   this: DriverComponent with AdresseComponent with LeiterComponent with MitarbeiterComponent =>
@@ -45,7 +46,7 @@ trait BetriebComponent {
         .map(id => betrieb.copy(id = Option(id), adresseId = adr.id.get))
       anw: AnwenderEntity <- anwender
       leiter: LeiterEntity <- insert(LeiterEntity(anwenderId = anw.id.get, betriebId = btr.id.get))
-    } yield ((btr, adr))).transactionally
+    } yield (btr, adr)).transactionally
 
   def getBetriebById(id: PK[BetriebEntity]): DBIO[BetriebEntity] = betriebe.filter(_.id === id).result.head
 
@@ -53,6 +54,12 @@ trait BetriebComponent {
     (betriebe join adresses on (_.adresseId === _.id)).filter {
       case (betrieb, adresse) => betrieb.id === id
     }.result.head
+
+  def update(id: PK[BetriebEntity], betrieb: BetriebEntity, adresse: AdresseEntity): DBIO[Int] =
+    (for {
+      adr: AdresseEntity <- findOrInsert(adresse)
+      count: Int <- betriebe.filter(_.id === id).update(betrieb.copy(adresseId = adr.id.get, id = Option(id)))
+    } yield count).transactionally
 
   def addMitarbeiter(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[MitarbeiterEntity] =
     insert(MitarbeiterEntity(anwesend = false, betriebId = betriebId, anwenderId = anwenderId))

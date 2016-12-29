@@ -19,15 +19,16 @@ GET           /setup                              controllers.Application.setup
 #GET           /testSignedIn                         controllers.Auth.testSignedIn
 
 # ANWENDER
-GET          /anwender                            controllers.Anwender.profil
+GET             /anwender                            controllers.Anwender.profil
 
-PUT          /anwender                            controllers.Anwender.profilAustauschen
-PATCH        /anwender                            controllers.Anwender.profilBearbeiten
+PUT             /anwender                            controllers.Anwender.profilAustauschen
+PATCH           /anwender                            controllers.Anwender.profilBearbeiten
 
-POST          /betrieb                            controllers.Betrieb.create
-GET          /betrieb/:id                         controllers.Betrieb.show(id: Long)
-POST        /betrieb/:id/mitarbeiter              controllers.Betrieb.addMitarbeiter(id: Long)
-DELETE        /betrieb/:id/mitarbeiter/:mid              controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
+POST            /betrieb                                controllers.Betrieb.create
+GET             /betrieb/:id                            controllers.Betrieb.show(id: Long)
+PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
+POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)
+DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
 
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
 GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)
