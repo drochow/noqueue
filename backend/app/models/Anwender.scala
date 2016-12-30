@@ -86,6 +86,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
 
   def anwenderAnzeigen(id: PK[AnwenderEntity]): Future[AnwenderEntity] = db.run(dal.getAnwenderById(id))
 
+  def dienstleistungsTypSuchen(query: String, page: Int, size: Int): Future[Seq[DienstleistungsTypEntity]] = {
+    db.run(dal.searchDienstleistung(query, page, size))
+  }
+
   def passwordAendern(password: String) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")

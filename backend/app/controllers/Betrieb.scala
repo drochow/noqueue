@@ -24,10 +24,6 @@ import scala.concurrent.Future
  */
 class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
-  //  def create = ApiAction {
-  //    implicit reqjeust =>
-  //      ok("Success")
-  //  }
   def create = SecuredApiActionWithBody { implicit request =>
     readFromRequest[BetriebAndAdresse] {
       case btrAndAdr: BetriebAndAdresse => {
@@ -163,6 +159,63 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
       }
     }
   }
+
+  def addDienstleistung(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+    readFromRequest[DienstleistungEntityApiRead] {
+      case dlar: DienstleistungEntityApiRead => {
+        request.leiter.dienstleistungAnbieten(dlar.name, dlar.dauer, dlar.kommentar) flatMap {
+          dl => ok(dl)
+        } recover {
+          case nse: UnauthorizedException => ApiError.errorUnauthorized
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Invalid data..")
+          }
+        }
+      }
+    }
+  }
+
+  def updateDienstleistung(betriebId: Long, dlId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+    readFromRequest[DienstleistungEntityApiRead] {
+      case dlar: DienstleistungEntityApiRead => {
+        request.leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](dlId), dlar.name, dlar.dauer, dlar.kommentar) flatMap {
+          dl => if (dl < 1) ApiError.errorItemNotFound else accepted()
+        } recover {
+          case nse: UnauthorizedException => ApiError.errorUnauthorized
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Invalid data..")
+          }
+        }
+      }
+    }
+  }
+
+  def removeDienstleistung(betriebId: Long, dlId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.dienstleistungEntfernen(PK[DienstleistungEntity](dlId)) flatMap {
+      count => if (count < 1) ApiError.errorItemNotFound else accepted()
+    } recover {
+      case nse: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
+  //@todo may move to other controller
+  def searchDLT(query: String, page: Int, size: Int) = SecuredApiAction { implicit request =>
+    request.anwender.dienstleistungsTypSuchen(query, page, size) flatMap {
+      dlt => ok(dlt)
+    } recover {
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
   /**
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
    * TEST METHODS  JUST FOR BOILERPLATE TESTS
@@ -193,26 +246,4 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     }
   }
 
-  //  def addMitarbeiter(betriebId: Long, mitarbeiterId: Long) = SecuredApiActionWithBody {
-  //    implicit request =>
-  //      request.anwender.getLeiterFor(PK[BetriebEntity](betriebId)) flatMap {
-  //        leiter: (LeiterEntity, BetriebEntity, AnwenderEntity) => {
-  //          val leiterModel = new Leiter(DBIO.from(Future.successfull(leiter)))
-  //          leiterModel.mitarbeiterAnstellen(PK[MitarbeiterEntity](mitarbeiterId)) flatMap {
-  //            case _: ok("Successfully created Mitarbeiter")
-  //          } recover {
-  //            case e: Exception => {
-  //              e.printStackTrace()
-  //              ApiError.errorBadRequest("Invalid data..")
-  //            }
-  //          }
-  //        }
-  //      } recover {
-  //        case nseE: NoSuchElementException => ApiError.errorUnauthorized
-  //        case e: Exception => {
-  //          e.printStackTrace()
-  //          ApiError.errorBadRequest("Invalid data..")
-  //        }
-  //      }
-  //  }
 }

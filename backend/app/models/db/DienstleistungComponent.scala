@@ -10,17 +10,22 @@ trait DienstleistungComponent {
 
     def id = column[PK[DienstleistungEntity]]("DL_ID", O.PrimaryKey, O.AutoInc)
     def dlTypId = column[PK[DienstleistungsTypEntity]]("DLT_ID")
-    def mitarbeiterId = column[PK[MitarbeiterEntity]]("MITARBEITER_ID")
+    def betriebId = column[PK[BetriebEntity]]("BTR_ID")
     def kommentar = column[String]("KOMMENTAR")
-    def aktion = column[String]("AKTION")
-    def dienstleistungsTyp = foreignKey("DLT_FK", dlTypId, dienstleistungsTypen)(_.id.get)
-    def betrieb = foreignKey("MITARBEITER_FK", mitarbeiterId, mitarbeiters)(_.id)
+    def dauer = column[Int]("DAUER")
+    def dienstleistungsTyp = foreignKey("DLT_FK", dlTypId, dienstleistungsTypen)(_.id)
+    def betrieb = foreignKey("BTR_FK", betriebId, betriebe)(_.id)
+
+    /**
+     * Unique index to ensure uniqueness of the combination: betriebId, dlTypId, dauer, kommentar
+     */
+    def dlUnique = index("dlUnique", (betriebId, dlTypId, dauer, kommentar), unique = true)
 
     /**
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (kommentar, aktion, mitarbeiterId, dlTypId, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
+    def * = (kommentar, dauer, betriebId, dlTypId, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
   }
 
   val dienstleistungen = TableQuery[DienstleistungTable]
@@ -29,7 +34,10 @@ trait DienstleistungComponent {
 
   def insert(dl: DienstleistungEntity): DBIO[DienstleistungEntity] = (dienstleistungenAutoInc += dl).map(id => dl.copy(id = Option(id)))
 
+  def update(dl: DienstleistungEntity): DBIO[Int] = dienstleistungen.filter(_.id === dl.id.get).filter(_.betriebId === dl.betriebId).update(dl)
+
   def getDienstleistungById(id: PK[DienstleistungEntity]): DBIO[DienstleistungEntity] = dienstleistungen.filter(_.id === id).result.head
 
-  def deleteDienstleistung(dienstleistungId: PK[DienstleistungEntity]): DBIO[Int] = dienstleistungen.filter(_.id === dienstleistungId).delete
+  def deleteDienstleistung(dienstleistungId: PK[DienstleistungEntity], betriebId: PK[BetriebEntity]): DBIO[Int] =
+    dienstleistungen.filter(_.id === dienstleistungId).filter(_.betriebId === betriebId).delete
 }

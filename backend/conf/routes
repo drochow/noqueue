@@ -39,6 +39,12 @@ POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter
 DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLeiter(id: Long, lid: Long)
 GET            /betrieb/:id/leiter                controllers.Betrieb.listLeiter(id: Long, page: Int ?=0, size: Int ?= 10)
 
+POST            /betrieb/:id/dienstleistung         controllers.Betrieb.addDienstleistung(id: Long)
+PUT            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.updateDienstleistung(id: Long, dlid: Long)
+DELETE            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
+
+GET             /dlt                                 controllers.Betrieb.searchDLT(q: String ?="", page: Int ?=0, size: Int ?= 10)
+
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
 GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)
 

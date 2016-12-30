@@ -14,11 +14,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 class Leiter @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
-  def dienstleistungAnbieten(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
-    readFromRequest[(PK[DienstleistungsTypEntity], String, Int, String)] {
-      case (dltId: PK[DienstleistungsTypEntity], name: String, dauer: Int, kommentar: String) =>
-        okF(request.leiter.dienstleistungAnbieten(dltId, name, dauer, kommentar))
-    }
-  }
+  //  def dienstleistungAnbieten(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+  //    readFromRequest[(PK[DienstleistungsTypEntity], String, Int, String)] {
+  //      case (dltId: PK[DienstleistungsTypEntity], name: String, dauer: Int, kommentar: String) =>
+  //        okF(request.leiter.dienstleistungAnbieten(dltId, name, dauer, kommentar))
+  //    }
+  //  }
 
 }
