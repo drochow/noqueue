@@ -32,6 +32,10 @@ export class Account {
     // this.loggedIn = this.auth.isLoggedIn();
   }
 
+  ionViewWillEnter(){
+    this.loggedIn = this.auth.isLoggedIn();
+  }
+
   logOut(){
     this.auth.logOut();
     let t: Tabs = this.navCtrl.parent;

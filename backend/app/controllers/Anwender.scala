@@ -7,6 +7,7 @@ import api.ApiError
 import api.JsonCombinators._
 import models._
 import models.db.{ AnwenderEntity, PK }
+import models.db.{ AdresseEntity }
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi

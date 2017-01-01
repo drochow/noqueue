@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { ServicesProvider } from '../../providers/services-provider';
 /*
   Generated class for the NewService page.
@@ -21,26 +21,70 @@ export class NewServicePage {
     street?: string,
     streetNumber?: string,
     zip?: string,
-    city?: string} = {};
+    city?: string
+  } = {};
 
-  constructor(public navCtrl: NavController, private servicesProvider: ServicesProvider) {}
+  editingService = false;
+
+  constructor(public navCtrl: NavController, private servicesProvider: ServicesProvider, public params: NavParams) {
+    let id = this.params.get('serviceId');
+    if (id !== undefined){
+      this.editingService = true;
+      this.fetchService(id)
+    }
+  }
 
   ionViewDidLoad() {
   }
 
+  fetchService(id){
+    this.servicesProvider.getService(id).then(
+      (result) => {
+        this.service = {
+          name: result.name,
+          phone: result.tel,
+          email: result.kontaktEmail,
+          openingHours: result.oeffnungszeiten,
+          street: result.adresse.strasse,
+          streetNumber: result.adresse.hausNummer,
+          zip: result.adresse.plz,
+          city: result.adresse.stadt
+        }
+      }
+    )
+  }
+
+  mapService() : any {
+    return {name: this.service.name,
+      tel: this.service.phone,
+      oeffnungszeiten: this.service.openingHours,
+      kontaktEmail: this.service.email,
+      adresse : {
+        strasse: this.service.street,
+        hausNummer: this.service.streetNumber,
+        plz: this.service.zip,
+        stadt: this.service.city
+      }
+     }
+  }
+
   create(){
     this.servicesProvider.postNewService(
-      {name: this.service.name,
-        phone: this.service.phone,
-        openinigHours: this.service.openingHours,
-        email: this.service.email,
-        street: this.service.street,
-        streetNumber: this.service.streetNumber,
-        zip: this.service.zip,
-        city: this.service.city}
+      this.mapService()
     ).then(
       () => {
-        
+        this.navCtrl.pop();
+      }
+    )
+  }
+
+  save(){
+    this.servicesProvider.putService(
+      this.params.get('serviceId'),
+      this.mapService()
+    ).then(
+      () => {
+        this.navCtrl.pop();
       }
     )
   }

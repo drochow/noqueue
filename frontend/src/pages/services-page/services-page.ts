@@ -36,11 +36,14 @@ export class ServicesPage {
 
   ionViewDidLoad() {
     this.fetchAllServices();
+  }
+
+  ionViewWillEnter(){
     this.loggedIn = this.auth.isLoggedIn();
   }
 
   private fetchAllServices(){
-
+    
     this.httpService.getAllServices().subscribe(
       (services) => {
         this.services = services

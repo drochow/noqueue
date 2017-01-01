@@ -16,8 +16,8 @@ export class HttpConfig {
   public currentDB = this.localDB;
 
   public ROUTES = {
-    signin: "/signin",
-    signup: "/signup",
+    signin: "/auth",
+    signup: "/anwender",
     token: "/testSignedIn",
     users: "/anwender",
     services: "/dlts"

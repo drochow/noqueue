@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
 import {NewServicePage} from "../new-service/new-service";
+import {ServicesProvider} from "../../providers/services-provider";
 
 /*
   Generated class for the MyService page.
@@ -15,9 +16,19 @@ import {NewServicePage} from "../new-service/new-service";
 })
 export class MyService {
 
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {}
+  services: any[];
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController, private servicesProvider: ServicesProvider) {}
 
   ionViewDidLoad() {
+    this.fetchAllServices();
+  }
+
+  fetchAllServices(){
+    // this.servicesProvider.getAllServices().then(
+    //   (services) => {
+    //     this.services = services;
+    //   });
   }
 
   newService(){

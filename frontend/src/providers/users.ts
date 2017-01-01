@@ -18,11 +18,23 @@ export class UsersProvider {
   constructor(public http: Http, private httpConfig: HttpConfig, private authProvider: AuthenticationProvider) {
   }
 
-  private getRequest(id: Number): Observable<any>{
+  private getRequest(id: any): Observable<any>{
     let config = this.httpConfig;
     return this.http.get(config.currentDB + config.ROUTES.users + "/" + id, this.authProvider.requestOptionsWithToken())
       .map(config.handleData)
       .catch(config.handleError);
+  }
+
+  getMe(): Promise<any>{
+    var self = this;
+    return new Promise(function(succeed, fail){
+      self.getRequest("").subscribe(
+        (user) => {
+          console.log("--------", user);
+          succeed(user)
+        }
+      )
+    });
   }
 
   getUser(id: Number): Promise<any>{

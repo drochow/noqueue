@@ -15,7 +15,7 @@
 
 <ion-content padding>
   <h4>Change Public Data</h4>
-  <form #dataForm="ngForm" (ngSubmit)="changeData(profile.username, profile.email)">
+  <form #dataForm="ngForm" (ngSubmit)="changeData()">
     <ion-item>
       <ion-input type="text" placeholder="Username" [(ngModel)]="profile.username" name="username"></ion-input>
     </ion-item>
@@ -23,6 +23,19 @@
     <ion-item>
       <ion-input type="email" placeholder="Email" [(ngModel)]="profile.email"  name="email"></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-input type="text" placeholder="Street" [(ngModel)]="profile.street"  name="street"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" placeholder="Street Nr" [(ngModel)]="profile.streetnr"  name="streetnr"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" placeholder="ZIP Code" [(ngModel)]="profile.zip"  name="zip"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" placeholder="City" [(ngModel)]="profile.city"  name="city"></ion-input>
+    </ion-item>
+
     <button ion-button clear type="submit">Change Data</button>
   </form>
 

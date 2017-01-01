@@ -6,9 +6,21 @@
 -->
 <ion-header class="positive">
 
-  <ion-navbar color="primary">
+  <ion-toolbar color="primary">
+
+    <ion-buttons start>
+    </ion-buttons>
+
     <ion-title>My Service</ion-title>
-  </ion-navbar>
+
+    <ion-buttons end>
+      <button (click)="newService()" ion-button icon-only>
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+
 
 </ion-header>
 
@@ -19,4 +31,26 @@
       <p (click)="newService()">Click here to open your first service!</p>
     </ion-card-content>
   </ion-card>
+
+  <!--<ion-list no-lines>-->
+    <!--<ion-item *ngFor="let service of services">-->
+
+      <!--<ion-card (click)="expand(service.id)">-->
+        <!--<ion-card-header>-->
+          <!--{{service.name}} | {{service.id}}-->
+        <!--</ion-card-header>-->
+        <!--<ion-card-content>-->
+          <!--{{service.description}} <br>-->
+
+          <!--<ion-icon name="clock" item-left color="balanced"></ion-icon> {{service.openingHours}} <br>-->
+          <!--<ion-icon name="pin" item-left></ion-icon> {{service.address}}-->
+
+        <!--</ion-card-content>-->
+      <!--</ion-card>-->
+
+    <!--</ion-item>-->
+  <!--</ion-list>-->
+
 </ion-content>
+
+

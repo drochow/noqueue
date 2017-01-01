@@ -11,15 +11,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
 
-  lazy val anwender: Future[AnwenderEntity] = profil map(_._1)
-  lazy val adresse: Future[Option[AdresseEntity]] = profil map(_._2)
+  lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
+  lazy val adresse: Future[Option[AdresseEntity]] = profil map (_._2)
 
   /**
    * Adresse of Anwender with lazy initialization
    */
   lazy val profil: Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
-    /*for {
+  /*for {
     anw <- anwender
     //tup <- db.run(dal.getAnwenderWithAdress(anw.id.get))  // version with join
     adrO <- if (anw.adresseId.isEmpty) Future.successful(None) else db.run(dal.getAdresseById(anw.adresseId.get))

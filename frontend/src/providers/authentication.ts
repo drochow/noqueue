@@ -114,7 +114,9 @@ export class AuthenticationProvider {
   }
 
   getUserId() : number{
-    return this.jwtHelper.decodeToken(this.getToken()).id;
+    var decoded = this.jwtHelper.decodeToken(this.getToken());
+    console.log("Trying to decode the token: ", decoded);
+    return decoded.userId;
   }
 
   private resetToken(){

@@ -52,7 +52,7 @@
     </ion-item>
   </ion-list>
 
-  <button ion-button round (click)="create()">Create New Service</button>
-
+  <button *ngIf="editingService === false"ion-button round (click)="create()">Create New Service</button>
+  <button *ngIf="editingService"ion-button round (click)="save()">Save Changes</button>
 
 </ion-content>
