@@ -56,6 +56,11 @@ class UnregistrierterAnwender extends Base {
     }
   }
 
+  //@todo DELET This
+  def testDltinserts = {
+    db.run(dal.insert(DienstleistungsTypEntity("haareschneiden")) andThen (dal.insert(DienstleistungsTypEntity("Fönen"))))
+  }
+
   //no idea where this goes so i'll put it here for now
   def getDienstleistungsTypen(limit: Long, offset: Long): Future[Seq[DienstleistungsTypEntity]] = {
     try {

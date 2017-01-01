@@ -6,7 +6,8 @@ import javax.inject.Inject
 import api.ApiError
 import api.JsonCombinators._
 import models._
-import models.db.{ AdresseEntity, AnwenderEntity, PK }
+import models.db.{ AnwenderEntity, PK }
+import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import models.{ Anwender => AnwenderModel }
@@ -32,9 +33,20 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
         } recover {
           //failure
-          //@todo distincnt sql
-          case e: SQLException  => ApiError.errorBadRequest(e.getMessage)
-          case e: Exception => ApiError.errorInternal("Internal Server error")
+
+          case psqlE: PSQLException => {
+            if (psqlE.getMessage.contains("emailUnique")) {
+              ApiError.errorBadRequest("Diese Email wird bereits verwendet bereits!")
+            }
+            if (psqlE.getMessage.contains("nameUnique")) {
+              ApiError.errorBadRequest("Dieser nutzerName existiert bereits!")
+            } else
+              ApiError.errorBadRequest(psqlE.getMessage)
+          }
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Invalid data..")
+          }
         }
       }
     }
@@ -65,16 +77,4 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
       }
     }
   }
-
-  //  def profilBearbeiten = SecuredApiAction { implicit request =>
-  //    readFromRequest[(Option[String], Option[String], Option[Option[AdresseEntity]])] {
-  //      case (nutzerName: Option[String], nutzerEmail: Option[String], adresse: Option[Option[AdresseEntity]]) =>
-  //        request.anwender.profilBearbeiten(nutzerName, nutzerEmail, adresse) flatMap {
-  //          case ae: AnwenderEntity => ok(ae)
-  //        } recover {
-  //          case e: Exception => ApiError.errorInternal("Unknown Exception...")
-  //        }
-  //    }
-  //  }
-
 }

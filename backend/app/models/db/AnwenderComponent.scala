@@ -23,6 +23,8 @@ trait AnwenderComponent {
     def nutzerName = column[String]("NUTZERNAME")
     def adresseId = column[Option[PK[AdresseEntity]]]("ADRESSE_ID")
     def adresse = foreignKey("fk_adresse", adresseId, adresses)(_.id.?)
+    def nameUnique = index("nameUnique", nutzerName, unique = true)
+    def emailUnique = index("emailUnique", nutzerEmail, unique = true)
 
     /**
      * Default Projection Mapping to case Class
@@ -44,8 +46,6 @@ trait AnwenderComponent {
   def getAnwenderByEmail(email: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerEmail === email).result.head
 
   def getAnwenderByName(name: String): DBIO[AnwenderEntity] = anwenders.filter(_.nutzerName === name).result.head
-
-  //  def update(anwenderEntity: AnwenderEntity) = anwenders.update(anwenderEntity)
 
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction

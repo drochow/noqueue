@@ -26,7 +26,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
     base.setupDB flatMap {
       case _ => ok("Setup complete...")
     } recover {
-      case e: Exception => ApiError.errorInternal("Unknown error: " + e.toString)
+      case e: IndexOutOfBoundsException => ApiError.errorInternal("Unknown error: " + e.toString)
     }
   }
 
@@ -88,6 +88,12 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   implicit val limitAndOffsetReads: Reads[(Long, Long)] = {
     (__ \ "limit").read[Long] and
       (__ \ "offset").read[Long] tupled
+  }
+
+  def insertTestDlTs = ApiAction { implicit request =>
+    val unregistrierterAnwender = new UnregistrierterAnwender
+    unregistrierterAnwender.testDltinserts
+    ok("inserted")
   }
 
   //please put this method where it belongs, but for now i will leave it here
