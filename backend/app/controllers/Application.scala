@@ -100,7 +100,7 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   def getDienstleistungsTypen = ApiActionWithBody { implicit request =>
     readFromRequest[(Long, Long)] {
       case (limit, offset) =>
-        okFuture((new UnregistrierterAnwender).getDienstleistungsTypen(limit, offset))
+        okF((new UnregistrierterAnwender).getDienstleistungsTypen(limit, offset))
     }
   }
 

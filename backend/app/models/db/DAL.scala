@@ -23,5 +23,5 @@ class DAL(val driver: JdbcProfile)
       ++ dienstleistungsTypen.schema
       ++ mitarbeiters.schema
       ++ leiters.schema
-      ++ warteschlangenplaetze.schema).create
+      ++ warteschlangenplaetze.schema).create.transactionally
 }

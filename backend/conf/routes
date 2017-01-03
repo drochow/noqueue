@@ -19,7 +19,34 @@ GET           /setup                              controllers.Application.setup
 #GET           /testSignedIn                         controllers.Auth.testSignedIn
 
 # ANWENDER
-GET          /anwender                            controllers.Anwender.profil
+GET             /anwender                            controllers.Anwender.profil
+PUT             /anwender                           controllers.Anwender.profilAustauschen
+PATCH           /anwender                            controllers.Anwender.profilBearbeiten
+
+GET             /anwender/directory                 controllers.Anwender.search(q: Option[String] ?=None, page: Int ?= 0, size: Int ?= 10)
+GET             /anwender/directory/:id             controllers.Anwender.show(id: Long)
+
+
+
+POST            /betrieb                                controllers.Betrieb.create
+GET             /betrieb/:id                            controllers.Betrieb.show(id: Long)
+PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
+POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)
+DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
+GET            /betrieb/:id/mitarbeiter                controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
+
+POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter(id: Long)
+DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLeiter(id: Long, lid: Long)
+GET            /betrieb/:id/leiter                controllers.Betrieb.listLeiter(id: Long, page: Int ?=0, size: Int ?= 10)
+
+POST            /betrieb/:id/dienstleistung         controllers.Betrieb.addDienstleistung(id: Long)
+PUT            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.updateDienstleistung(id: Long, dlid: Long)
+DELETE            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
+
+GET             /dlt                                 controllers.Betrieb.searchDLT(q: String ?="", page: Int ?=0, size: Int ?= 10)
+
+GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
+GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)
 
 
 # UNREGISTRIERTERANWENDER
@@ -29,3 +56,5 @@ POST           /dlts                              controllers.Application.getDie
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
+
+

@@ -8,10 +8,12 @@ import java.util.Locale
 
 import api.jwt.TokenPayload
 import com.nimbusds.jose.Payload
-import models.Anwender
+import models.{ Anwender, Leiter, Mitarbeiter }
 
 import scala.util.Try
 import play.api.libs.json._
+
+import scala.concurrent.Future
 
 /*
 * Wrapped Request with additional information for the API
@@ -52,11 +54,30 @@ object ApiRequest {
 }
 
 /**
- * ApiRequest for authenticated requests
+ * ApiRequest for authenticated Anwender requests
  *
  * @param request the request object
- * @param anwender the authenticated anwender(model)
+ * @param anwender the authenticated Anwender(model)
  * @tparam A the type of the request object data
  */
-case class SecuredApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
+case class SecuredAnwenderApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)
 
+/**
+ * ApiRequest for authenticated Leiter requests
+ *
+ * @param request the request object
+ * @param leiter the authenticated Leiter(model)
+ * @tparam A the type of the request object data
+ */
+case class SecuredLeiterApiRequest[A](override val request: Request[A], leiter: Leiter) extends ApiRequest[A](request)
+
+/**
+ * ApiRequest for authenticated Mitarbeiter requests
+ *
+ * @param request the request object
+ * @param mitarbeiter the authenticated Mitarbeiter(model)
+ * @tparam A the type of the request object data
+ */
+case class SecuredMitarbeiterApiRequest[A](override val request: Request[A], mitarbeiter: Mitarbeiter) extends ApiRequest[A](request)
+
+case class SecuredApiRequest[A](override val request: Request[A], anwender: Anwender) extends ApiRequest[A](request)

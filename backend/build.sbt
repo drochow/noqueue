@@ -32,7 +32,8 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play"        % "1.5.0"           % "test",
   jdbc,
   "com.h2database"        %   "h2"                        %      "1.4.187"     %   "test",
-  "com.github.nscala-time" %% "nscala-time" % "2.14.0"
+  //"com.github.nscala-time" %% "nscala-time" % "2.14.0",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test"
 )
 
 //fork in run := true

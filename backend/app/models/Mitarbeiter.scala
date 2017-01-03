@@ -1,27 +1,20 @@
 package models
 
 import models.db._
+import slick.dbio.DBIO
 
 import scala.concurrent.Future
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Mitarbeiter(mitarbeiter: Future[MitarbeiterEntity]) extends Base {
+class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)]) extends Base {
 
-  lazy val anwender: Future[AnwenderEntity] = for {
-    mta <- mitarbeiter
-    anw <- db.run(dal.getAnwenderById(mta.anwenderId))
-  } yield (anw)
+  lazy val betrieb: Future[BetriebEntity] = mitarbeiterComposition map (_._1)
 
-  lazy val betrieb: Future[BetriebEntity] = for {
-    mta <- mitarbeiter
-    btr <- db.run(dal.getBetriebById(mta.betriebId))
-  } yield (btr)
+  lazy val anwender: Future[AnwenderEntity] = mitarbeiterComposition map (_._2)
 
-  lazy val warteschlangenPlaetze: Future[Seq[WarteSchlangenPlatzEntity]] = for {
-    mta <- mitarbeiter
-    wsps <- db.run(dal.getWarteschlangenPlaetzeOfMitarbeiter(mta.id.get))
-  } yield (wsps)
+  lazy val mitarbeiter: Future[MitarbeiterEntity] = mitarbeiterComposition map (_._3)
+
+  lazy val mitarbeiterComposition: Future[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)] = db.run(mitarbeiterAction)
 
   def wsBeitrittOeffnen() = {
     //@todo implement me

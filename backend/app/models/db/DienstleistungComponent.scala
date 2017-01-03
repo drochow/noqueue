@@ -1,55 +1,43 @@
 package models.db
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 trait DienstleistungComponent {
-  this: DriverComponent with BetriebComponent with DienstleistungsTypComponent =>
+  this: DriverComponent with BetriebComponent with MitarbeiterComponent with DienstleistungsTypComponent =>
   import driver.api._
 
   class DienstleistungTable(tag: Tag) extends Table[DienstleistungEntity](tag, "DIENSTLEISTUNG") {
 
     def id = column[PK[DienstleistungEntity]]("DL_ID", O.PrimaryKey, O.AutoInc)
-    def dlTypID = column[PK[DienstleistungsTypEntity]]("DLT_ID")
-    def betriebID = column[PK[BetriebEntity]]("BETR_ID")
-    def tags = column[String]("TAGS")
+    def dlTypId = column[PK[DienstleistungsTypEntity]]("DLT_ID")
+    def betriebId = column[PK[BetriebEntity]]("BTR_ID")
     def kommentar = column[String]("KOMMENTAR")
-    def aktion = column[String]("AKTION")
-    def dienstleistungsTyp = foreignKey("DLT_FK", dlTypID, dienstleistungsTypen)(_.id.get)
-    def betrieb = foreignKey("ANB_FK", betriebID, betriebe)(_.id)
+    def dauer = column[Int]("DAUER")
+    def dienstleistungsTyp = foreignKey("DLT_FK", dlTypId, dienstleistungsTypen)(_.id)
+    def betrieb = foreignKey("BTR_FK", betriebId, betriebe)(_.id)
+
+    /**
+     * Unique index to ensure uniqueness of the combination: betriebId, dlTypId, dauer, kommentar
+     */
+    def dlUnique = index("dlUnique", (betriebId, dlTypId, dauer, kommentar), unique = true)
 
     /**
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (kommentar, aktion, tags, betriebID, dlTypID, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
+    def * = (kommentar, dauer, betriebId, dlTypId, id.?) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
   }
 
   val dienstleistungen = TableQuery[DienstleistungTable]
 
-  val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+  private val dienstleistungenAutoInc = dienstleistungen returning dienstleistungen.map(_.id)
+
+  def insert(dl: DienstleistungEntity): DBIO[DienstleistungEntity] = (dienstleistungenAutoInc += dl).map(id => dl.copy(id = Option(id)))
+
+  def update(dl: DienstleistungEntity): DBIO[Int] = dienstleistungen.filter(_.id === dl.id.get).filter(_.betriebId === dl.betriebId).update(dl)
 
   def getDienstleistungById(id: PK[DienstleistungEntity]): DBIO[DienstleistungEntity] = dienstleistungen.filter(_.id === id).result.head
 
+  def deleteDienstleistung(dienstleistungId: PK[DienstleistungEntity], betriebId: PK[BetriebEntity]): DBIO[Int] =
+    dienstleistungen.filter(_.id === dienstleistungId).filter(_.betriebId === betriebId).delete
 }
-//
-//import slick.driver.PostgresDriver.api._
-//import slick.lifted.{ ForeignKeyQuery, TableQuery }
-//
-//case class DienstleistungEntity(id: Option[Long], dlTypID: Long, anbieterID: Long, kommentar: String, aktion: String)
-//
-//class Dienstleistungen(tag: Tag) extends Table[DienstleistungEntity](tag, "DIENSTLEISTUNG") {
-//  def id = column[Long]("DL_ID", O.PrimaryKey, O.AutoInc)
-//  def dlTypID = column[Long]("DLT_ID")
-//  def anbieterID = column[Long]("ANB_ID")
-//  def kommentar = column[String]("KOMMENTAR")
-//  def aktion = column[String]("AKTION")
-//
-//  def * = (id.?, dlTypID, anbieterID, kommentar, aktion) <> (DienstleistungEntity.tupled, DienstleistungEntity.unapply)
-//
-//  def dienstleistungsTyp: ForeignKeyQuery[DienstleistungsTypen, DienstleistungsTypEntity] =
-//    foreignKey("DLT_FK", dlTypID, TableQuery[DienstleistungsTypen])(_.id)
-//  def anbieter: ForeignKeyQuery[Anbieters, Anbieter] =
-//    foreignKey("ANB_FK", anbieterID, TableQuery[Anbieters])(_.id)
-//}
-//
-//object dienstleistungen extends TableQuery(new Dienstleistungen(_)) {
-//  //DOA code here
-//}

@@ -4,7 +4,7 @@ import java.sql.SQLException
 import javax.security.auth.login.CredentialException
 
 import api.jwt.TokenPayload
-import models.db.{ AnwenderEntity, DienstleistungsTypEntity, PK }
+import models.db.{ AnwenderEntity, BetriebEntity, DienstleistungsTypEntity, PK }
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.Future
@@ -27,7 +27,15 @@ class UnregistrierterAnwender extends Base {
   }
 
   def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
-    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.userId)))
+    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)))
+  }
+
+  def anmeldenMitPayloadAlsMitarbeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Mitarbeiter = {
+    new Mitarbeiter(dal.getMitarbeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)))
+  }
+
+  def anmeldenMitPayloadAlsLeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Leiter = {
+    new Leiter(dal.getLeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)))
   }
 
   def anbieterSuchen(
