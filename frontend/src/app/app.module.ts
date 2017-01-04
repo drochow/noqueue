@@ -23,6 +23,7 @@ import { SignupPage } from '../pages/signup/signup';
 import { DashboardPage} from '../pages/dashboard/dashboard';
 import { SettingsPage } from '../pages/settings/settings';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
+import { EditPasswordPage } from '../pages/edit-password/edit-password';
 
 let storage = new Storage();
 
@@ -42,7 +43,8 @@ export function getAuthHttp(http) {
     SignupPage,
     DashboardPage,
     SettingsPage,
-    EditProfilePage
+    EditProfilePage,
+    EditPasswordPage
   ],
   imports: [
     HttpModule,
@@ -55,7 +57,8 @@ export function getAuthHttp(http) {
     SignupPage,
     DashboardPage,
     SettingsPage,
-    EditProfilePage
+    EditProfilePage,
+    EditPasswordPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

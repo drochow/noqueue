@@ -14,12 +14,12 @@ export class ValidatorProvider {
   constructor(public http: Http) {
   }
 
-  // 6 to 30 alphanumeric
-  username = string => /^[a-z\d\.]{6,30}$/.test(string);
+  // 6 to 30 alphanumeric + special characters - _ .
+  username = string => /^[a-zA-Z\d\.\-\_]{6,30}$/.test(string);
 
   //@TODO find a better expression for password
   // 6 to 30 alphanumeric
-  password = string => /^[a-z\d\.]{6,30}$/.test(string);
+  password = string => /^[a-zA-Z\d\.]{6,30}$/.test(string);
 
   passwordMatching = (string1, string2) => string1 === string2;
 

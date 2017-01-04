@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { DashboardPage } from '../../pages/dashboard/dashboard';
 
 /*
   Generated class for the Signup page.
@@ -12,7 +13,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-signup',
   templateUrl: 'signup.html',
-  providers: [AuthenticationProvider, ValidatorProvider]
+  providers: [ValidatorProvider],
+  entryComponents: [ DashboardPage ]
 })
 export class SignupPage {
 
@@ -49,12 +51,14 @@ export class SignupPage {
 
     this.auth.signup(this.username, this.email, this.password)
       .then(
-        () => console.log("Signed up"), // this.navCtrl.push(DashboardPage)
-        (error) => {
-          this.error = true;
-          this.errorMessage = error.message || "Something went wrong";
-        }
-      )
+        () => {
+          this.navCtrl.push(DashboardPage)
+        },
+            (error) => {
+              this.error = true;
+              this.errorMessage = error.message || "Something went wrong";
+            }
+      );
   }
 
   registerError(message){

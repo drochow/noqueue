@@ -6,12 +6,13 @@
 -->
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>Change Profile</ion-title>
+    <ion-title>Edit Profile</ion-title>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
+  <p *ngIf="error">{{errorMessage}}</p>
   <form #dataForm="ngForm" (ngSubmit)="changeData()">
     <ion-item>
       <ion-input type="text" placeholder="Username" [(ngModel)]="username" name="username"></ion-input>
@@ -33,5 +34,6 @@
       <ion-input type="text" placeholder="City" [(ngModel)]="city"  name="city"></ion-input>
     </ion-item>
 
-    <button ion-button clear type="submit">Update</button>
+    <button ion-button clear type="submit">Change Data</button>
+    </form>
 </ion-content>

@@ -12,7 +12,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 */
 @Component({
   selector: 'page-edit-profile',
-  templateUrl: 'edit-profile.html'
+  templateUrl: 'edit-profile.html',
+  providers: [ValidatorProvider, UsersProvider]
 })
 export class EditProfilePage {
 
@@ -75,6 +76,8 @@ export class EditProfilePage {
     }
     if(this.error) return;
 
+    console.log("no errors");
+
     // @TODO - dont send empty properties?
     let data = {
       username: this.username,
@@ -86,7 +89,9 @@ export class EditProfilePage {
     };
     this.users.changeProfileInfo(data)
       .subscribe(
-        () => this.navCtrl.pop()
+        () => {
+          console.log("Changed data");
+        }
       )
   }
 
