@@ -8,11 +8,13 @@ import { HttpProvider } from '../providers/http-provider';
 import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { ShopsProvider } from '../providers/shops-provider';
 import { QueuesProvider } from '../providers/queues-provider';
+import { UsersProvider } from '../providers/users-provider';
+import { ValidatorProvider } from '../providers/validator-provider';
 
 
 @Component({
   template: `<ion-nav [root]="rootPage"></ion-nav>`,
-  providers: [AuthenticationProvider, HttpProvider, UserConfigurationProvider, ShopsProvider, QueuesProvider]
+  providers: [AuthenticationProvider, HttpProvider, UserConfigurationProvider, ShopsProvider, QueuesProvider, UsersProvider, ValidatorProvider]
 })
 export class MyApp {
   rootPage: any;

@@ -4,6 +4,7 @@ import { AuthenticationProvider } from '../../providers/authentication-provider'
 import { UserConfigurationProvider } from '../../providers/user-configuration-provider';
 import { LoginPage } from '../../pages/login/login';
 import { SignupPage } from '../../pages/signup/signup';
+import { EditProfilePage } from '../../pages/edit-profile/edit-profile';
 /*
   Generated class for the Settings page.
 
@@ -13,7 +14,7 @@ import { SignupPage } from '../../pages/signup/signup';
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',
-  entryComponents: [LoginPage, SignupPage]
+  entryComponents: [LoginPage, SignupPage, EditProfilePage]
 })
 export class SettingsPage {
 
@@ -40,7 +41,7 @@ export class SettingsPage {
   }
 
   showEditProfilePage(){
-    // this.navCtrl.push(EditProfilePage);
+    this.navCtrl.push(EditProfilePage);
   }
 
   showEditPasswordPage(){

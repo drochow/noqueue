@@ -34,7 +34,7 @@ export class ValidatorProvider {
   street = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);
 
   // only german ZIP codes (nnnnn format)
-  zip = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);
+  zip = string => /[0-9]{5}/.test(string);
 
   // 1-5 numeric, followed by 0 or 1 letter
   streetNumber = string => /[0-9]{1,5}[a-zA-Z]?/.test(string);
@@ -56,5 +56,5 @@ export class ValidatorProvider {
     }
     return false;
   }
-  
+
 }
