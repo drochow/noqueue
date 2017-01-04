@@ -1,0 +1,70 @@
+<!--
+  Generated template for the Dashboard page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>NoQueue</ion-title>
+    <ion-buttons end>
+      <button (click)="showSettingsPage()" ion-button icon-only color="light">
+        <ion-icon name="settings"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <p *ngIf="isLoggedIn === false"> You are not signed in. Please
+    <span (click)="showLoginPage()" color="secondary">Log in</span> or
+    <span (click)="showSignupPage()" color="secondary">Sign up</span> to explore all features of NoQueue!
+  </p>
+
+  <ion-card *ngIf="isInQueue">
+    <ion-card-header>
+      Your Queue Position
+    </ion-card-header>
+    <ion-card-content>
+      <!--<p>{{myQueuePosition.betriebName}}</p>-->
+      <p>{{myQueuePosition.uhrzeit}}</p>
+      <p>{{myQueuePosition.mitarbeiter}}</p>
+      <p>{{myQueuePosition.adresse}}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="hasShopsNearby">
+    <ion-list-header>
+      <p (click)="showShopsPage()">Shops Nearby</p>
+    </ion-list-header>
+    <ion-item *ngFor="let shop of shopsNearby">
+      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.name}}</p>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="hasShops">
+    <ion-list-header>
+      <p (click)="showMyShopsPage()">My Shops</p>
+    </ion-list-header>
+    <ion-item *ngFor="let shop of myShops">
+      <p (click)="showMyShopSinglePage(shop.betriebID)">{{shop.name}}</p>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="hasQueues">
+    <ion-list-header>
+      <p (click)="showMyQueuesPage()">My Queues</p>
+    </ion-list-header>
+    <ion-item *ngFor="let queue of myQueues">
+      <p (click)="showMyQueuePage(queue.queueID)">{{queue.name}}</p>
+    </ion-item>
+  </ion-list>
+
+  <button *ngIf="isLoggedIn" ion-button clear color="secondary" (click)="showCreateShopPage()">Register a new shop</button>
+
+</ion-content>

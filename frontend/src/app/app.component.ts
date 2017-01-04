@@ -1,25 +1,27 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
-// import { HomePage } from '../pages/home/home';
-import { LoginPage } from '../pages/login/login';
-import { MainPage } from '../pages/main/main';
 import '../app/rxjs-operators.ts';
-import { AuthenticationProvider } from '../providers/authentication';
+import { DashboardPage } from '../pages/dashboard/dashboard';
+import { AuthenticationProvider } from '../providers/authentication-provider';
+import { HttpProvider } from '../providers/http-provider';
+import { UserConfigurationProvider } from '../providers/user-configuration-provider';
+import { ShopsProvider } from '../providers/shops-provider';
+import { QueuesProvider } from '../providers/queues-provider';
 
 
 @Component({
-  template: `<ion-nav [root]="rootPage"></ion-nav>`
+  template: `<ion-nav [root]="rootPage"></ion-nav>`,
+  providers: [AuthenticationProvider, HttpProvider, UserConfigurationProvider, ShopsProvider, QueuesProvider]
 })
 export class MyApp {
   rootPage: any;
 
-  constructor(platform: Platform, private auth: AuthenticationProvider) {
-    if(auth.isLoggedIn()){
-      this.rootPage = MainPage;
-    } else {
-      this.rootPage = LoginPage;
-    }
+  constructor(platform: Platform) {
+
+
+    this.rootPage = DashboardPage;
+
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.

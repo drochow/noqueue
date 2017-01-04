@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ValidatorProvider } from '../../providers/validator-provider';
 import { ModalController } from 'ionic-angular';
-// import {Data} from "../../providers/data";
 import { AlertController } from 'ionic-angular';
-import { MainPage } from '../../pages/main/main';
-import { SignUpPage } from '../../pages/signup/signup';
-import {ForgotPassword} from "../forgot-password/forgot-password";
-import { HttpService } from '../../providers/http-service';
-import { AuthenticationProvider } from '../../providers/authentication';
+import { SignupPage } from '../../pages/signup/signup';
 
 /*
   Generated class for the Login page.
@@ -18,69 +15,65 @@ import { AuthenticationProvider } from '../../providers/authentication';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-  providers: [HttpService],
-  entryComponents:[ MainPage, ForgotPassword, SignUpPage ]
+  providers: [ValidatorProvider],
+  entryComponents: [SignupPage]
 })
-export class LoginPage{
+export class LoginPage {
 
-  users: any;
-  username: any;
-  password: any;
-  token: any;
+  // variables for data binding with the template
+  username: string;
+  password: string;
+  error = false;
+  errorMessage = "";
 
-
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController,  public alertCtrl: AlertController, public httpService : HttpService, private auth: AuthenticationProvider) {
-  }
+  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
+  private modalCtrl: ModalController, private alertCtrl: AlertController) {}
 
   ionViewDidLoad() {
-    this.fetchAllUsers();
   }
 
-  private fetchAllUsers(){
-    this.httpService.getAllUsers().subscribe(
-      (users) => this.users = users);
-  }
+  login(){
+    this.error = false;
+    this.errorMessage = "";
 
-  signUp(){
-    this.navCtrl.push(SignUpPage);
-  }
+    if(this.validator.empty(this.username, this.password)){
+      this.error = true;
+      this.errorMessage = "Please fill in all required values.";
+      return;
+    }
 
-  logIn(username: string, password: string){
-    this.auth.signIn(username, password).then(
-      () => {
-        console.log(this.auth.getToken());
-        if(this.auth.isLoggedIn()){
-          this.navCtrl.push(MainPage);
+    this.auth.login(this.username, this.password)
+      .then(
+        () => this.navCtrl.pop(),
+        (error) => {
+          this.error = true;
+          this.errorMessage = error.message || "Wrong data";
         }
-      }
-    );
-  }
-
-  forgotPassword(){
-    let modal = this.modalCtrl.create(ForgotPassword);
-    modal.present();
+      )
   }
 
   skip(){
-    // this.httpService.testSignIn();
     let confirm = this.alertCtrl.create({
       title: 'Skip Log In?',
       message: 'Users that are not logged in can not reserve a place in a queue.',
       buttons: [
         {
           text: 'Cancel',
-          handler: () => {
-
-          }
+          handler: () => {}
         },
         {
           text: 'OK',
           handler: () => {
-              this.navCtrl.push(MainPage);
+            this.navCtrl.pop();
           }
         }
       ]
     });
     confirm.present();
   }
+
+  showSignupPage(){
+    this.navCtrl.push(SignupPage);
+  }
+
 }

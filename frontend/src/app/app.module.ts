@@ -2,32 +2,26 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { LoginPage } from '../pages/login/login';
-import { MainPage } from '../pages/main/main';
-import { Account } from '../pages/account/account';
-import { MyService } from '../pages/my-service/my-service';
-import { QueuePosition } from '../pages/queue-position/queue-position';
-import { ServicesPage } from '../pages/services-page/services-page';
-import { ForgotPassword } from '../pages/forgot-password/forgot-password';
-import {SignUpPage} from "../pages/signup/signup";
-import { SingleService } from "../pages/single-service/single-service";
-import {ServicesData} from "../providers/data";
-import { UsersProvider } from "../providers/users"
-import { AuthenticationProvider } from "../providers/authentication";
-import { HttpConfig } from "../providers/http-config";
-import { ProfileInfoPage } from "../pages/profile-info/profile-info";
-// import { Data } from '../providers/data.ts';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
-import {HttpService} from "../providers/http-service";
-// import { AUTH_PROVIDERS } from 'angular2-jwt';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
-import {ServicesProvider} from "../providers/services-provider";
-import {NewServicePage} from "../pages/new-service/new-service";
 import { JwtHelper } from "angular2-jwt";
+// custom providers:
+import { HttpProvider } from '../providers/http-provider';
+import { AuthenticationProvider } from '../providers/authentication-provider';
+import { ShopsProvider } from '../providers/shops-provider';
+import { ServicesProvider } from '../providers/services-provider';
+import { QueuesProvider } from '../providers/queues-provider';
+import { UsersProvider } from '../providers/users-provider';
+import { UserConfigurationProvider } from '../providers/user-configuration-provider';
+import { ValidatorProvider } from '../providers/validator-provider';
+// custom pages:
+import { LoginPage } from '../pages/login/login';
+import { SignupPage } from '../pages/signup/signup';
+import { DashboardPage} from '../pages/dashboard/dashboard';
+import { SettingsPage } from '../pages/settings/settings';
 
 let storage = new Storage();
 
@@ -43,18 +37,10 @@ export function getAuthHttp(http) {
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
     LoginPage,
-    MainPage,
-    Account,
-    MyService,
-    QueuePosition,
-    ServicesPage,
-    SignUpPage,
-    ForgotPassword,
-    SingleService,
-    ProfileInfoPage,
-    NewServicePage
+    SignupPage,
+    DashboardPage,
+    SettingsPage
   ],
   imports: [
     HttpModule,
@@ -63,20 +49,13 @@ export function getAuthHttp(http) {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    MainPage,
     LoginPage,
-    Account,
-    MyService,
-    QueuePosition,
-    ServicesPage,
-    SignUpPage,
-    ForgotPassword,
-    SingleService,
-    ProfileInfoPage,
-    NewServicePage
+    SignupPage,
+    DashboardPage,
+    SettingsPage
   ],
-  providers: [Storage, HttpService, ServicesData, UsersProvider, ServicesProvider, JwtHelper, AuthenticationProvider, HttpConfig, {
+  providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
+    UserConfigurationProvider, ValidatorProvider, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]

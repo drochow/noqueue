@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs/Observable';
-import {AuthenticationProvider} from "./authentication";
-import {HttpConfig} from "./http-config";
+import { HttpProvider } from '../providers/http-provider';
 
 /*
   Generated class for the ServicesProvider provider.
@@ -15,96 +13,40 @@ import {HttpConfig} from "./http-config";
 @Injectable()
 export class ServicesProvider {
 
-  constructor(public http: Http, private httpConfig: HttpConfig, private authProvider: AuthenticationProvider) {
+  constructor(public http: Http, private httpProvider: HttpProvider) {
   }
 
-  private getAllRequest(): Observable<any>{
-    let config = this.httpConfig;
-    return this.http.get(config.currentDB + config.ROUTES.services, this.authProvider.requestOptionsWithToken())
-      .map(config.handleData)
-      .catch(config.handleError);
+  getServicesFor(shopID){
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
+    return this.httpProvider.get(route);
   }
 
-  getAllServices(): Promise<any>{
-    var self = this;
-    return new Promise(function(succeed, fail){
-      self.getAllRequest().subscribe(
-        (services) => succeed(services)
-      )
-    });
+  getService(serviceID, shopID){
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
+    return this.httpProvider.get(route);
   }
 
-  private getRequest(id: Number): Observable<any>{
-    let config = this.httpConfig;
-    return this.http.get(config.currentDB + config.ROUTES.services + "/" + id, this.authProvider.requestOptionsWithToken())
-      .map(config.handleData)
-      .catch(config.handleError);
+  getAllServiceTypes(){
+    return this.httpProvider.get(this.httpProvider.ROUTES.services);
   }
 
-  getService(id: Number): Promise<any>{
-    var self = this;
-    return new Promise(function(succeed, fail){
-      self.getRequest(id).subscribe(
-        (service) => succeed(service)
-      )
-    });
+  createService(shopID, service){
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
+    let body = this.mapToExpectedJson(service);
+    return this.httpProvider.post(route, body);
   }
 
-
-
-  private putRequest(id: Number, service: any): Observable<any>{
-    let config = this.httpConfig;
-    let body = JSON.stringify(service);
-    return this.http.put(config.currentDB + config.ROUTES.services + "/" + id, body, this.authProvider.requestOptionsWithToken())
-      .map(config.handleData)
-      .catch(config.handleError);
+  editService(shopID, serviceID, service){
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung" + serviceID;
+    let body = this.mapToExpectedJson(service);
+    return this.httpProvider.put(route, body);
   }
 
-  putService(id: Number, service: any): Promise<any>{
-    var self = this;
-    return new Promise(function(succeed, fail){
-      self.putRequest(id, service).subscribe(
-        () => succeed("updated")
-      )
-    });
+  private mapToExpectedJson(service){
+    return {
+      dauer: service.duration,
+      typ: service.type,
+      beschreibung: service.description
+    }
   }
-
-  private deleteRequest(id: Number): Observable<any>{
-    let config = this.httpConfig;
-    return this.http.delete(config.currentDB + config.ROUTES.services + "/" + id, this.authProvider.requestOptionsWithToken())
-      .map(config.handleData)
-      .catch(config.handleError);
-  }
-
-  deleteService(id: Number): Promise<any>{
-    var self = this;
-    return new Promise(function(succeed, fail){
-      self.deleteRequest(id).subscribe(
-        () => succeed("deleted")
-      )
-    });
-  }
-
-  private postRequest(service: any): Observable<any>{
-    let body = JSON.stringify(service);
-    let config = this.httpConfig;
-    return this.http.post(config.currentDB + config.ROUTES.services, body, config.requestOptions())
-      .map(config.handleData)
-      .catch(config.handleError);
-  }
-
-  postNewService(service: any): Promise<any>{
-    var auth = this;
-    return new Promise(function(succeed, fail){
-      //@TODO - validate user input
-      auth.postRequest(service).subscribe(
-        (data) => {
-          succeed(data)
-        }
-      )
-    });
-  }
-
-
-
 }

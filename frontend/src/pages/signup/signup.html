@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <p *ngIf="correctData === false" style="color: red">Your password and confirmation password do not match.</p>
+  <p *ngIf="error" color="danger">{{errorMessage}}</p>
   <ion-list>
     <ion-item>
       <ion-input type="text" placeholder="Username" [(ngModel)]="username"></ion-input>
@@ -29,8 +29,9 @@
     </ion-item>
 
     <ion-item>
-      <ion-input type="password" placeholder="Confirm password" [(ngModel)]="confirmedPassword"></ion-input>
+      <ion-input type="password" placeholder="Confirm password" [(ngModel)]="confirmPassword"></ion-input>
     </ion-item>
   </ion-list>
-  <button ion-button round (click)="signUp(username,email,password,confirmedPassword)">Send</button>
+  <button ion-button round (click)="signup()">Send</button>
 </ion-content>
+
