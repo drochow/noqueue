@@ -18,6 +18,8 @@ import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.util.{ Failure, Success, Try }
 import play.api.libs.json._
 
+//@todo think about separating commonerApiC and inheriting SecuredApiC
+
 /**
  * Controller trait for API controllers
  */
@@ -144,7 +146,7 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def ApiActionWithParser[A](parser: BodyParser[A])(action: ApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
-    action(apiRequest)
+    action(apiRequest) //@todo recover common Exceptions and return code=500 and co.
   }
 
   //@todo is it possible to extract common parts of the next three methods

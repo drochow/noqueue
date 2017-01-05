@@ -48,10 +48,11 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity): Future[Boolean] = {
+  def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity, adrO: Option[AdresseEntity]): Future[Boolean] = {
     for {
       anw <- anwender
-      updated <- db.run(dal.update((anw.id.get), anwenderEntity))
+      adr <- if (!adrO.isEmpty) db.run(dal.findOrInsert(adrO.get)).map(_.id) else Future.successful(None)
+      updated <- db.run(dal.update((anw.id.get), anwenderEntity.copy(adresseId = adr)))
     } yield updated == 1
   }
 
