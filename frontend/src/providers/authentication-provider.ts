@@ -31,7 +31,7 @@ export class AuthenticationProvider {
     return new Promise(function(resolve, reject){
       auth.storage.keys().then(
         (keys) => {
-          if(!keys.includes('token')){
+          if(keys.indexOf('token') < 0){
             resolve();
           } else {
             auth.storage.get('token').then(
@@ -102,7 +102,9 @@ export class AuthenticationProvider {
   }
 
   decodeUserID(){
-    this.userID = this.jwtHelper.decodeToken(this.token).userId;
+    let decoded = this.jwtHelper.decodeToken(this.token);
+    this.userID = decoded.userId;
+    console.log("decoded token: ", decoded);
   }
 
   getUserId(): any{

@@ -18,6 +18,7 @@ import { SettingsPage } from '../settings/settings';
 @Component({
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
+  providers: [ShopsProvider, QueuesProvider],
   entryComponents: [LoginPage, SignupPage, SettingsPage]
 })
 export class DashboardPage {
@@ -80,7 +81,6 @@ export class DashboardPage {
 
     this.resetData();
 
-    this.isLoggedIn = this.auth.isLoggedIn();
 
     this.shops.getNearbyShops(3,0,"")
       .subscribe(
@@ -90,6 +90,8 @@ export class DashboardPage {
           this.hasShopsNearby = true;
         }
       );
+
+    this.isLoggedIn = this.auth.isLoggedIn();
 
     if(this.isLoggedIn) {
       this.shops.getMyShops()
@@ -141,6 +143,7 @@ export class DashboardPage {
 
   showShopSinglePage(shopID){
     // this.navCtrl.push(ShopSinglePage, {id: shopID});
+
   }
 
   showMyShopsPage(){
