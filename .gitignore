@@ -6,3 +6,4 @@ backend/.idea
 backend/target
 backend/project/target
 backend/project/project
+demoserver/node_modules
