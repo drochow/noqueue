@@ -16,18 +16,6 @@ object JsonCombinators {
   implicit val dateWrites = Writes.dateWrites("dd-MM-yyyy HH:mm:ss")
   implicit val dateReads = Reads.dateReads("dd-MM-yyyy HH:mm:ss")
 
-  //  implicit val adresseWrites = new Writes[AdresseEntity] {
-  //    def writes(a: AdresseEntity) = Json.obj(
-  //      "id" -> a.id.get.value,
-  //      "straße" -> a.straße,
-  //      "hausNummer" -> a.hausNummer,
-  //      "plz" -> a.plz,
-  //      "stadt" -> a.stadt
-  //    )
-  //  }
-  //  implicit val addresseReads: Reads[AdresseEntity] =
-  //    (__ \ "straße").read[String](minLength[String](1)).map(straße => AdresseEntity(straße, null, null, null, Option(PK[AdresseEntity](0L))))
-
   implicit val anwenderWrites = new Writes[AnwenderEntity] {
     def writes(a: AnwenderEntity) = Json.obj(
       "id" -> a.id.getOrElse(PK[AnwenderEntity](0L)).value,
@@ -36,8 +24,15 @@ object JsonCombinators {
     )
   }
 
+  implicit val anwenderWithAdresseReads: Reads[(AnwenderEntity, Option[AdresseEntity])] = (
+    (__ \ "nutzerEmail").read[String](minLength[String](1)) and
+    (__ \ "nutzerName").read[String](minLength[String](1)) and
+    (__ \ "adresse").lazyReadNullable[AdresseEntity](adresseReads)
+  )((nutzerEmail, nutzerName, adresse) => //the other values will be ignored anyway
+      (AnwenderEntity(nutzerEmail, "", nutzerName, if (!adresse.isEmpty) adresse.get.id else None, Some(PK[AnwenderEntity](0L))), adresse))
+
   /**
-   * @Todo maybe simplify
+   * @todo maybe simplify
    */
   implicit val anwenderWithADresseWrites = new Writes[(AnwenderEntity, Option[AdresseEntity])] {
     def writes(anw: (AnwenderEntity, Option[AdresseEntity])) =
@@ -71,8 +66,28 @@ object JsonCombinators {
         )
   }
 
+  //@todo fix to do real mapping
+  implicit val anwenderPOSTReads: Reads[AnwenderEntity] = (
+    (__ \ "nutzerEmail").read[String](minLength[String](1)) and
+    (__ \ "nutzerName").read[String](minLength[String](1)) and
+    (__ \ "adresse").read[Option[AdresseEntity]]
+  )((nutzerEmail, nutzerName, adresse) => //the other values will be ignored anyway
+      AnwenderEntity(nutzerEmail, "", nutzerName, if (!adresse.isEmpty) adresse.get.id else None, Some(PK[AnwenderEntity](0L))))
+
+  implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = (
+    (__ \ "adresse").readNullable[AdresseEntity]
+  ).map(adresseOpt => adresseOpt)
+
+  implicit val anwenderInformationenVeraendernReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
+    (__ \ "nutzerName").readNullable[String] and
+    (__ \ "nutzerEmail").readNullable[String] and
+    //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
+    (__ \ "adresse").readNullable[Option[AdresseEntity]]
+  )((nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt) => (nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt))
+
   /*//implicit val pkFormat: Format[PK[_]] = Json.format[PK[_]]
   implicit val pkr: Reads[PK[_]] = Json.reads[PK[_]]*/
+  //@todo think about adding adding corresponding urls to each pk
   implicit val pkw: Writes[PK[_]] = new Writes[PK[_]] {
     override def writes(pk: PK[_]) = Json.obj {
       "id" -> pk.value
@@ -80,7 +95,7 @@ object JsonCombinators {
   }
 
   //implicit val optFormat: Format[Option[_]] = Json.format[Option[_]]
-  implicit val optFormat: Writes[Option[PK[_]]] = (
+  implicit val pkOptFormat: Writes[Option[PK[_]]] = (
     (__ \ "id").writeNullable[PK[_]]
   )
 
@@ -102,24 +117,6 @@ object JsonCombinators {
   implicit val adresseWrites = Json.writes[AdresseEntity]
 
   implicit val dienstleistungsTypEntityFormat: Format[DienstleistungsTypEntity] = Json.format[DienstleistungsTypEntity]
-
-  //@todo fix to do real mapping
-  implicit val anwenderReads: Reads[AnwenderEntity] = (
-    (__ \ "nutzerEmail").read[String](minLength[String](1)) and
-    (__ \ "nutzerName").read[String](minLength[String](1))
-  )((nutzerEmail, nutzerName) => //the other values will be ignored anyway
-      AnwenderEntity(nutzerEmail, "", nutzerName, Option(PK[AdresseEntity](0L)), Option(PK[AnwenderEntity](0L))))
-
-  implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = (
-    (__ \ "adresse").readNullable[AdresseEntity]
-  ).map(adresseOpt => adresseOpt)
-
-  implicit val anwenderInformationenVeraendernReads: Reads[(Option[String], Option[String], Option[Option[AdresseEntity]])] = (
-    (__ \ "nutzerName").readNullable[String] and
-    (__ \ "nutzerEmail").readNullable[String] and
-    //we either get no adress wich means that we do nothing, or a nulled adress wich means we delete it or an adress with values wich means update
-    (__ \ "adresse").readNullable[Option[AdresseEntity]]
-  )((nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt) => (nutzerEmailOpt, nutzerNameOpt, adresseEntityOptOpt))
 
   implicit val dienstleistungAnlegenReads: Reads[(PK[DienstleistungsTypEntity], String, Int, String)] = (
     (__ \ "dienstleistungstyp").read[PK[DienstleistungsTypEntity]] and

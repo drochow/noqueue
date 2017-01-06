@@ -68,7 +68,8 @@ trait AnwenderComponent {
    * @return
    */
   def update(id: PK[AnwenderEntity], anwenderEntity: AnwenderEntity): DBIO[Int] =
-    anwenders.filter(_.id === id).map(anw => (anw.nutzerName, anw.nutzerEmail)).update((anwenderEntity.nutzerName, anwenderEntity.nutzerEmail))
+    anwenders.filter(_.id === id)
+      .map(anw => (anw.nutzerName, anw.nutzerEmail, anw.adresseId)).update((anwenderEntity.nutzerName, anwenderEntity.nutzerEmail, anwenderEntity.adresseId))
 
   //this helps sqlu undestand what it maps the PK[_] to
   private implicit val setPK = SetParameter[PK[_]](

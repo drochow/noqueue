@@ -77,10 +77,15 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
   }
 
   def profilAustauschen = SecuredApiActionWithBody { implicit request =>
-    readFromRequest[AnwenderEntity] {
-      anw =>
-        request.anwender.anwenderInformationenAustauschen(anw) flatMap {
-          bool => if (bool) accepted("Your Input was Accepted") else ApiError.errorInternal("put didn't work")
+    readFromRequest[(AnwenderEntity, Option[AdresseEntity])] {
+      case (anw, adrO) =>
+        request.anwender.anwenderInformationenAustauschen(anw, adrO) flatMap {
+          bool =>
+            if (bool) {
+              accepted("Your Input was Accepted")
+            } else {
+              ApiError.errorInternal("put didn't work")
+            }
         }
     }
   }
