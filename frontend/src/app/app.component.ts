@@ -5,10 +5,12 @@ import '../app/rxjs-operators.ts';
 import { DashboardPage } from '../pages/dashboard/dashboard';
 import { AuthenticationProvider } from '../providers/authentication-provider';
 import { UserConfigurationProvider } from '../providers/user-configuration-provider';
+import { HttpProvider } from '../providers/http-provider';
+import { ValidatorProvider } from '../providers/validator-provider';
 
 @Component({
   template: `<ion-nav [root]="rootPage"></ion-nav>`,
-  providers: [AuthenticationProvider, UserConfigurationProvider]
+  providers: [AuthenticationProvider, UserConfigurationProvider, HttpProvider, ValidatorProvider]
 })
 export class MyApp {
   rootPage: any;

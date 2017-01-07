@@ -1,0 +1,45 @@
+<!--
+  Generated template for the Shops page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>Shops</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-searchbar (ionInput)="search($event)" [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
+  <ion-item>
+    <ion-label>Radius</ion-label>
+    <ion-select [(ngModel)]="radius">
+      <ion-option value="0" selected="true">Not specified</ion-option>
+      <ion-option value="1">1 km</ion-option>
+      <ion-option value="2">2 km</ion-option>
+      <ion-option value="5">5 km</ion-option>
+      <ion-option value="10">10 km</ion-option>
+      <ion-option value="20">20 km</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <p *ngIf="error" color="danger">{{errorMessage}}</p>
+
+  <ion-list *ngIf="shouldShowShops" [virtualScroll]="shops">
+    <ion-list-header>
+      <p>Results:</p>
+    </ion-list-header>
+    <ion-item *virtualItem="let shop">
+      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.name}}</p>
+      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.tel}}</p>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll *ngIf="allShopsFetched === false" (ionInfinite)="infiniteScroll($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

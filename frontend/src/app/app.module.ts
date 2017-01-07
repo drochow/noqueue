@@ -28,6 +28,7 @@ import { ReportProblemPage } from '../pages/report-problem/report-problem';
 import { FAQPage } from '../pages/f-a-q/f-a-q';
 import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
 import { AboutNoQueuePage } from '../pages/about-no-queue/about-no-queue';
+import { ShopsPage } from '../pages/shops/shops';
 
 let storage = new Storage();
 
@@ -52,7 +53,8 @@ export function getAuthHttp(http) {
     ReportProblemPage,
     FAQPage,
     PrivacyPolicyPage,
-    AboutNoQueuePage
+    AboutNoQueuePage,
+    ShopsPage
   ],
   imports: [
     HttpModule,
@@ -70,7 +72,8 @@ export function getAuthHttp(http) {
     ReportProblemPage,
     FAQPage,
     PrivacyPolicyPage,
-    AboutNoQueuePage
+    AboutNoQueuePage,
+    ShopsPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

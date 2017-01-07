@@ -28,7 +28,7 @@ export class ValidatorProvider {
   email = string => /.+\@.+\..+/.test(string);
 
   // 0 to 50 characters
-  searchTerm = string => /.{0,50}/.test(string);
+  searchTerm = string => /.{1,50}/.test(string);
 
   // 2-50 alphanumeric + german symbols
   street = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);

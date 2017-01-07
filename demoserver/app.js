@@ -46,7 +46,17 @@ var shops = [   createShop("Salon Marko", "01577-368-1252", "contact@salonmarco.
                 createShop("Beauty Salon Nature", "01578-3512-444", "beautysalonnature@gmx.de", "08:00 - 18:00 Mo - Do", "Schönstr", "21", "39952", "Magdeburg", "20500"),
                 createShop("Studio Schöneberg", "01562-555-5125", "studioschoneberg@gmx.de", "08:00 - 13:00 Mo, Mi, Do 14:00 - 18:00 Di", "Rathaus Schöneberg", "12", "13071", "Berlin", "800"),
                 createShop("Nagelstudio Tempelhof", "01528-8812-234", "kontakt@nagelstudiotempelhof.de", "09:00 - 18:00 Mo - Fr", "Tempelhofer Damm", "241A", "12827", "Berlin", "4200"),
-                createShop("China Massage", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272")
+                createShop("China Massage", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Shop ABC", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Alfredos", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Friseursalon X", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("That special place.", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Asia Salon", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Beste Massage!", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Eine nicht so gute Massage", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Mann, ist das lustig", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272"),
+                createShop("Fahrrad-Reparatur", "01572-244-1252", "massagechina@gmx.de", "10:00 - 16:00 Mo-Do", "Massagestr.", "15B", "13005", "Berlin", "1272")
+
             ];
 
 
@@ -219,8 +229,21 @@ app.use("/anwender", anwenderRouter);
 var shopsRouter = express.Router();
 
 shopsRouter.get('/', function(req,res,next){
+    let size = parseInt(req.query.size);
+    let page = parseInt(req.query.page);
+    let start = size * (page - 1);
+    let end = start + size; 
+
+    console.log("returning shops: " + start + " to " + end);
+
+    let result = [];
+    for(var i = start; i < end; i++){
+        if(i < shops.length){
+            result.push(shops[i]);
+        }
+    } 
     res.status(200);
-    res.json(shops);
+    res.json(result);
 });
 
 shopsRouter.get("/:id", function(req, res, next){
