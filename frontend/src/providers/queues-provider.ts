@@ -47,7 +47,7 @@ export class QueuesProvider {
       nutzerId: this.auth.getUserId(),
       betriebId: queuePosition.shopID,
       dlId: queuePosition.serviceID,
-      mitarbeiterId: queuePosition.employeeID
+      mitarbeiterName: queuePosition.employeeName
     }
   }
 

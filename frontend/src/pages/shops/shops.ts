@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ShopSinglePage } from '../shop-single/shop-single';
 
 /*
   Generated class for the Shops page.
@@ -12,7 +13,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-shops',
   templateUrl: 'shops.html',
-  providers: [ShopsProvider]
+  providers: [ShopsProvider],
+  entryComponents: [ ShopSinglePage ]
 })
 export class ShopsPage {
 
@@ -102,7 +104,7 @@ export class ShopsPage {
 
   showShopSinglePage(id){
     console.log("shop id: ", id);
-    // this.navCtrl.push(SingleShopPage, {shopID: id});
+    this.navCtrl.push(ShopSinglePage, {shopID: id});
   }
 
 }

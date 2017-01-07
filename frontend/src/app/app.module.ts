@@ -29,6 +29,7 @@ import { FAQPage } from '../pages/f-a-q/f-a-q';
 import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
 import { AboutNoQueuePage } from '../pages/about-no-queue/about-no-queue';
 import { ShopsPage } from '../pages/shops/shops';
+import { ShopSinglePage } from '../pages/shop-single/shop-single';
 
 let storage = new Storage();
 
@@ -54,7 +55,8 @@ export function getAuthHttp(http) {
     FAQPage,
     PrivacyPolicyPage,
     AboutNoQueuePage,
-    ShopsPage
+    ShopsPage,
+    ShopSinglePage
   ],
   imports: [
     HttpModule,
@@ -73,7 +75,8 @@ export function getAuthHttp(http) {
     FAQPage,
     PrivacyPolicyPage,
     AboutNoQueuePage,
-    ShopsPage
+    ShopsPage,
+    ShopSinglePage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

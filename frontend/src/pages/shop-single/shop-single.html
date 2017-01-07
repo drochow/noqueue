@@ -1,0 +1,44 @@
+<!--
+  Generated template for the ShopSingle page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>Shop Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <p *ngIf="error">{{errorMessage}}</p>
+  <p>...Insert MapView here...</p>
+
+  <ion-item-group>
+    <ion-item-divider color="light">Info</ion-item-divider>
+    <ion-item>{{shop.name}}</ion-item>
+    <ion-item>{{shop.address}}</ion-item>
+    <ion-item>{{shop.phone}}</ion-item>
+    <ion-item>{{shop.openingHours}}</ion-item>
+    <ion-item>{{shop.email}}</ion-item>
+  </ion-item-group>
+
+  <ion-item-group>
+    <ion-item-divider color="light">Services</ion-item-divider>
+    <ion-item *ngFor="let service of services">
+      {{service.typ}}
+      <!--<ion-card>-->
+        <!--<p>{{service.typ}}</p>-->
+        <!--<p>{{service.dauer}}</p>-->
+        <!--<p>{{service.beschreibung}}</p>-->
+          <!--<ion-label>Employee</ion-label>-->
+          <!--<ion-select (ionChange)="employeeSelection($event, service.serviceID, employee.nutzerName)">-->
+            <!--<ion-option *ngFor="let employee of employees">{{employee.nutzerName}}</ion-option>-->
+          <!--</ion-select>-->
+      <!--</ion-card>-->
+      <!--<button ion-button full (click)="lineUp(service.serviceID)">Line up</button>-->
+    </ion-item>
+  </ion-item-group>
+
+</ion-content>
