@@ -33,8 +33,10 @@ export class QueuesProvider {
     return this.httpProvider.get(route);
   }
 
-  lineup(queuePosition){
-    let body = this.mapToExpectedJson(queuePosition);
+  lineup(shopID, serviceID, employeeName){
+    console.log(shopID, serviceID, employeeName);
+    let body = this.mapToExpectedJson(shopID, serviceID, employeeName);
+    console.log("body: ", body);
     return this.httpProvider.post(this.httpProvider.ROUTES.queues, body);
   }
 
@@ -42,13 +44,16 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.queues + "/" + queuePositionID);
   }
 
-  private mapToExpectedJson(queuePosition){
-    return {
-      nutzerId: this.auth.getUserId(),
-      betriebId: queuePosition.shopID,
-      dlId: queuePosition.serviceID,
-      mitarbeiterName: queuePosition.employeeName
+  // remove the default userid  value; it's only used for testing purposes
+  // as the token from the fake server doesn't contain userID
+  private mapToExpectedJson(shopID, serviceID, employeeName){
+    let body = {
+      nutzerId: this.auth.getUserId() || 1,
+      betriebId: shopID,
+      dlId: serviceID,
+      mitarbeiterName: employeeName
     }
+    return body;
   }
 
 }

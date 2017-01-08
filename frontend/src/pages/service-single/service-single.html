@@ -1,0 +1,34 @@
+<!--
+  Generated template for the ServiceSingle page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Service Information</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <p *ngIf="error" color="danger">{{errorMessage}}</p>
+  <ion-list>
+    <ion-item>{{service.type}}</ion-item>
+    <ion-item>{{service.duration}}</ion-item>
+    <ion-item>{{service.description}}</ion-item>
+    <ion-label>Employee</ion-label>
+    <ion-item>
+      <ion-select (ionChange)="employeeSelection()" [(ngModel)]="selectedEmployee">
+        <ion-option *ngFor="let employee of employees">{{employee.nutzerName}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <button ion-button full (click)="lineUp()">Line up</button>
+</ion-content>

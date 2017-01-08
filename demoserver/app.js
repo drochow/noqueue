@@ -134,6 +134,7 @@ function makeQueue(betriebID, serviceID, offen){
 var myQueues = [makeQueue(1, 7, true), makeQueue(2, 8, false)];
 
 var myQueuePosition = {
+    id: 1,
     uhrzeit: "11:00",
     mitarbeiter: "Michael",
     adresse: "Milcshtr 2 | 13555 Berlin",

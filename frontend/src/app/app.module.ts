@@ -30,6 +30,8 @@ import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
 import { AboutNoQueuePage } from '../pages/about-no-queue/about-no-queue';
 import { ShopsPage } from '../pages/shops/shops';
 import { ShopSinglePage } from '../pages/shop-single/shop-single';
+import { ServiceSinglePage } from '../pages/service-single/service-single';
+import { MyQueuePositionPage } from '../pages/my-queue-position/my-queue-position';
 
 let storage = new Storage();
 
@@ -56,7 +58,9 @@ export function getAuthHttp(http) {
     PrivacyPolicyPage,
     AboutNoQueuePage,
     ShopsPage,
-    ShopSinglePage
+    ShopSinglePage,
+    ServiceSinglePage,
+    MyQueuePositionPage
   ],
   imports: [
     HttpModule,
@@ -76,7 +80,9 @@ export function getAuthHttp(http) {
     PrivacyPolicyPage,
     AboutNoQueuePage,
     ShopsPage,
-    ShopSinglePage
+    ShopSinglePage,
+    ServiceSinglePage,
+    MyQueuePositionPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

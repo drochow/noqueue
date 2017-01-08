@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
+import { ServiceSinglePage } from '../service-single/service-single';
 
 /*
   Generated class for the ShopSingle page.
@@ -13,12 +14,12 @@ import { ServicesProvider } from '../../providers/services-provider';
 @Component({
   selector: 'page-shop-single',
   templateUrl: 'shop-single.html',
-  providers: [ QueuesProvider, ShopsProvider, ServicesProvider ]
+  providers: [ QueuesProvider, ShopsProvider, ServicesProvider ],
+  entryComponents: [ ServiceSinglePage ]
 })
 export class ShopSinglePage {
 
   employees = [];
-  selectedEmployees = new Map();
   shop = {};
   services = [];
   shopID: any;
@@ -85,19 +86,24 @@ export class ShopSinglePage {
       );
   }
 
-  employeeSelection(event, serviceID, employeeName){
-    this.selectedEmployees.set(serviceID, employeeName);
+  showService(id){
+    console.log("From shop-single - service id = " + id);
+    this.navCtrl.push(ServiceSinglePage, {shopID: this.shopID, serviceID: id});
   }
 
-  lineUp(serviceID){
-    let employeeName = this.selectedEmployees.get(serviceID) || "Any";
-    this.queuesProvider.lineup({serviceID, shopID: this.shopID, employeeName})
-      .subscribe(
-        () =>  console.log("Lined up!"), // this.navCtrl.push(MyQueuePositionPage),
-        (error) => {
-          console.log("error");
-        }
-      )
-  }
+  // employeeSelection(event, serviceID, employeeName){
+  //   this.selectedEmployees.set(serviceID, employeeName);
+  // }
+  //
+  // lineUp(serviceID){
+  //   let employeeName = this.selectedEmployees.get(serviceID) || "Any";
+  //   this.queuesProvider.lineup({serviceID, shopID: this.shopID, employeeName})
+  //     .subscribe(
+  //       () =>  console.log("Lined up!"), // this.navCtrl.push(MyQueuePositionPage),
+  //       (error) => {
+  //         console.log("error");
+  //       }
+  //     )
+  // }
 
 }

@@ -26,7 +26,7 @@
 
   <ion-item-group>
     <ion-item-divider color="light">Services</ion-item-divider>
-    <ion-item *ngFor="let service of services">
+    <ion-item *ngFor="let service of services" (click)="showService(service.serviceID)">
       {{service.typ}}
       <!--<ion-card>-->
         <!--<p>{{service.typ}}</p>-->
