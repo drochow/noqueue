@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ShopInfoPage } from '../shop-info/shop-info';
+import { ServiceInfoPage } from '../service-info/service-info';
 
 /*
   Generated class for the MyShopSingle page.
@@ -15,7 +16,7 @@ import { ShopInfoPage } from '../shop-info/shop-info';
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
   providers: [ShopsProvider, ServicesProvider],
-  entryComponents: [ ShopInfoPage ]
+  entryComponents: [ ShopInfoPage, ServiceInfoPage ]
 })
 export class MyShopSinglePage {
 
@@ -122,7 +123,7 @@ export class MyShopSinglePage {
 
   showService(serviceID){
     console.log("will show: " + serviceID);
-    // this.navCtrl.push(ServiceInfoPage, {newService: false, serviceID: serviceID});
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID});
   }
 
   deleteService(serviceID){
@@ -131,7 +132,7 @@ export class MyShopSinglePage {
   }
 
   createService(){
-    // this.navCtrl.push(ServiceInfoPage, {newService: true});
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true});
   }
 
   addCoworkers(){

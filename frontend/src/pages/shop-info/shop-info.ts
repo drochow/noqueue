@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ServiceInfoPage } from '../service-info/service-info';
 
 /*
   Generated class for the ShopInfo page.
@@ -12,7 +13,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-shop-info',
   templateUrl: 'shop-info.html',
-  providers: [ShopsProvider]
+  providers: [ShopsProvider],
+  entryComponents: [ ServiceInfoPage ]
 })
 export class ShopInfoPage {
 
@@ -130,7 +132,7 @@ export class ShopInfoPage {
       .subscribe(
         (id) => {
           console.log("will push to service info page with new shop ID: " + id);
-          // this.navCtrl.push(ServiceInfoPage, {newShop: true, newShopID: this.newShopID});
+          this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: this.shopID, newService: true});
         },
         (error) => this.registerError(error.message || "Couldn't save the new shop info")
       )

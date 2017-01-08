@@ -1,0 +1,44 @@
+<!--
+  Generated template for the ServiceInfo page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Service Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <p *ngIf="error" color="danger">{{errorMessage}}</p>
+  <p *ngIf="newShop">Step 2: Service Information</p>
+
+  <ion-item>
+    <ion-textarea rows="3" placeholder="Description" [(ngModel)]="service.description"></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+  <ion-label>Duration (min)
+    <ion-badge item-right>{{service.duration}} min</ion-badge>
+  </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-range min="5" max="120" step="5" snaps="true" color="secondary" [(ngModel)]="service.duration"></ion-range>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Type</ion-label>
+    <ion-select [(ngModel)]="selectedType">
+      <ion-option *ngFor="let type of types">{{type}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-item (click)="addCustomType()">
+    Add Custom Type
+  </ion-item>
+
+  <button *ngIf="newShop" ion-button full (click)="proceed()">Proceed</button>
+  <button *ngIf="newShop === false" ion-button full (click)="save()">Save</button>
+</ion-content>
