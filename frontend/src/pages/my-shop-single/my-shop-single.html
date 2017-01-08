@@ -1,0 +1,61 @@
+<!--
+  Generated template for the MyShopSingle page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>My Shop</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item-group>
+    <ion-item-divider color="light">Info</ion-item-divider>
+    <ion-item>{{shop.name}}</ion-item>
+    <ion-item>{{shop.address}}</ion-item>
+    <ion-item>{{shop.phone}}</ion-item>
+    <ion-item>{{shop.openingHours}}</ion-item>
+    <ion-item>{{shop.email}}</ion-item>
+  </ion-item-group>
+
+
+  <ion-list>
+    <ion-item-divider color="light">Co-Workers</ion-item-divider>
+    <ion-item-sliding *ngFor="let manager of managers" #item>
+      <ion-item>
+        {{manager.nutzerName}} <ion-badge item-right>Manager</ion-badge>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="primary" (click)="demoteManager(manager.userID)"><ion-icon name="arrow-round-down"></ion-icon>Demote</button>
+        <button ion-button color="danger" (click)="fireManager(manager.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
+      </ion-item-options>
+    </ion-item-sliding>
+    <ion-item-sliding *ngFor="let employee of employees" #item>
+      <ion-item>
+        {{employee.nutzerName}}
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="secondary" (click)="promoteEmployee(employee.userID)"><ion-icon name="arrow-round-up"></ion-icon>Promote</button>
+        <button ion-button color="danger" (click)="fireEmployee(employee.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-list>
+    <ion-item-divider color="light">Services</ion-item-divider>
+    <ion-item (click)="createService()">
+      Add New Service
+    </ion-item>
+    <ion-item-sliding *ngFor="let service of services" #item>
+      <ion-item (click)="showService(service.serviceID)">
+        {{service.typ}}
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="danger" (click)="deleteService(service.serviceID)"><ion-icon name="trash"></ion-icon>Delete</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>

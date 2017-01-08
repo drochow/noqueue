@@ -9,6 +9,7 @@ import { SignupPage } from '../signup/signup';
 import { SettingsPage } from '../settings/settings';
 import { ShopsPage } from '../shops/shops';
 import { ShopSinglePage } from '../shop-single/shop-single';
+import { MyShopsPage } from '../my-shops/my-shops';
 
 /*
   Generated class for the Dashboard page.
@@ -20,7 +21,7 @@ import { ShopSinglePage } from '../shop-single/shop-single';
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
   providers: [ShopsProvider, QueuesProvider],
-  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage]
+  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage]
 })
 export class DashboardPage {
 
@@ -147,7 +148,7 @@ export class DashboardPage {
   }
 
   showMyShopsPage(){
-    // this.navCtrl.push(MyShopsPage);
+    this.navCtrl.push(MyShopsPage);
   }
 
   showMyShopSinglePage(shopID){
