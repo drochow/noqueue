@@ -279,7 +279,8 @@ shopsRouter.delete('/:id/leiter', function(req, res, next){
 });
 
 shopsRouter.post('/', function(req, res, next){
-    res.status(200).end();
+    let id = 3;
+    res.status(200).json(id);
 });
 
 shopsRouter.patch('/:id', function(req,res,next){

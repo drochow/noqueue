@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ShopInfoPage } from '../shop-info/shop-info';
 
 /*
   Generated class for the MyShopSingle page.
@@ -13,7 +14,8 @@ import { AuthenticationProvider } from '../../providers/authentication-provider'
 @Component({
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
-  providers: [ShopsProvider, ServicesProvider]
+  providers: [ShopsProvider, ServicesProvider],
+  entryComponents: [ ShopInfoPage ]
 })
 export class MyShopSinglePage {
 
@@ -115,7 +117,7 @@ export class MyShopSinglePage {
   }
 
   editShopInfo(){
-    // this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
+    this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
   }
 
   showService(serviceID){

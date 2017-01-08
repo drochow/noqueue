@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
+import { ShopInfoPage } from '../shop-info/shop-info';
 
 /*
   Generated class for the MyShops page.
@@ -13,7 +14,7 @@ import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
   selector: 'page-my-shops',
   templateUrl: 'my-shops.html',
   providers: [ShopsProvider],
-  entryComponents: [ MyShopSinglePage ]
+  entryComponents: [ MyShopSinglePage, ShopInfoPage ]
 })
 export class MyShopsPage {
 
@@ -58,7 +59,7 @@ export class MyShopsPage {
   }
 
   createNewShop(){
-    // this.navCtrl.push(ShopInfoPage,{new: true});
+    this.navCtrl.push(ShopInfoPage,{newShop: true});
   }
 
 }

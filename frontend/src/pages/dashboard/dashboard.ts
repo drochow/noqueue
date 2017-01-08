@@ -164,7 +164,7 @@ export class DashboardPage {
   }
 
   showCreateShopPage(){
-    // this.navCtrl.push(ShopInfoPage, {newPage: true});
+    // this.navCtrl.push(ShopInfoPage, {newShop: true});
   }
 
 }
