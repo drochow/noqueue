@@ -30,7 +30,7 @@
         <ion-option value="dark">Dark</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="isLoggedIn">
       <ion-label>Push Notifications</ion-label>
       <ion-select [(ngModel)]="notificationSettings">
         <ion-option value="never" selected="true">Never</ion-option>

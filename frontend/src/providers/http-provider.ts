@@ -61,26 +61,42 @@ export class HttpProvider {
     options.search = parameters;
 
     return this.http.get(this.workingServer + route, options)
-      .map(response => response.json())
+      .map(response => {
+        return response.json();
+      })
   }
 
   post(route: string, body: any): Observable<any>{
-    return this.http.post(this.workingServer + route, body, this.requestOptions())
-      .map(response => response.json())
+    let jsonBody = JSON.stringify(body);
+    console.log("Sending POST request to " + route + " with body: ", jsonBody);
+    return this.http.post(this.workingServer + route, jsonBody, this.requestOptions())
+      .map(response => {
+        try {
+          return response.json();
+        } catch(err) {
+          return { status: response.status };
+        }
+      })
   }
 
   patch(route: string, body: any): Observable<any>{
-    return this.http.patch(this.workingServer + route, body, this.requestOptions())
+    return this.http.patch(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => response.json())
   }
 
   put(route: string, body: any): Observable<any>{
-    return this.http.put(this.workingServer + route, body, this.requestOptions())
+    return this.http.put(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => response.json())
   }
 
   delete(route: string): Observable<any>{
     return this.http.delete(this.workingServer + route, this.requestOptions())
-      .map(response => response.json())
+      .map(response => {
+        try {
+          return response.json();
+        } catch(err) {
+          return { status: response.status };
+        }
+      })
   }
 }

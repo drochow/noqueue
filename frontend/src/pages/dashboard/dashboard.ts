@@ -7,7 +7,8 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 import { SettingsPage } from '../settings/settings';
-
+import { ShopsPage } from '../shops/shops';
+import { ShopSinglePage } from '../shop-single/shop-single';
 
 /*
   Generated class for the Dashboard page.
@@ -19,7 +20,7 @@ import { SettingsPage } from '../settings/settings';
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
   providers: [ShopsProvider, QueuesProvider],
-  entryComponents: [LoginPage, SignupPage, SettingsPage]
+  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage]
 })
 export class DashboardPage {
 
@@ -82,7 +83,7 @@ export class DashboardPage {
     this.resetData();
 
 
-    this.shops.getNearbyShops(3,0,"")
+    this.shops.getNearbyShops(3,1,"")
       .subscribe(
         (shops) => {
           console.log("nearby shops: ", shops);
@@ -138,12 +139,11 @@ export class DashboardPage {
   }
 
   showShopsPage(){
-    // this.navCtrl.push(ShopsPage);
+    this.navCtrl.push(ShopsPage);
   }
 
   showShopSinglePage(shopID){
-    // this.navCtrl.push(ShopSinglePage, {id: shopID});
-
+    this.navCtrl.push(ShopSinglePage, {shopID: shopID});
   }
 
   showMyShopsPage(){

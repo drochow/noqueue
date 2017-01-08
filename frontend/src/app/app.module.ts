@@ -24,6 +24,14 @@ import { DashboardPage} from '../pages/dashboard/dashboard';
 import { SettingsPage } from '../pages/settings/settings';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { EditPasswordPage } from '../pages/edit-password/edit-password';
+import { ReportProblemPage } from '../pages/report-problem/report-problem';
+import { FAQPage } from '../pages/f-a-q/f-a-q';
+import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
+import { AboutNoQueuePage } from '../pages/about-no-queue/about-no-queue';
+import { ShopsPage } from '../pages/shops/shops';
+import { ShopSinglePage } from '../pages/shop-single/shop-single';
+import { ServiceSinglePage } from '../pages/service-single/service-single';
+import { MyQueuePositionPage } from '../pages/my-queue-position/my-queue-position';
 
 let storage = new Storage();
 
@@ -44,7 +52,15 @@ export function getAuthHttp(http) {
     DashboardPage,
     SettingsPage,
     EditProfilePage,
-    EditPasswordPage
+    EditPasswordPage,
+    ReportProblemPage,
+    FAQPage,
+    PrivacyPolicyPage,
+    AboutNoQueuePage,
+    ShopsPage,
+    ShopSinglePage,
+    ServiceSinglePage,
+    MyQueuePositionPage
   ],
   imports: [
     HttpModule,
@@ -58,7 +74,15 @@ export function getAuthHttp(http) {
     DashboardPage,
     SettingsPage,
     EditProfilePage,
-    EditPasswordPage
+    EditPasswordPage,
+    ReportProblemPage,
+    FAQPage,
+    PrivacyPolicyPage,
+    AboutNoQueuePage,
+    ShopsPage,
+    ShopSinglePage,
+    ServiceSinglePage,
+    MyQueuePositionPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

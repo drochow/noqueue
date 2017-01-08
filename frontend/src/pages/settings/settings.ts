@@ -6,6 +6,11 @@ import { LoginPage } from '../../pages/login/login';
 import { SignupPage } from '../../pages/signup/signup';
 import { EditProfilePage } from '../../pages/edit-profile/edit-profile';
 import { EditPasswordPage} from '../../pages/edit-password/edit-password';
+import { ReportProblemPage } from '../../pages/report-problem/report-problem';
+import { FAQPage } from '../../pages/f-a-q/f-a-q';
+import { PrivacyPolicyPage } from '../../pages/privacy-policy/privacy-policy';
+import { AboutNoQueuePage } from '../../pages/about-no-queue/about-no-queue';
+
 /*
   Generated class for the Settings page.
 
@@ -15,7 +20,7 @@ import { EditPasswordPage} from '../../pages/edit-password/edit-password';
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',
-  entryComponents: [LoginPage, SignupPage, EditProfilePage, EditPasswordPage]
+  entryComponents: [LoginPage, SignupPage, EditProfilePage, EditPasswordPage, ReportProblemPage, FAQPage, PrivacyPolicyPage, AboutNoQueuePage]
 })
 export class SettingsPage {
 
@@ -69,19 +74,19 @@ export class SettingsPage {
   }
 
   showReportProblemPage(){
-    // this.navCtrl.push(ReportProblemPage);
+    this.navCtrl.push(ReportProblemPage);
   }
 
   showFAQPage(){
-    // this.navCtrl.push(FAQPage);
+    this.navCtrl.push(FAQPage);
   }
 
   showPrivacyPolicyPage(){
-    // this.navCtrl.push(PrivacyPolicyPage);
+    this.navCtrl.push(PrivacyPolicyPage);
   }
 
   showAboutNoQueuePage(){
-    // this.navCtrl.push(AboutNoQueuePage);
+    this.navCtrl.push(AboutNoQueuePage);
   }
 
 }

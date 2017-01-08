@@ -1,0 +1,20 @@
+{
+  "name": "noqueue-fake-server",
+  "version": "0.0.1",
+  "author": "Robert Dimitrov",
+  "description": "A fake server used for demo purposes for the NoQueue frontend ('Software Project II, Beuth University of Applied Science Berlin'",
+  "licence": "CC BY-SA 4.0",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "debug": "~2.2.0",
+    "express": "~4.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
