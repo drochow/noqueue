@@ -5,6 +5,7 @@ import { ServicesProvider } from '../../providers/services-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
+import { CoworkersPage } from '../coworkers/coworkers';
 
 /*
   Generated class for the MyShopSingle page.
@@ -16,7 +17,7 @@ import { ServiceInfoPage } from '../service-info/service-info';
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
   providers: [ShopsProvider, ServicesProvider],
-  entryComponents: [ ShopInfoPage, ServiceInfoPage ]
+  entryComponents: [ ShopInfoPage, ServiceInfoPage, CoworkersPage ]
 })
 export class MyShopSinglePage {
 
@@ -92,16 +93,17 @@ export class MyShopSinglePage {
   }
 
   // @TODO
-  demoteManager(userID){
-
+  demoteManager(slidingItem, userID){
+    slidingItem.close();
   }
 
   // @TODO
-  promoteEmployee(userID){
-
+  promoteEmployee(slidingItem, userID){
+    slidingItem.close();
   }
 
-  fireManager(userID){
+  fireManager(slidingItem, userID){
+    slidingItem.close();
     this.shopsProvider.fireManager(userID, this.shopID)
       .subscribe(
         () => this.reloadData(),
@@ -109,7 +111,8 @@ export class MyShopSinglePage {
       )
   }
 
-  fireEmployee(userID){
+  fireEmployee(slidingItem, userID){
+    slidingItem.close();
     this.shopsProvider.fireEmployee(userID, this.shopID)
       .subscribe(
         () => this.reloadData(),
@@ -136,7 +139,7 @@ export class MyShopSinglePage {
   }
 
   addCoworkers(){
-    // this.navCtrl.push(CoworkersPage);
+    this.navCtrl.push(CoworkersPage, {newShop: false, shopID: this.shopID});
   }
 
 }

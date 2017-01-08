@@ -36,6 +36,7 @@ import { MyShopsPage } from '../pages/my-shops/my-shops';
 import { MyShopSinglePage } from '../pages/my-shop-single/my-shop-single';
 import { ShopInfoPage } from '../pages/shop-info/shop-info';
 import { ServiceInfoPage } from '../pages/service-info/service-info';
+import { CoworkersPage } from '../pages/coworkers/coworkers';
 
 let storage = new Storage();
 
@@ -68,7 +69,8 @@ export function getAuthHttp(http) {
     MyShopsPage,
     MyShopSinglePage,
     ShopInfoPage,
-    ServiceInfoPage
+    ServiceInfoPage,
+    CoworkersPage
   ],
   imports: [
     HttpModule,
@@ -94,7 +96,8 @@ export function getAuthHttp(http) {
     MyShopsPage,
     MyShopSinglePage,
     ShopInfoPage,
-    ServiceInfoPage
+    ServiceInfoPage,
+    CoworkersPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

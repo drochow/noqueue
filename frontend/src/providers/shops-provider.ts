@@ -66,12 +66,12 @@ export class ShopsProvider {
   }
 
   fireEmployee(userID, shopID){
-    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter" + userID;
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter/" + userID;
     return this.httpProvider.delete(route);
   }
 
   fireManager(userID, shopID){
-    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter" + userID;
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter/" + userID;
     return this.httpProvider.delete(route);
   }
 

@@ -27,8 +27,11 @@ export class ValidatorProvider {
   // simple email xxx@yyy.zzz
   email = string => /.+\@.+\..+/.test(string);
 
-  // 0 to 50 characters
+  // 1 to 50 characters
   searchTerm = string => /.{1,50}/.test(string);
+
+  // 1 to 30 characters 
+  searchName = string => /^[a-zA-Z\d\.\-\_]{1,30}$/.test(string);
 
   // 2-50 alphanumeric + german symbols
   street = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);

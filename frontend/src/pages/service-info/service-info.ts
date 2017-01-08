@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServicesProvider } from '../../providers/services-provider';
+import { CoworkersPage } from '../coworkers/coworkers';
 
 
 /*
@@ -14,7 +15,8 @@ import { ServicesProvider } from '../../providers/services-provider';
 @Component({
   selector: 'page-service-info',
   templateUrl: 'service-info.html',
-  providers: [ServicesProvider]
+  providers: [ServicesProvider],
+  entryComponents: [CoworkersPage]
 })
 export class ServiceInfoPage {
 
@@ -115,11 +117,11 @@ export class ServiceInfoPage {
       .subscribe(
         (id) => {
           console.log("Creating service with ID: ", id);
-          // if(this.newShop){
-          //  this.navCtrl.push(CoworkersPage, {newShop: true, shopID: this.shopID});
-          // } else {
-          //  this.navCtrl.pop();
-          // }
+          if(this.newShop){
+           this.navCtrl.push(CoworkersPage, {newShop: true, shopID: this.shopID});
+          } else {
+           this.navCtrl.pop();
+          }
         },
         (error) => this.registerError(error.message || "Couldn't save the service")
       );

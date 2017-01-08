@@ -22,14 +22,14 @@
 
 
   <ion-list>
-    <ion-item-divider color="light">Co-Workers</ion-item-divider>
+    <ion-item-divider color="light" (click)="addCoworkers()">Co-Workers</ion-item-divider>
     <ion-item-sliding *ngFor="let manager of managers" #item>
       <ion-item>
         {{manager.nutzerName}} <ion-badge item-right>Manager</ion-badge>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="primary" (click)="demoteManager(manager.userID)"><ion-icon name="arrow-round-down"></ion-icon>Demote</button>
-        <button ion-button color="danger" (click)="fireManager(manager.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
+        <button ion-button color="primary" (click)="demoteManager(item, manager.userID)"><ion-icon name="arrow-round-down"></ion-icon>Demote</button>
+        <button ion-button color="danger" (click)="fireManager(item, manager.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
     <ion-item-sliding *ngFor="let employee of employees" #item>
@@ -37,8 +37,8 @@
         {{employee.nutzerName}}
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="secondary" (click)="promoteEmployee(employee.userID)"><ion-icon name="arrow-round-up"></ion-icon>Promote</button>
-        <button ion-button color="danger" (click)="fireEmployee(employee.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
+        <button ion-button color="secondary" (click)="promoteEmployee(item, employee.userID)"><ion-icon name="arrow-round-up"></ion-icon>Promote</button>
+        <button ion-button color="danger" (click)="fireEmployee(item, employee.userID)"><ion-icon name="remove"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
@@ -57,5 +57,6 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
-
 </ion-content>
+
+
