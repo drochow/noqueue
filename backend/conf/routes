@@ -33,7 +33,8 @@ GET             /betrieb/:id                            controllers.Betrieb.show
 PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
 POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)
 DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
-GET            /betrieb/:id/mitarbeiter                controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
+GET            /betrieb/:id/mitarbeiter                 controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
+PUT            /betrieb/:id/mitarbeiter                 controllers.Betrieb.mitarbeiterAnwesenheitVeraendern(id: Long)
 
 POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter(id: Long)
 DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLeiter(id: Long, lid: Long)
@@ -42,6 +43,7 @@ GET            /betrieb/:id/leiter                controllers.Betrieb.listLeiter
 POST            /betrieb/:id/dienstleistung         controllers.Betrieb.addDienstleistung(id: Long)
 PUT            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.updateDienstleistung(id: Long, dlid: Long)
 DELETE            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
+GET             /betrieb/:id/dienstleistung         controllers.Betrieb.listDienstleistung(id: Long, page: Int ?=0, size: Int ?= 10)
 
 GET             /dlt                                 controllers.Betrieb.searchDLT(q: String ?="", page: Int ?=0, size: Int ?= 10)
 

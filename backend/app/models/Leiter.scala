@@ -52,7 +52,7 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
   def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): Future[Int] =
     authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK, betriebId)), betriebId)
 
-  def mitarbeiterAnzeigen(page: Int, size: Int): Future[Seq[AnwenderEntity]] =
+  def mitarbeiterAnzeigen(page: Int, size: Int): Future[Seq[(MitarbeiterEntity, AnwenderEntity)]] =
     betrieb flatMap {
       case betrieb => db.run(dal.listMitarbeiterOf(betrieb.id.get, page, size))
     } recover {
@@ -112,6 +112,13 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
       betrieb <- betrieb
       affectedRows <- db.run(dal.deleteDienstleistung(dienstleistungPK, betrieb.id.get))
     } yield affectedRows) recover {
+      case nse: NoSuchElementException => throw new UnauthorizedException
+    }
+
+  def dienstleistungAnzeigen(page: Int, size: Int): Future[Seq[DienstleistungEntity]] =
+    betrieb flatMap {
+      case betrieb => db.run(dal.listDienstleistungOfBetrieb(betrieb.id.get, page, size))
+    } recover {
       case nse: NoSuchElementException => throw new UnauthorizedException
     }
 }
