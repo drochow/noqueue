@@ -4,6 +4,8 @@ import java.sql.SQLException
 import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
+import play.api.libs.json._
+
 import api.ApiError
 import api.JsonCombinators._
 import api.auth.Credentials
@@ -14,6 +16,8 @@ import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 import utils.{ OneLeiterRequiredException, UnauthorizedException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -204,6 +208,18 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
     }
   }
 
+  def listDienstleistung(betriebId: Long, page: Int, size: Int) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    request.leiter.dienstleistungAnzeigen(page, size) flatMap {
+      dientleistung => ok(dientleistung)
+    } recover {
+      case nse: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
   //@todo may move to other controller
   def searchDLT(query: String, page: Int, size: Int) = SecuredApiAction { implicit request =>
     request.anwender.dienstleistungsTypSuchen(query, page, size) flatMap {
@@ -214,6 +230,26 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
         ApiError.errorBadRequest("Invalid data..")
       }
     }
+  }
+
+  ////////////////////////////////////
+  /// Actions performed by Mitarbeiters
+  ////////////////////////////////////
+
+  implicit val anwesendReads = ((__ \ "anwesend").read[Boolean])
+
+  def mitarbeiterAnwesenheitVeraendern(betriebId: Long) = SecuredMitarbeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
+    readFromRequest[Boolean] {
+      anwesend =>
+        val updated = request.mitarbeiter.mitarbeiterAnwesenheitVeraendern(anwesend)
+        updated.flatMap {
+          if (_) {
+            ok("You set Anwesenheit to " + anwesend.toString)
+          } else {
+            ApiError.errorInternal("could not complete anwesenheitSetting")
+          }
+        }
+    }(request, anwesendReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 
   /**

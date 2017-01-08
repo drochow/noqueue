@@ -70,7 +70,7 @@ object JsonCombinators {
   implicit val anwenderPOSTReads: Reads[AnwenderEntity] = (
     (__ \ "nutzerEmail").read[String](minLength[String](1)) and
     (__ \ "nutzerName").read[String](minLength[String](1)) and
-    (__ \ "adresse").read[Option[AdresseEntity]]
+    (__ \ "adresse").lazyReadNullable[AdresseEntity](adresseReads)
   )((nutzerEmail, nutzerName, adresse) => //the other values will be ignored anyway
       AnwenderEntity(nutzerEmail, "", nutzerName, if (!adresse.isEmpty) adresse.get.id else None, Some(PK[AnwenderEntity](0L))))
 
@@ -160,6 +160,14 @@ object JsonCombinators {
         "anwesend" -> mitarbeiter.anwesend,
         "anwenderId" -> mitarbeiter.anwenderId,
         "betriebId" -> mitarbeiter.betriebId
+      )
+  }
+
+  implicit val mitarbeiterAndAnwenderWrites: Writes[(MitarbeiterEntity, AnwenderEntity)] = new Writes[(MitarbeiterEntity, AnwenderEntity)] {
+    override def writes(mitarbAndAnw: (MitarbeiterEntity, AnwenderEntity)): JsValue =
+      Json.obj(
+        "mitarbeiter" -> Json.toJsFieldJsValueWrapper(mitarbAndAnw._1),
+        "anwender" -> Json.toJsFieldJsValueWrapper(mitarbAndAnw._2)
       )
   }
 

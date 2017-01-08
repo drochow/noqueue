@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait BetriebComponent {
-  this: DriverComponent with AdresseComponent with LeiterComponent with MitarbeiterComponent =>
+  this: DriverComponent with AdresseComponent with LeiterComponent with MitarbeiterComponent with DienstleistungComponent =>
   import driver.api._
 
   class BetriebTable(tag: Tag) extends Table[BetriebEntity](tag, "ANBIETER") {
@@ -63,5 +63,10 @@ trait BetriebComponent {
 
   def addMitarbeiter(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[MitarbeiterEntity] =
     insert(MitarbeiterEntity(anwesend = false, betriebId = betriebId, anwenderId = anwenderId))
+
+  def listDienstleistungOfBetrieb(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[DienstleistungEntity]] =
+    (for {
+      (betrieb, dienstleistung) <- (betriebe.filter(_.id === betriebId) join dienstleistungen on (_.id === _.betriebId)).drop(page * size).take(size)
+    } yield dienstleistung).result
 
 }

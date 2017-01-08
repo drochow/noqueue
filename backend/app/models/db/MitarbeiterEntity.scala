@@ -1,5 +1,6 @@
 package models.db
 
+//@todo these should have unique names in their Betrieb so we don't have to register with "crazyFrogfan1993"
 /**
  * MitarbeiterEntity Representation
  *

@@ -51,9 +51,11 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def anwesenheitVeraendern(anwesend: Boolean) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def mitarbeiterAnwesenheitVeraendern(anwesend: Boolean) = {
+    for {
+      m <- mitarbeiter
+      entriesChanged <- db.run(dal.mitarbeiterAnwesenheitVeraendern(m.id.get, anwesend))
+    } yield entriesChanged == 1
   }
 
 }
