@@ -197,7 +197,13 @@ anwenderRouter.get('/:id/queues', function(req, res, next){
 });
 
 anwenderRouter.get('/:id/queues/:qid', function(req, res, next){
-    res.status(200).json(myQueues[req.params.qid-1]);
+    let result;
+    myQueues.forEach(q => {
+        if(q.queueID === req.params.qid){
+            result = q;
+        }
+    })
+    res.status(200).json(result || myQueues[0]);
 });
 
 anwenderRouter.get('/:id/queueposition', function(req, res, next){
