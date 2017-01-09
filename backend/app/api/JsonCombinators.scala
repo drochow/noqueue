@@ -70,9 +70,10 @@ object JsonCombinators {
   implicit val anwenderPOSTReads: Reads[AnwenderEntity] = (
     (__ \ "nutzerEmail").read[String](minLength[String](1)) and
     (__ \ "nutzerName").read[String](minLength[String](1)) and
+    (__ \ "password").read[String](minLength[String](1)) and
     (__ \ "adresse").lazyReadNullable[AdresseEntity](adresseReads)
-  )((nutzerEmail, nutzerName, adresse) => //the other values will be ignored anyway
-      AnwenderEntity(nutzerEmail, "", nutzerName, if (!adresse.isEmpty) adresse.get.id else None, Some(PK[AnwenderEntity](0L))))
+  )((nutzerEmail, nutzerName, password, adresse) => //the other values will be ignored anyway
+      AnwenderEntity(nutzerEmail, password, nutzerName, if (!adresse.isEmpty) adresse.get.id else None, Some(PK[AnwenderEntity](0L))))
 
   implicit val optionalAdresseReads: Reads[Option[AdresseEntity]] = (
     (__ \ "adresse").readNullable[AdresseEntity]

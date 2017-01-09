@@ -14,6 +14,9 @@ import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Reads._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -108,6 +111,28 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
         }
       case _ => throw new Exception("no case matched in profilbearbeiten")
     }
+  }
+
+  def oldPwAndNewPwReads = ((__ \ "oldPassword").read[String] and
+    (__ \ "newPassword").read[String])((oldPassword, newPassword) => (oldPassword, newPassword))
+  def pwAendern = SecuredApiActionWithBody { implicit request =>
+    readFromRequest[(String, String)] {
+      case passwords =>
+        request.anwender.passwordVeraendern(passwords._1, passwords._2) flatMap {
+          updated =>
+            if (updated) {
+              accepted("Your password was changed")
+            } else {
+              ApiError.errorInternal("Could not Change Password with given parameters")
+            }
+        } recover {
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+          }
+        }
+      case _ => throw new Exception("no case matched in profilbearbeiten")
+    }(request, oldPwAndNewPwReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 
   def search(q: Option[String], page: Int, size: Int) = SecuredApiAction { implicit request =>
