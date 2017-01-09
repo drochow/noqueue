@@ -86,7 +86,13 @@ export class HttpProvider {
 
   put(route: string, body: any): Observable<any>{
     return this.http.put(this.workingServer + route, JSON.stringify(body), this.requestOptions())
-      .map(response => response.json())
+      .map(response => {
+        try {
+          return response.json();
+        } catch(err) {
+          return { status: response.status };
+        }
+      })
   }
 
   delete(route: string): Observable<any>{

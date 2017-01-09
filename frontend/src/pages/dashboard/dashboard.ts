@@ -9,6 +9,12 @@ import { SignupPage } from '../signup/signup';
 import { SettingsPage } from '../settings/settings';
 import { ShopsPage } from '../shops/shops';
 import { ShopSinglePage } from '../shop-single/shop-single';
+import { MyShopsPage } from '../my-shops/my-shops';
+import { MyQueuesPage } from '../my-queues/my-queues';
+import { MyQueueSinglePage } from '../my-queue-single/my-queue-single';
+import { ShopInfoPage } from '../shop-info/shop-info';
+import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
+import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 
 /*
   Generated class for the Dashboard page.
@@ -20,7 +26,7 @@ import { ShopSinglePage } from '../shop-single/shop-single';
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
   providers: [ShopsProvider, QueuesProvider],
-  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage]
+  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, MyQueuesPage, MyQueueSinglePage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
 })
 export class DashboardPage {
 
@@ -123,7 +129,7 @@ export class DashboardPage {
   }
 
   showMyQueuePositionPage(){
-    // this.navCtrl.push(MyQueuePositionPage);
+    this.navCtrl.push(MyQueuePositionPage);
   }
 
   showSettingsPage(){
@@ -147,23 +153,23 @@ export class DashboardPage {
   }
 
   showMyShopsPage(){
-    // this.navCtrl.push(MyShopsPage);
+    this.navCtrl.push(MyShopsPage);
   }
 
   showMyShopSinglePage(shopID){
-    // this.navCtrl.push(MyShopSinglePage, {id: shopID});
+    this.navCtrl.push(MyShopSinglePage, {shopID: shopID});
   }
 
   showMyQueuesPage(){
-    // this.navCtrl.push(MyQueuesPage);
+    this.navCtrl.push(MyQueuesPage);
   }
 
-  showMyQueueSinglePage(queueID){
-    // this.navCtrl.push(MyQueueSinglePage, {id: queueID});
+  showMyQueueSinglePage(queueID, shopName){
+    this.navCtrl.push(MyQueueSinglePage, {queueID: queueID, shopName: shopName});
   }
 
   showCreateShopPage(){
-    // this.navCtrl.push(ShopInfoPage, {newPage: true});
+    this.navCtrl.push(ShopInfoPage, {newShop: true});
   }
 
 }

@@ -32,6 +32,13 @@ import { ShopsPage } from '../pages/shops/shops';
 import { ShopSinglePage } from '../pages/shop-single/shop-single';
 import { ServiceSinglePage } from '../pages/service-single/service-single';
 import { MyQueuePositionPage } from '../pages/my-queue-position/my-queue-position';
+import { MyShopsPage } from '../pages/my-shops/my-shops';
+import { MyShopSinglePage } from '../pages/my-shop-single/my-shop-single';
+import { ShopInfoPage } from '../pages/shop-info/shop-info';
+import { ServiceInfoPage } from '../pages/service-info/service-info';
+import { CoworkersPage } from '../pages/coworkers/coworkers';
+import { MyQueuesPage } from '../pages/my-queues/my-queues';
+import { MyQueueSinglePage } from '../pages/my-queue-single/my-queue-single';
 
 let storage = new Storage();
 
@@ -60,7 +67,14 @@ export function getAuthHttp(http) {
     ShopsPage,
     ShopSinglePage,
     ServiceSinglePage,
-    MyQueuePositionPage
+    MyQueuePositionPage,
+    MyShopsPage,
+    MyShopSinglePage,
+    ShopInfoPage,
+    ServiceInfoPage,
+    CoworkersPage,
+    MyQueuesPage,
+    MyQueueSinglePage
   ],
   imports: [
     HttpModule,
@@ -82,7 +96,14 @@ export function getAuthHttp(http) {
     ShopsPage,
     ShopSinglePage,
     ServiceSinglePage,
-    MyQueuePositionPage
+    MyQueuePositionPage,
+    MyShopsPage,
+    MyShopSinglePage,
+    ShopInfoPage,
+    ServiceInfoPage,
+    CoworkersPage,
+    MyQueuesPage,
+    MyQueueSinglePage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, {

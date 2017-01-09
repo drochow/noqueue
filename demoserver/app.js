@@ -197,7 +197,13 @@ anwenderRouter.get('/:id/queues', function(req, res, next){
 });
 
 anwenderRouter.get('/:id/queues/:qid', function(req, res, next){
-    res.status(200).json(myQueues[req.params.qid-1]);
+    let result;
+    myQueues.forEach(q => {
+        if(q.queueID === req.params.qid){
+            result = q;
+        }
+    })
+    res.status(200).json(result || myQueues[0]);
 });
 
 anwenderRouter.get('/:id/queueposition', function(req, res, next){
@@ -279,7 +285,8 @@ shopsRouter.delete('/:id/leiter', function(req, res, next){
 });
 
 shopsRouter.post('/', function(req, res, next){
-    res.status(200).end();
+    let id = 3;
+    res.status(200).json(id);
 });
 
 shopsRouter.patch('/:id', function(req,res,next){

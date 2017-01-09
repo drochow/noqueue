@@ -1,0 +1,45 @@
+<!--
+  Generated template for the ShopInfo page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Shop Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <p *ngIf="error" color="danger">{{errorMessage}}</p>
+  <p *ngIf="newShop">Step 1: Shop Information</p>
+
+  <ion-item>
+    <ion-input type="text" placeholder="Shop Name" [(ngModel)]="shop.name" name="name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="email" placeholder="Email" [(ngModel)]="shop.email"  name="email"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="Phone" [(ngModel)]="shop.phone"  name="phone"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="Opening Hours" [(ngModel)]="shop.openingHours"  name="openingHours"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="Street" [(ngModel)]="shop.address.street"  name="street"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="Street Nr" [(ngModel)]="shop.address.streetNr"  name="streetNr"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="ZIP Code" [(ngModel)]="shop.address.zip"  name="zip"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input type="text" placeholder="City" [(ngModel)]="shop.address.city"  name="city"></ion-input>
+  </ion-item>
+
+  <button *ngIf="newShop" ion-button clear (click)="proceed()">Proceed</button>
+  <button *ngIf="newShop === false" ion-button clear (click)="save()">Save</button>
+</ion-content>

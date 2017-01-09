@@ -61,7 +61,7 @@
       <p (click)="showMyQueuesPage()">My Queues</p>
     </ion-list-header>
     <ion-item *ngFor="let queue of myQueues">
-      <p (click)="showMyQueuePage(queue.queueID)">{{queue.name}}</p>
+      <p (click)="showMyQueueSinglePage(queue.queueID, queue.name)">{{queue.name}}</p>
     </ion-item>
   </ion-list>
 

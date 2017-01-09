@@ -27,8 +27,11 @@ export class ValidatorProvider {
   // simple email xxx@yyy.zzz
   email = string => /.+\@.+\..+/.test(string);
 
-  // 0 to 50 characters
+  // 1 to 50 characters
   searchTerm = string => /.{1,50}/.test(string);
+
+  // 1 to 30 characters 
+  searchName = string => /^[a-zA-Z\d\.\-\_]{1,30}$/.test(string);
 
   // 2-50 alphanumeric + german symbols
   street = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);
@@ -42,11 +45,20 @@ export class ValidatorProvider {
   // 2-40 letters (including german symbols)
   city = string => /[a-zA-ZüäöÄÖÜß]{2,40}/.test(string);
 
+  // 2-30 alphanumeric, . - _ space
+  shopName = string => /^[a-zA-Z\d\.\-\_\'\"\s]{2,30}$/.test(string);
+
+  // @TODO - find better ?
+  phone = string => /[0-9\+\(\)\-]{1,16}/.test(string);
+
+  // 1-50 chars from any kind
+  openingHours = string => /.{1,50}/.test(string);
+
   // 0-250 from any kind
   serviceDescription = string => /.{1,200}/.test(string);
 
   // 2-40 alphanumeric (including german symbols)
-  serviceType = string => /[a-zA-ZüäöÄÖÜß\d]{2,40}/.test(string);
+  serviceType = string => /[a-zA-ZüäöÄÖÜß\d\s]{2,40}/.test(string);
 
   empty = (...strings) => {
     for(let value of strings){

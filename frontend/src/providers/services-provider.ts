@@ -37,7 +37,7 @@ export class ServicesProvider {
   }
 
   editService(shopID, serviceID, service){
-    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung" + serviceID;
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     let body = this.mapToExpectedJson(service);
     return this.httpProvider.put(route, body);
   }
