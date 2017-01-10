@@ -4,7 +4,6 @@ import 'rxjs/add/operator/map';
 import { HttpProvider } from '../providers/http-provider';
 import { Storage } from '@ionic/storage';
 import { JwtHelper } from 'angular2-jwt';
-import { Observable } from 'rxjs/Observable';
 
 /*
   Generated class for the AuthenticationProvider provider.

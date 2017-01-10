@@ -18,29 +18,29 @@ export class QueuesProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, public auth: AuthenticationProvider) {
   }
 
-  getMyQueues(){
+  getMyQueues() : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queues";
     return this.httpProvider.get(route);
   }
 
-  getMyQueuePosition(){
+  getMyQueuePosition() : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queueposition";
     return this.httpProvider.get(route);
   }
 
-  getQueue(queueID){
+  getQueue(queueID) : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queues/" + queueID;
     return this.httpProvider.get(route);
   }
 
-  lineup(shopID, serviceID, employeeName){
+  lineup(shopID, serviceID, employeeName) : Observable<any>{
     console.log(shopID, serviceID, employeeName);
     let body = this.mapToExpectedJson(shopID, serviceID, employeeName);
     console.log("body: ", body);
     return this.httpProvider.post(this.httpProvider.ROUTES.queues, body);
   }
 
-  leave(queuePositionID){
+  leave(queuePositionID) : Observable<any>{
     return this.httpProvider.delete(this.httpProvider.ROUTES.queues + "/" + queuePositionID);
   }
 

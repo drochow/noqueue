@@ -17,16 +17,16 @@ export class UsersProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider) {
   }
 
-  getUsersWithName(name: string){
+  getUsersWithName(name: string) : Observable<any>{
     let searchOptions = { q: name };
     return this.httpProvider.get(this.httpProvider.ROUTES.users, searchOptions);
   }
 
-  getMe(){
+  getMe() : Observable<any>{
     return this.httpProvider.get(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId());
   }
 
-  changeProfileInfo(data: any){
+  changeProfileInfo(data: any) : Observable<any>{
     let body = {
       nutzerName: data.username,
       nutzerEmail: data.email,
@@ -40,7 +40,7 @@ export class UsersProvider {
     return this.httpProvider.patch(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId(), body);
   }
 
-  changePassword(password: string){
+  changePassword(password: string) : Observable<any>{
     return this.httpProvider.patch(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId(), {password});
   }
 }

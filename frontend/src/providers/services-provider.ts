@@ -16,27 +16,27 @@ export class ServicesProvider {
   constructor(public http: Http, private httpProvider: HttpProvider) {
   }
 
-  getServicesFor(shopID){
+  getServicesFor(shopID) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
     return this.httpProvider.get(route);
   }
 
-  getService(serviceID, shopID){
+  getService(serviceID, shopID) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     return this.httpProvider.get(route);
   }
 
-  getAllServiceTypes(){
+  getAllServiceTypes() : Observable<any>{
     return this.httpProvider.get(this.httpProvider.ROUTES.services);
   }
 
-  createService(shopID, service){
+  createService(shopID, service) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
     let body = this.mapToExpectedJson(service);
     return this.httpProvider.post(route, body);
   }
 
-  editService(shopID, serviceID, service){
+  editService(shopID, serviceID, service) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     let body = this.mapToExpectedJson(service);
     return this.httpProvider.put(route, body);

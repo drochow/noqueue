@@ -26,7 +26,7 @@
     <span (click)="showSignupPage()" color="secondary">Sign up</span> to explore all features of NoQueue!
   </p>
 
-  <ion-card *ngIf="isInQueue">
+  <ion-card *ngIf="isInQueue" (click)="showMyQueuePositionPage()">
     <ion-card-header>
       Your Queue Position
     </ion-card-header>
@@ -39,27 +39,27 @@
   </ion-card>
 
   <ion-list *ngIf="hasShopsNearby">
-    <ion-list-header>
+    <ion-item-divider>
       <p (click)="showShopsPage()">Shops Nearby</p>
-    </ion-list-header>
+    </ion-item-divider>
     <ion-item *ngFor="let shop of shopsNearby">
       <p (click)="showShopSinglePage(shop.betriebID)">{{shop.name}}</p>
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="hasShops">
-    <ion-list-header>
+    <ion-item-divider>
       <p (click)="showMyShopsPage()">My Shops</p>
-    </ion-list-header>
+    </ion-item-divider>
     <ion-item *ngFor="let shop of myShops">
       <p (click)="showMyShopSinglePage(shop.betriebID)">{{shop.name}}</p>
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="hasQueues">
-    <ion-list-header>
+    <ion-item-divider>
       <p (click)="showMyQueuesPage()">My Queues</p>
-    </ion-list-header>
+    </ion-item-divider>
     <ion-item *ngFor="let queue of myQueues">
       <p (click)="showMyQueueSinglePage(queue.queueID, queue.name)">{{queue.name}}</p>
     </ion-item>
