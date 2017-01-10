@@ -3,6 +3,7 @@ package models
 import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
+import org.mindrot.jbcrypt.BCrypt
 import slick.dbio.{ DBIO, DBIOAction }
 
 import scala.concurrent.{ Await, Future }
@@ -78,6 +79,16 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       /*db.run(dal.partialUpdate(x)) == 1*/
     } yield (updated == 1)
   }
+
+  def passwordVeraendern(oldPassword: String, newPassword: String) =
+    for {
+      anw <- anwender
+      updated <- if (BCrypt.checkpw(oldPassword, anw.password)) {
+        db.run(dal.passwordVeraendern(anw.id.get, newPassword))
+      } else {
+        Future.successful(0) //@todo think about throwing an Exc
+      }
+    } yield (updated == 1)
 
   def anwenderSuchen(queryString: Option[String], page: Int, size: Int): Future[Seq[AnwenderEntity]] =
     if (!queryString.isEmpty)

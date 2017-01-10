@@ -1,5 +1,6 @@
 package models.db
 
+import org.mindrot.jbcrypt.BCrypt
 import slick.jdbc.SetParameter
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -84,6 +85,12 @@ trait AnwenderComponent {
     //@todo DRY, Reusable Code for other partialUpdates, Make more Readable
     sqlu"UPDATE ANWENDER SET NUTZERNAME = (CASE WHEN ${!nutzerNameOpt.isEmpty} THEN ${nutzerNameOpt.getOrElse("Whoops")} ELSE NUTZERNAME END), NUTZEREMAIL = (CASE WHEN ${!nutzerEmailOpt.isEmpty} THEN ${nutzerEmailOpt.getOrElse("Whoops")} ELSE NUTZEREMAIL END), ADRESSE_ID = (CASE WHEN ${!adresseOpt.isEmpty} THEN ${adresseOpt.getOrElse(Some(PK[AdresseEntity](9001))).get} ELSE ADRESSE_ID END) WHERE ID = $id"
   }
+
+  def passwordVeraendern(id: PK[AnwenderEntity], newPassword: String): DBIO[Int] =
+    //@todo try to do this with only one Query please
+    //sqlu"""UPDATE ANWENDER SET "PASSWORD" = (CASE WHEN TRUE THEN ${BCrypt.hashpw(newPassword, BCrypt.gensalt())} ELSE PASSWORD END)  WHERE ID = $id"""
+    //anwenders.filter(anw => anw.id === id && LiteralColumn(BCrypt.checkpw(oldPassword, anw.password))).map(_.password).update(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
+    anwenders.filter(anw => anw.id === id).map(_.password).update(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
 
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction

@@ -20,8 +20,10 @@ GET           /setup                              controllers.Application.setup
 
 # ANWENDER
 GET             /anwender                            controllers.Anwender.profil
-PUT             /anwender                           controllers.Anwender.profilAustauschen
+PUT             /anwender                            controllers.Anwender.profilAustauschen
 PATCH           /anwender                            controllers.Anwender.profilBearbeiten
+PUT             /anwender/password                   controllers.Anwender.pwAendern
+PATCH           /anwender/password                   controllers.Anwender.pwAendern
 
 GET             /anwender/directory                 controllers.Anwender.search(q: Option[String] ?=None, page: Int ?= 0, size: Int ?= 10)
 GET             /anwender/directory/:id             controllers.Anwender.show(id: Long)
