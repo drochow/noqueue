@@ -30,7 +30,7 @@ function createShop(name, phone, email, openingHours, street, streetNr, zip, cit
         name: name,
         tel: phone,
         kontaktEmail: email,
-        oeffnungsZeiten: openingHours,
+        oeffnungszeiten: openingHours,
         adresse : {
             strasse: street,
             hausNummer: streetNr,
@@ -64,7 +64,7 @@ function createCoworker(betriebID, anwesend, nutzerName){
     id += 1;
     return {
         betriebID: betriebID,
-        userID: id,
+        anwenderId: id,
         anwesend: anwesend,
         nutzerName: nutzerName
     }
@@ -147,7 +147,7 @@ var myQueuePosition = {
 function createUser(name, email, zip = "", city = "",  street = "", streetnr = ""){
     id += 1;
     return {
-        userID: id,
+        id: id,
         nutzerName: name,
         nutzerEmail: email,
         adresse: {
@@ -211,14 +211,27 @@ anwenderRouter.get('/:id/queueposition', function(req, res, next){
     res.status(200).json(myQueuePosition);
 });
 
-anwenderRouter.get('/', function(req, res, next){
+anwenderRouter.get('/directory', function(req, res, next){
     let searchTerm = req.query.q;
     let result = users.filter( u => u.nutzerName.indexOf(searchTerm) > -1);
     res.status(200).json(result);
 });
 
-anwenderRouter.get('/:me', function(req, res, next){
+anwenderRouter.get('/directory/:id', function(req, res, next){
+    let result = users.filter( u => u.id === parseInt(req.params.id))[0];
+    res.status(200).json(result);
+});
+
+anwenderRouter.get('/', function(req, res, next){
     res.status(200).json(users[2]);
+});
+
+anwenderRouter.put('/', function(req, res, next){
+    res.status(200).end();
+});
+
+anwenderRouter.put('/password', function(req, res, next){
+    res.status(200).end();
 });
 
 anwenderRouter.put('/:id', function(req, res, next){

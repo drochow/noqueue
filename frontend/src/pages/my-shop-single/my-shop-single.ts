@@ -63,7 +63,7 @@ export class MyShopSinglePage {
             name: shop.name,
             phone: shop.tel,
             email: shop.kontaktEmail,
-            openingHours: shop.oeffnungsZeiten,
+            openingHours: shop.oeffnungszeiten,
             address: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
           }
         },

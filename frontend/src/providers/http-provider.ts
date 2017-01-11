@@ -15,8 +15,8 @@ export class HttpProvider {
 
   // Server configuration
   private localServer = "http://localhost:9000";
-  private fakeServer = "http://localhost:3000";
-  public workingServer = this.fakeServer;
+  private fakeServer = "http://localhost:9000";
+  public workingServer = "http://localhost:9000";
 
   public ROUTES = {
     authentication: "/auth",
@@ -59,6 +59,7 @@ export class HttpProvider {
       parameters.set(attribute, searchOptions[attribute]);
     }
     options.search = parameters;
+    console.log("GET to " + this.workingServer + route);
 
     return this.http.get(this.workingServer + route, options)
       .map(response => {

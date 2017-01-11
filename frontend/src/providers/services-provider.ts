@@ -46,7 +46,7 @@ export class ServicesProvider {
     return {
       dauer: service.duration,
       typ: service.type,
-      beschreibung: service.description
+      kommentar: service.description
     }
   }
 }

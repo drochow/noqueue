@@ -55,14 +55,14 @@ export class ShopsProvider {
     return this.httpProvider.get(route);
   }
 
-  hireEmployee(userID, shopID) : Observable<any>{
+  hireEmployee(userID, shopID, anwesend) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter";
-    return this.httpProvider.post(route, {userID: userID});
+    return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwsend: anwesend || false});
   }
 
-  hireManager(userID, shopID) : Observable<any>{
+  hireManager(userID, shopID, anwesend) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter";
-    return this.httpProvider.post(route, {userID: userID});
+    return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwsend: anwesend || false});
   }
 
   fireEmployee(userID, shopID) : Observable<any>{
@@ -96,7 +96,7 @@ export class ShopsProvider {
       },
       tel: shop.phone,
       kontaktEmail: shop.email,
-      oeffnungsZeiten: shop.openingHours
+      oeffnungszeiten: shop.openingHours
     }
   }
 

@@ -26,7 +26,7 @@
     <ion-label>Employee</ion-label>
     <ion-item>
       <ion-select (ionChange)="employeeSelection()" [(ngModel)]="selectedEmployee">
-        <ion-option *ngFor="let employee of employees">{{employee.nutzerName}}</ion-option>
+        <ion-option *ngFor="let employee of employees">{{employee.anwenderId}}</ion-option>
       </ion-select>
     </ion-item>
   </ion-list>

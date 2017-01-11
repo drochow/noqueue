@@ -59,7 +59,7 @@ export class ShopInfoPage {
             name: shop.name,
             phone: shop.tel,
             email: shop.kontaktEmail,
-            openingHours: shop.oeffnungsZeiten,
+            openingHours: shop.oeffnungszeiten,
             address: {
               city: shop.stadt,
               zip: shop.plz,
