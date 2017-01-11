@@ -113,7 +113,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
     }
   }
 
-  def oldPwAndNewPwReads = ((__ \ "oldPassword").read[String] and
+  val oldPwAndNewPwReads = ((__ \ "oldPassword").read[String] and
     (__ \ "newPassword").read[String])((oldPassword, newPassword) => (oldPassword, newPassword))
   def pwAendern = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(String, String)] {

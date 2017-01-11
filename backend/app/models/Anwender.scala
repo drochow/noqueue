@@ -3,6 +3,7 @@ package models
 import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
+import org.joda.time.DateTime
 import org.mindrot.jbcrypt.BCrypt
 import slick.dbio.{ DBIO, DBIOAction }
 
@@ -117,7 +118,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wsVerlassen(wsp: PK[WarteSchlangenPlatzEntity]) = {
+  def wsVerlassen(wsp: PK[WarteschlangenPlatzEntity]) = {
     //@todo implement me and return Future[Boolean]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
@@ -150,5 +151,13 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       anw <- anwender
       leiter <- db.run(dal.getLeiterOfById(betriebId, anw.id.get))
     } yield (leiter)
+
+  def wsFuerBestimmtenMitarbeiterBeitreten(dlId: Long, mitarbeiterId: Long): Future[WarteschlangenPlatzEntity] = {
+    for {
+      anwenderId <- anwender.map(_.id)
+      wspVorschlag <- WarteschlangenPlatzEntity(None, DateTime, anwenderId.get, PK[MitarbeiterEntity](mitarbeiterId), PK[DienstleistungEntity](dlId))
+      //wsp <- db.run(dal.insert(wspVorschlag))
+    } yield wspVorschlag //wsp
+  }
 
 }

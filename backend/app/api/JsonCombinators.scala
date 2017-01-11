@@ -186,6 +186,8 @@ object JsonCombinators {
       )
   }
 
+  implicit val wspWrites = Json.writes[WarteschlangenPlatzEntity]
+
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(
