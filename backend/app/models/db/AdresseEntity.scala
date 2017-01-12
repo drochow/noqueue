@@ -14,6 +14,8 @@ case class AdresseEntity(
     hausNummer: String,
     plz: String,
     stadt: String,
+    latitude: Option[Double],
+    longitude: Option[Double],
     id: Option[PK[AdresseEntity]] = None
 ) {
 }

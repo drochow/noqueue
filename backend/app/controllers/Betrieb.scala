@@ -2,18 +2,12 @@ package controllers
 
 import java.sql.SQLException
 import javax.inject.Inject
-import javax.security.auth.login.CredentialException
-
-import play.api.libs.json._
 
 import api.ApiError
 import api.JsonCombinators._
-import api.auth.Credentials
-import api.jwt.{ JwtUtil, TokenPayload }
-import models._
+import models.UnregistrierterAnwender
 import models.db._
-import org.joda.time.DateTime
-import org.postgresql.util.PSQLException
+import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Reads._
@@ -21,33 +15,42 @@ import play.api.libs.json._
 import utils.{ OneLeiterRequiredException, UnauthorizedException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 /**
  * Created by anwender on 06.11.2016.
  */
-class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = SecuredApiActionWithBody { implicit request =>
+    //@todo cleanup and move all recover blocks to the most outer recover to enable generic errorhandling via the template method pattern
     readFromRequest[BetriebAndAdresse] {
       case btrAndAdr: BetriebAndAdresse => {
-        request.anwender.betriebErstellen(btrAndAdr.betriebEntity, btrAndAdr.adresseEntity) flatMap {
-          baa: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = baa._1, adresseEntity = baa._2));
-        } recover {
-          //failure
-          case sqlE: SQLException => {
-            if (sqlE.getMessage.contains("betriebNameUnique")) {
-              ApiError.errorBadRequest("Ein Betrieb mit diesem Namen existiert bereits!")
+        (for {
+          geo: GeoCoords <- as.getCoordsOfAdress(btrAndAdr.adresseEntity)
+          apiResult <- request.anwender.betriebErstellen(
+            btrAndAdr.betriebEntity,
+            btrAndAdr.adresseEntity.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude))
+          ) flatMap {
+              baa: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = baa._1, adresseEntity = baa._2));
+            } recover {
+              //failure
+              case sqlE: SQLException => {
+                if (sqlE.getMessage.contains("betriebNameUnique")) {
+                  ApiError.errorBadRequest("Ein Betrieb mit diesem Namen existiert bereits!")
+                }
+                if (sqlE.getMessage.contains("betriebTelUnique")) {
+                  ApiError.errorBadRequest("Ein Betrieb mit dieser Telefonnummer existiert bereits!")
+                } else
+                  ApiError.errorBadRequest(sqlE.getMessage)
+              }
+              case e: Exception => {
+                e.printStackTrace()
+                ApiError.errorBadRequest("Invalid data..")
+              }
             }
-            if (sqlE.getMessage.contains("betriebTelUnique")) {
-              ApiError.errorBadRequest("Ein Betrieb mit dieser Telefonnummer existiert bereits!")
-            } else
-              ApiError.errorBadRequest(sqlE.getMessage)
-          }
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorBadRequest("Invalid data..")
-          }
+        } yield apiResult) recover {
+          case igce: InvalidGeoCoordsException => ApiError.errorBadRequest(igce.getMessage)
+          case anfe: AdressNotFoundException => ApiError.errorItemNotFound("This adress does not exist.")
         }
       }
     }
@@ -56,17 +59,23 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
   def modify(id: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](id)) { implicit request =>
     readFromRequest[BetriebAndAdresse] {
       case btrAndAdr: BetriebAndAdresse => {
-        request.leiter.betriebsInformationenVeraendern(PK[BetriebEntity](id), btrAndAdr.betriebEntity, btrAndAdr.adresseEntity)
-          .flatMap {
-            case affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
-          } recover {
-            case ua: UnauthorizedException => ApiError.errorUnauthorized
-            case e: Exception => {
-              e.printStackTrace()
-              ApiError.errorBadRequest("Invalid data..")
+        (for {
+          geo: GeoCoords <- as.getCoordsOfAdress(btrAndAdr.adresseEntity)
+          apiResult <- request.leiter.betriebsInformationenVeraendern(PK[BetriebEntity](id), btrAndAdr.betriebEntity,
+            btrAndAdr.adresseEntity.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude)))
+            .flatMap {
+              case affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
+            } recover {
+              case ua: UnauthorizedException => ApiError.errorUnauthorized
+              case e: Exception => {
+                e.printStackTrace()
+                ApiError.errorBadRequest("Invalid data..")
+              }
             }
-          }
-
+        } yield apiResult) recover {
+          case igce: InvalidGeoCoordsException => ApiError.errorBadRequest(igce.getMessage)
+          case anfe: AdressNotFoundException => ApiError.errorItemNotFound("This adress does not exist.")
+        }
       }
     }
   }
@@ -278,6 +287,21 @@ class Betrieb @Inject() (val messagesApi: MessagesApi, val config: Configuration
       case e: Exception => {
         e.printStackTrace()
         ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+  }
+
+  def search(query: String, lat: Double, long: Double, umkreis: Int, page: Int, size: Int) = ApiAction { implicit request =>
+    val ua = new UnregistrierterAnwender
+    ua.anbieterSuchen(suchBegriff = query, latitude = lat, longitude = long, umkreisM = umkreis, page = page, size = size) flatMap {
+      case (seq: Seq[(BetriebAndAdresse, String)]) => {
+        if (seq.length > 0) System.out.println(seq(0)._2)
+        ok(seq)
+      }
+    } recover {
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest(e.getMessage)
       }
     }
   }

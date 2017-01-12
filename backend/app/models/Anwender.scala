@@ -4,6 +4,7 @@ import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
 import org.mindrot.jbcrypt.BCrypt
+import play.api.libs.ws.WSClient
 import slick.dbio.{ DBIO, DBIOAction }
 
 import scala.concurrent.{ Await, Future }
@@ -122,9 +123,14 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def betriebBewerten(betriebPrimaryKey: PK[BetriebEntity], bewertung: Int) = {
-    //@todo maybe implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, may implement it")
+  def meineMitarbeiterBetriebe() = {
+    //@todo implement me and return Future[Boolean]
+    throw new NotImplementedError("Not implemented yet, implement it")
+  }
+
+  def meineLeiterBetriebe() = {
+    //@todo implement me and return Future[Boolean]
+    throw new NotImplementedError("Not implemented yet, implement it")
   }
 
   def betriebAnzeigen(id: PK[BetriebEntity]) = {

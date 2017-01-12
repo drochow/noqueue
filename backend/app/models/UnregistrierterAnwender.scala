@@ -4,7 +4,7 @@ import java.sql.SQLException
 import javax.security.auth.login.CredentialException
 
 import api.jwt.TokenPayload
-import models.db.{ AnwenderEntity, BetriebEntity, DienstleistungsTypEntity, PK }
+import models.db._
 import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.Future
@@ -20,9 +20,9 @@ class UnregistrierterAnwender extends Base {
     db.run(
       dal.getAnwenderByName(nutzerName)
     ) map {
-        anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.")
+        anw: AnwenderEntity => if (BCrypt.checkpw(password, anw.password)) anw else throw new CredentialException("Invalid credentials.(PW)" + BCrypt.checkpw(password, anw.password) + password + " -- " + anw.password)
       } recover {
-        case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.")
+        case nf: NoSuchElementException => throw new CredentialException("Invalid credentials.(nutzerName)")
       }
   }
 
@@ -40,13 +40,13 @@ class UnregistrierterAnwender extends Base {
 
   def anbieterSuchen(
     suchBegriff: String,
-    dienstleistungen: Future[Seq[DienstleistungsTypEntity]],
+    umkreisM: Int,
     longitude: Double,
     latitude: Double,
-    umkreisM: Int
-  ) = {
-    throw new NotImplementedError("Not implemented yet, implement it")
-    //@todo implement me
+    page: Int,
+    size: Int
+  ): Future[Seq[(BetriebAndAdresse, String)]] = {
+    db.run(dal.searchBetrieb(suchBegriff, umkreisM, longitude, latitude, page, size));
   }
 
   def registrieren(anwender: AnwenderEntity) = {

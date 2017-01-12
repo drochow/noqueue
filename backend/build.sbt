@@ -21,6 +21,7 @@ scalariformSettings
 
 libraryDependencies ++= Seq(
   //specs2 is not being used for now
+  ws,
   specs2 % Test,
 	//"org.specs2"            %% "specs2-matcher-extra"       % "3.8.5"           % Test,
   "com.nimbusds"          % "nimbus-jose-jwt"             % "4.11.2",
@@ -45,7 +46,7 @@ routesGenerator := InjectedRoutesGenerator
 maintainer := "David Kaatz"
 
 // exposing the play ports
-dockerExposedPorts in Docker := Seq(9000, 9443)
+//dockerExposedPorts in Docker := Seq(9000, 9443)
 
 
 // run this with: docker run -p 9000:9000 NoQueue:1.0-SNAPSHOT
