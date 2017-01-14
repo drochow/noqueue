@@ -140,6 +140,19 @@ object JsonCombinators {
       )
   }
 
+  implicit val betriebAndAdresseWithDistanceWrites: Writes[(BetriebAndAdresse, String)] = new Writes[(BetriebAndAdresse, String)] {
+    def writes(btr: (BetriebAndAdresse, String)) =
+      Json.obj(
+        "id" -> btr._1.betriebEntity.id.getOrElse(PK[BetriebEntity](0L)).value,
+        "name" -> btr._1.betriebEntity.name,
+        "kontaktEmail" -> btr._1.betriebEntity.kontaktEmail,
+        "tel" -> btr._1.betriebEntity.tel,
+        "oeffnungszeiten" -> btr._1.betriebEntity.oeffnungszeiten,
+        "adresse" -> Json.toJson(btr._1.adresseEntity),
+        "distance" -> btr._2
+      )
+  }
+
   implicit val betriebReads: Reads[BetriebAndAdresse] = (
     (__ \ "name").read[String](minLength[String](1)) and
     (__ \ "oeffnungszeiten").read[String](minLength[String](1)) and

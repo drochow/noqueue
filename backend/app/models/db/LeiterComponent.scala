@@ -14,7 +14,7 @@ trait LeiterComponent {
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
     def betriebId = column[PK[BetriebEntity]]("ANB_ID")
 
-    def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
+    def anwender = foreignKey("LTD_ANW_FK", anwenderId, anwenders)(_.id)
     def betriebeFK = foreignKey("BTR_FK", betriebId, betriebe)(_.id)
 
     /**

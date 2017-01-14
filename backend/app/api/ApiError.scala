@@ -48,7 +48,7 @@ object ApiError {
   final val ERROR_BODY_MISSED = 124
   final val ERROR_BODY_MALFORMED = 125
 
-  final val ERROR_ITEM_NOTFOUND = 130
+  final val ERROR_ITEM_NOTFOUND = 404
 
   final val ERROR_BADREQUEST = 400
   final val ERROR_UNAUTHORIZED = 401
@@ -91,6 +91,8 @@ object ApiError {
   def errorMethodForbidden(implicit m: Messages) = apply(ERROR_FORBIDDEN, Messages("api.error.forbidden"))
 
   def errorItemNotFound(implicit m: Messages) = apply(ERROR_ITEM_NOTFOUND, Messages("api.error.item.notfound"))
+  def errorItemNotFound(error: String)(implicit m: Messages) = apply(ERROR_ITEM_NOTFOUND, Messages("api.error.item.notfound", error))
+
   def errorCustom(error: String)(implicit m: Messages) = apply(ERROR_CUSTOM, Messages(error))
   def errorInternal(error: String)(implicit m: Messages): ApiError = apply(ERROR_INTERNAL_SERVER, Messages(error))
   def errorInternal(implicit m: Messages): ApiError = errorInternal("api.error.internal")
