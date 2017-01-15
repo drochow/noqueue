@@ -32,7 +32,7 @@ GET             /anwender/directory/:id             controllers.Anwender.show(id
 
 
 POST            /betrieb                                controllers.Betrieb.create
-GET             /betrieb                                controllers.Betrieb.search(query: String, lat: Double, long: Double, umkreis: Int ?=1000, page: Int ?=0, size: Int ?= 10)
+GET             /betrieb                                controllers.Betrieb.search(q: String, lat: Double, long: Double, radius: Int ?=10000, page: Int ?=0, size: Int ?= 10)
 GET             /betrieb/:id                            controllers.Betrieb.show(id: Long)
 PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
 POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)

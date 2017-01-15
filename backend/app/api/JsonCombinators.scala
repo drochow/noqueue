@@ -149,7 +149,7 @@ object JsonCombinators {
         "tel" -> btr._1.betriebEntity.tel,
         "oeffnungszeiten" -> btr._1.betriebEntity.oeffnungszeiten,
         "adresse" -> Json.toJson(btr._1.adresseEntity),
-        "distance" -> btr._2
+        "distanz" -> btr._2
       )
   }
 
