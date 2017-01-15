@@ -77,14 +77,18 @@ export class ShopsProvider {
     return this.httpProvider.delete(route);
   }
 
-  // @TODO
   promoteEmployee(userID, shopID){
-    // ..
+    this.fireEmployee(userID, shopID).
+        subscribe(
+        () => this.hireManager(userId, shopID)
+    );
   }
 
-  // @TODO
   demoteManager(userID, shopID){
-    // ..
+    this.fireManager(userID, shopID).
+        subscribe(
+        () => this.hireEmployee(userID, shopID)
+    );
   }
 
   private mapToExpectedJson(shop: any){
