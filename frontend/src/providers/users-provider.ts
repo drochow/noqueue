@@ -38,7 +38,7 @@ export class UsersProvider {
       adresse: {
         plz: data.zip,
         stadt: data.city,
-        straße: data.street,
+        strasse: data.street,
         hausNummer: data.streetNr
       }
     };

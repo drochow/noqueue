@@ -121,14 +121,14 @@ trait BetriebComponent {
           LIMIT $size
           OFFSET $offset
           """.as[(BetriebAndAdresse, String)]
-//    System.out.println(result.statements)
-//    System.out.println(result.statements)
-//    System.out.println("Query: " + q);
-//    System.out.println("latitude: " + latitude);
-//    System.out.println("longitude: " + longitude);
-//    System.out.println("UmkreisDouble: " + umkreisDouble);
-//    System.out.println("offset: " + offset);
-//    System.out.println("limit: " + size);
+    //    System.out.println(result.statements)
+    //    System.out.println(result.statements)
+    //    System.out.println("Query: " + q);
+    //    System.out.println("latitude: " + latitude);
+    //    System.out.println("longitude: " + longitude);
+    //    System.out.println("UmkreisDouble: " + umkreisDouble);
+    //    System.out.println("offset: " + offset);
+    //    System.out.println("limit: " + size);
     result
   }
 

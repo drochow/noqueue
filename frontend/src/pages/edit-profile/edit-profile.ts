@@ -76,8 +76,6 @@ export class EditProfilePage {
     }
     if(this.error) return;
 
-    console.log("no errors");
-
     // @TODO - dont send empty properties?
     let data = {
       username: this.username,
@@ -87,10 +85,16 @@ export class EditProfilePage {
       zip: this.zip,
       city: this.city
     };
+    // @TODO - inform the user that the address must be an existing one
     this.users.changeProfileInfo(data)
       .subscribe(
         () => {
           console.log("Changed data");
+          this.navCtrl.pop();
+        },
+        (error) => {
+          let jsonError = JSON.parse(error);
+          this.registerError(jsonError.message);
         }
       )
   }

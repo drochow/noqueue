@@ -16,7 +16,7 @@ export class HttpProvider {
   // Server configuration
   private localServer = "http://localhost:9000";
   private fakeServer = "http://localhost:3000";
-  public workingServer = this.fakeServer;
+  public workingServer = this.localServer;
 
   public ROUTES = {
     authentication: "/auth",
@@ -69,7 +69,7 @@ export class HttpProvider {
 
   post(route: string, body: any): Observable<any>{
     let jsonBody = JSON.stringify(body);
-    console.log("Sending POST request to " + route + " with body: ", jsonBody);
+    console.log("Sending POST request to " + route + " with body: ", body);
     return this.http.post(this.workingServer + route, jsonBody, this.requestOptions())
       .map(response => {
         try {
@@ -81,11 +81,13 @@ export class HttpProvider {
   }
 
   patch(route: string, body: any): Observable<any>{
+    console.log("Sending PATCH request to " + route + " with body: ", body);
     return this.http.patch(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => response.json())
   }
 
   put(route: string, body: any): Observable<any>{
+    console.log("Sending PUT request to " + route + " with body: ", body);
     return this.http.put(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => {
         try {
@@ -97,6 +99,7 @@ export class HttpProvider {
   }
 
   delete(route: string): Observable<any>{
+    console.log("Sending DELETE request to " + route);
     return this.http.delete(this.workingServer + route, this.requestOptions())
       .map(response => {
         try {
