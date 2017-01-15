@@ -24,7 +24,7 @@ api.error.header.notfound=Header nicht gefunden: {0}
 api.error.header.malformed=Ungültiger header: {0}
 api.error.body.missed=Die Anfrage benötigt einen body
 api.error.body.malformed=Ungültiger body
-api.error.item.notfound=Item nicht gefunden
+api.error.item.notfound=Item nicht gefunden {0}
 
 
 ################################################################################################

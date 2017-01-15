@@ -16,16 +16,6 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
 
   lazy val mitarbeiterComposition: Future[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)] = db.run(mitarbeiterAction)
 
-  def wsBeitrittOeffnen() = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  def wsBeitrittVerhindern() = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
   def wsSchließen(nachricht: String) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")

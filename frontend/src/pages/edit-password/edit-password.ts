@@ -21,13 +21,38 @@ export class EditPasswordPage {
   confirmPassword: string;
   error = false;
   errorMessage = "";
+  email = "";
+  username = "";
 
   constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {}
 
   ionViewDidLoad() {
+    this.users.getMe()
+      .subscribe(
+        (user) => {
+            this.email = user.nutzerEmail;
+            this.username = user.nutzerName;
+        },
+        (error) => {
+          this.registerError(error || "Couldnt get user from server");
+        }
+      )
   }
 
   changePassword(){
+    if(!this.validator.passwordMatching(this.confirmPassword, this.newPassword)){
+      this.registerError("Passwords not matching");
+    }
+    if(!this.validator.password(this.newPassword)){
+      this.registerError("New Password not valid");
+    }
+    if(this.error) return;
+
+    this.users.changePassword({username: this.username, email: this.email, password: this.newPassword})
+      .subscribe(
+        () => this.navCtrl.pop(),
+        (error) => this.registerError(error || "Couldn't save password")
+      );
     //..
   }
 

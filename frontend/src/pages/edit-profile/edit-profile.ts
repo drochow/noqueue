@@ -44,7 +44,7 @@ export class EditProfilePage {
         (me) => {
             this.username = me.nutzerName || "",
             this.email = me.nutzerEmail || "",
-            this.street = me.adresse.strasse || "",
+            this.street = me.adresse.straße || "",
             this.streetNr = me.adresse.hausNummer || "",
             this.zip = me.adresse.plz || "",
             this.city = me.adresse.stadt || ""

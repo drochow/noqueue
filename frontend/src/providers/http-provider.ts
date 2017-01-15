@@ -59,6 +59,7 @@ export class HttpProvider {
       parameters.set(attribute, searchOptions[attribute]);
     }
     options.search = parameters;
+    console.log("GET to " + this.workingServer + route);
 
     return this.http.get(this.workingServer + route, options)
       .map(response => {

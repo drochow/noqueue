@@ -12,18 +12,20 @@ import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import models.{ Anwender => AnwenderModel, _ }
 import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
+import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Anwender @Inject() (val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
@@ -79,17 +81,28 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
     }
   }
 
+  private def addCoordinatesIfPresent(adr: Option[AdresseEntity], geo: GeoCoords): Option[AdresseEntity] =
+    if (adr.isEmpty) adr else Some(adr.get.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude)))
+
   def profilAustauschen = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(AnwenderEntity, Option[AdresseEntity])] {
-      case (anw, adrO) =>
-        request.anwender.anwenderInformationenAustauschen(anw, adrO) flatMap {
+      case (anw: AnwenderEntity, adrO: Option[AdresseEntity]) => {
+        (for {
+          geo: GeoCoords <- if (adrO.isEmpty) Future.successful[GeoCoords](GeoCoords(0.00, 0.00)) else as.getCoordsOfAdress(adrO.get)
+          updateSuccessfull <- request.anwender.anwenderInformationenAustauschen(anw, addCoordinatesIfPresent(adrO, geo))
+        } yield (updateSuccessfull)) flatMap {
           bool =>
             if (bool) {
               accepted("Your Input was Accepted")
             } else {
-              ApiError.errorInternal("put didn't work")
+              ApiError.errorInternal("Unable to save provided Data...")
             }
+
+        } recover {
+          case igce: InvalidGeoCoordsException => ApiError.errorBadRequest(igce.getMessage)
+          case anfe: AdressNotFoundException => ApiError.errorItemNotFound("The provided adress does not exist.")
         }
+      }
     }
   }
 
@@ -115,6 +128,7 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
 
   val oldPwAndNewPwReads = ((__ \ "oldPassword").read[String] and
     (__ \ "newPassword").read[String])((oldPassword, newPassword) => (oldPassword, newPassword))
+
   def pwAendern = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(String, String)] {
       case passwords =>
@@ -158,4 +172,15 @@ class Anwender @Inject() (val messagesApi: MessagesApi, val config: Configuratio
     }
   }
 
+  def myBetriebe = SecuredApiAction { implicit request =>
+    request.anwender.meineBetriebe() flatMap {
+      betriebe => ok(betriebe)
+    } recover {
+      case nfe: NoSuchElementException => ApiError.errorAnwenderNotFound
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+      }
+    }
+  }
 }

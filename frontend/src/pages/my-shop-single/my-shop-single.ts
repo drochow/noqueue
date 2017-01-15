@@ -63,7 +63,7 @@ export class MyShopSinglePage {
             name: shop.name,
             phone: shop.tel,
             email: shop.kontaktEmail,
-            openingHours: shop.oeffnungsZeiten,
+            openingHours: shop.oeffnungszeiten,
             address: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
           }
         },
@@ -80,7 +80,7 @@ export class MyShopSinglePage {
       .subscribe(
         (managers) => {
           this.managers = managers;
-          this.currentManagerWorking = this.managers.filter(m => m.userID && m.userID === this.auth.getUserId())[0].anwesend;
+          this.currentManagerWorking = this.managers.filter(m => m.anwenderId && m.anwenderId === this.auth.getUserId())[0].anwesend;
         },
         (error) => this.registerError(error.message || "Something went wrong")
       );

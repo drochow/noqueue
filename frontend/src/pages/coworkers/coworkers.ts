@@ -58,11 +58,11 @@ export class CoworkersPage {
 
   hireEmployee(slidingItem, id){
     slidingItem.close();
-    this.shopsProvider.hireEmployee(id, this.shopID)
+    this.shopsProvider.hireEmployee(id, this.shopID, true)
       .subscribe(
         () => {
           this.users.forEach(u => {
-            if(u.userID === id){
+            if(u.id === id){
               u.employee = true;
             }
           })
@@ -73,11 +73,11 @@ export class CoworkersPage {
 
   hireManager(slidingItem, id){
     slidingItem.close();
-    this.shopsProvider.hireManager(id, this.shopID)
+    this.shopsProvider.hireManager(id, this.shopID, false)
       .subscribe(
         () => {
           this.users.forEach(u => {
-            if(u.userID === id){
+            if(u.id === id){
               u.manager = true;
             }
           })

@@ -4,7 +4,6 @@ import 'rxjs/add/operator/map';
 import { HttpProvider } from '../providers/http-provider';
 import { Storage } from '@ionic/storage';
 import { JwtHelper } from 'angular2-jwt';
-import { Observable } from 'rxjs/Observable';
 
 /*
   Generated class for the AuthenticationProvider provider.
@@ -68,7 +67,7 @@ export class AuthenticationProvider {
 
   signup(username: string, email: string, password: string): Promise<any>{
     let auth = this;
-    let body = JSON.stringify({nutzerName: username, nutzerEmail: email, password});
+    let body = {nutzerName: username, nutzerEmail: email, password};
     return new Promise(function(resolve, reject){
       auth.httpProvider.post(auth.httpProvider.ROUTES.users, body)
         .subscribe(

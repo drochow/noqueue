@@ -33,8 +33,8 @@
       <p>Results:</p>
     </ion-list-header>
     <ion-item *virtualItem="let shop">
-      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.name}}</p>
-      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.tel}}</p>
+      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
+      <p (click)="showShopSinglePage(shop.id)">{{shop.tel}}</p>
     </ion-item>
   </ion-list>
 

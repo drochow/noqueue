@@ -60,7 +60,7 @@ export class ServiceSinglePage {
           this.service = {
             type: service.typ,
             duration: service.dauer,
-            description: service.beschreibung
+            description: service.kommentar
           }
         },
         (error) => console.log(error)

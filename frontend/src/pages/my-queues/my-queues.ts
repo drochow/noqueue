@@ -33,6 +33,7 @@ export class MyQueuesPage {
     this.error = false;
     this.errorMessage = "";
 
+    // @TODO - use getMyShops() instead and make extra request for the name of the shop
     this.queuesProvider.getMyQueues()
       .subscribe(
         (queues) => this.queues = queues,

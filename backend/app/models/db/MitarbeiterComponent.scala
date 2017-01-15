@@ -13,7 +13,7 @@ trait MitarbeiterComponent {
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
     def anwesend = column[Boolean]("ANWESEND")
     def anbieter = foreignKey("BETR_FK", betriebId, betriebe)(_.id)
-    def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
+    def anwender = foreignKey("MTA_ANW_FK", anwenderId, anwenders)(_.id)
     def relationUnique = index("mitarbeiterUnique", (betriebId, anwenderId), unique = true)
 
     /**

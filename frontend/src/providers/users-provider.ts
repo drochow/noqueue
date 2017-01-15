@@ -17,30 +17,35 @@ export class UsersProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider) {
   }
 
-  getUsersWithName(name: string){
+  getUsersWithName(name: string) : Observable<any>{
     let searchOptions = { q: name };
-    return this.httpProvider.get(this.httpProvider.ROUTES.users, searchOptions);
+    return this.httpProvider.get(this.httpProvider.ROUTES.users + "/directory", searchOptions);
   }
 
-  getMe(){
-    return this.httpProvider.get(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId());
+  getUser(id): Observable<any>{
+    return this.httpProvider.get(this.httpProvider.ROUTES.users + "/directory/" + id);
   }
 
-  changeProfileInfo(data: any){
+  getMe() : Observable<any>{
+    // return this.httpProvider.get(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId());
+    return this.httpProvider.get(this.httpProvider.ROUTES.users);
+  }
+
+  changeProfileInfo(data: any) : Observable<any>{
     let body = {
       nutzerName: data.username,
       nutzerEmail: data.email,
       adresse: {
         plz: data.zip,
         stadt: data.city,
-        strasse: data.street,
+        straße: data.street,
         hausNummer: data.streetNr
       }
     };
-    return this.httpProvider.patch(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId(), body);
+    return this.httpProvider.put(this.httpProvider.ROUTES.users, body);
   }
 
-  changePassword(password: string){
-    return this.httpProvider.patch(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId(), {password});
+  changePassword(data: any) : Observable<any>{
+    return this.httpProvider.put(this.httpProvider.ROUTES.users + "/password", {password: data.password, nutzerName: data.username, nutzerEmail: data.email});
   }
 }

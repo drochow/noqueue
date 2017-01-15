@@ -140,6 +140,19 @@ object JsonCombinators {
       )
   }
 
+  implicit val betriebAndAdresseWithDistanceWrites: Writes[(BetriebAndAdresse, String)] = new Writes[(BetriebAndAdresse, String)] {
+    def writes(btr: (BetriebAndAdresse, String)) =
+      Json.obj(
+        "id" -> btr._1.betriebEntity.id.getOrElse(PK[BetriebEntity](0L)).value,
+        "name" -> btr._1.betriebEntity.name,
+        "kontaktEmail" -> btr._1.betriebEntity.kontaktEmail,
+        "tel" -> btr._1.betriebEntity.tel,
+        "oeffnungszeiten" -> btr._1.betriebEntity.oeffnungszeiten,
+        "adresse" -> Json.toJson(btr._1.adresseEntity),
+        "distanz" -> btr._2
+      )
+  }
+
   implicit val betriebReads: Reads[BetriebAndAdresse] = (
     (__ \ "name").read[String](minLength[String](1)) and
     (__ \ "oeffnungszeiten").read[String](minLength[String](1)) and
@@ -184,6 +197,16 @@ object JsonCombinators {
         "anwenderId" -> leiter.anwenderId,
         "betriebId" -> leiter.betriebId
       )
+  }
+
+  implicit val meineBetriebeWrites: Writes[(BetriebAndAdresse, Boolean, Boolean)] = new Writes[(BetriebAndAdresse, Boolean, Boolean)] {
+    override def writes(v: (BetriebAndAdresse, Boolean, Boolean)): JsValue = {
+      Json.obj(
+        "betrieb" -> Json.toJson(v._1),
+        "isLeiter" -> v._2,
+        "isAnwesend" -> v._3
+      )
+    }
   }
 
   implicit val wspWrites = Json.writes[WarteschlangenPlatzEntity]
