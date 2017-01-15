@@ -29,7 +29,7 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
     readFromRequest[(Long, Long)] {
       case (dlId, mitarbeiterId) =>
         val wsP = request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId)
-        ok(wsP)
-    }
+        okF(wsP)
+    }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 }

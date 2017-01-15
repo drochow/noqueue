@@ -155,9 +155,9 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   def wsFuerBestimmtenMitarbeiterBeitreten(dlId: Long, mitarbeiterId: Long): Future[WarteschlangenPlatzEntity] = {
     for {
       anwenderId <- anwender.map(_.id)
-      wspVorschlag <- WarteschlangenPlatzEntity(None, DateTime, anwenderId.get, PK[MitarbeiterEntity](mitarbeiterId), PK[DienstleistungEntity](dlId))
-      //wsp <- db.run(dal.insert(wspVorschlag))
-    } yield wspVorschlag //wsp
+
+      wsp <- db.run(dal.insert(WarteschlangenPlatzEntity(None, anwenderId.get, PK[MitarbeiterEntity](mitarbeiterId), PK[DienstleistungEntity](dlId))))
+    } yield wsp
   }
 
 }
