@@ -58,7 +58,9 @@ GET             /dlt                                 controllers.Betrieb.searchD
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
 GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)
 
+##WSP
 GET         /betrieb/:id/ws                         controllers.WarteschlangenPlatz.getWarteSchlangeOfMitarbeiter(id: Long)
+GET         /anwender/wsp                           controllers.WarteschlangenPlatz.getWarteSchlangenPlatzOfAnwender
 
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create

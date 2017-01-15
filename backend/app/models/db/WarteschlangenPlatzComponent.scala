@@ -90,5 +90,59 @@ trait WarteschlangenPlatzComponent {
         case (((wsp: WarteSchlangenPlatzTable, anw: AnwenderTable), dl: DienstleistungTable), dlt: DienstleistungsTypTable) =>
           wsp.mitarbeiterId === mitarbeiterId
       }
-    } yield (wsps._1._1._1.id, wsps._1._1._1.beginnZeitpunkt.?, wsps._1._1._1.folgePlatzId, wsps._1._1._2, wsps._1._2.dauer, wsps._2.name, wsps._1._2.id)).result.nonFusedEquivalentAction
+    } yield (
+      wsps._1._1._1.id, //wsp id
+      wsps._1._1._1.beginnZeitpunkt.?, //wsp beginn
+      wsps._1._1._1.folgePlatzId, //wsp next
+      wsps._1._1._2, //anwender entity
+      wsps._1._2.dauer, //dl dauer
+      wsps._2.name, //dl name
+      wsps._1._2.id
+    ) //dl id
+    ).result.nonFusedEquivalentAction
+
+  def getWarteschlangenPlatzOfAnwender(anwenderId: PK[AnwenderEntity]): DBIO[Option[(PK[WarteschlangenPlatzEntity], PK[MitarbeiterEntity], String, String, PK[DienstleistungEntity], Int, String)]] =
+    (for {
+      res <- warteschlangenplaetze join mitarbeiters on {
+        case (wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable) => wsp.mitarbeiterId === mt.id
+      } join anwenders on {
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), mta: AnwenderTable) => mt.anwenderId === mta.id
+      } join betriebe on {
+        case (((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable),
+          mta: AnwenderTable), bt: BetriebTable) => mt.betriebId === bt.id
+      } join dienstleistungen on {
+        case ((((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable),
+          mta: AnwenderTable), bt: BetriebTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
+      } join dienstleistungsTypen on {
+        case (((((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable),
+          mta: AnwenderTable), bt: BetriebTable), dl: DienstleistungTable),
+          dlt: DienstleistungsTypTable) => dlt.id === dl.dlTypId
+      } filter {
+        case (((((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable),
+          mta: AnwenderTable), bt: BetriebTable), dl: DienstleistungTable),
+          dlt: DienstleistungsTypTable) => wsp.anwenderId === anwenderId
+      }
+    } yield (
+      res._1._1._1._1._1.id, //id of wsp
+      res._1._1._1._1._1.mitarbeiterId, //id of mitarbeiter
+      res._1._1._1._2.nutzerName, //name of mitarbeiter
+      res._1._1._2.name, //name of betrieb
+      res._1._2.id, //id of dl
+      res._1._2.dauer, //dauer of dl
+      res._2.name //name of dlt
+    )).result.headOption
+
+  def getPrevWarteschlangenplaetze(mitarbeiterId: PK[MitarbeiterEntity], wspId: PK[WarteschlangenPlatzEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)]] = {
+    (for {
+      res <- warteschlangenplaetze join mitarbeiters on {
+        case (wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable) => wsp.mitarbeiterId === mt.id
+      } join dienstleistungen on {
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
+      } filter {
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId < mitarbeiterId
+      } filter {
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
+      }
+    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt.?, res._2.dauer)).result.nonFusedEquivalentAction
+  }
 }
