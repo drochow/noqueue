@@ -24,6 +24,7 @@ PUT             /anwender                            controllers.Anwender.profil
 PATCH           /anwender                            controllers.Anwender.profilBearbeiten
 PUT             /anwender/password                   controllers.Anwender.pwAendern
 PATCH           /anwender/password                   controllers.Anwender.pwAendern
+GET             /anwender/betrieb                   controllers.Anwender.myBetriebe
 
 GET             /anwender/directory                 controllers.Anwender.search(q: Option[String] ?=None, page: Int ?= 0, size: Int ?= 10)
 GET             /anwender/directory/:id             controllers.Anwender.show(id: Long)
@@ -31,13 +32,14 @@ GET             /anwender/directory/:id             controllers.Anwender.show(id
 
 
 POST            /betrieb                                controllers.Betrieb.create
-GET             /betrieb                                controllers.Betrieb.search(query: String, lat: Double, long: Double, umkreis: Int ?=1000, page: Int ?=0, size: Int ?= 10)
+GET             /betrieb                                controllers.Betrieb.search(q: String, lat: Double, long: Double, radius: Int ?=10000, page: Int ?=0, size: Int ?= 10)
 GET             /betrieb/:id                            controllers.Betrieb.show(id: Long)
 PUT             /betrieb/:id                            controllers.Betrieb.modify(id: Long)
 POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addMitarbeiter(id: Long)
 DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
 GET            /betrieb/:id/mitarbeiter                 controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
 PUT            /betrieb/:id/mitarbeiter                 controllers.Betrieb.mitarbeiterAnwesenheitVeraendern(id: Long)
+
 
 POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter(id: Long)
 DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLeiter(id: Long, lid: Long)

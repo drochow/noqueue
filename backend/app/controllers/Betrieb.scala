@@ -291,9 +291,9 @@ class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, va
     }
   }
 
-  def search(query: String, lat: Double, long: Double, umkreis: Int, page: Int, size: Int) = ApiAction { implicit request =>
+  def search(q: String, lat: Double, long: Double, radius: Int, page: Int, size: Int) = ApiAction { implicit request =>
     val ua = new UnregistrierterAnwender
-    ua.anbieterSuchen(suchBegriff = query, latitude = lat, longitude = long, umkreisM = umkreis, page = page, size = size) flatMap {
+    ua.anbieterSuchen(suchBegriff = q, latitude = lat, longitude = long, umkreisM = radius, page = page, size = size) flatMap {
       case (seq: Seq[(BetriebAndAdresse, String)]) => {
         if (seq.length > 0) System.out.println(seq(0)._2)
         ok(seq)

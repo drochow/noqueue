@@ -149,7 +149,7 @@ object JsonCombinators {
         "tel" -> btr._1.betriebEntity.tel,
         "oeffnungszeiten" -> btr._1.betriebEntity.oeffnungszeiten,
         "adresse" -> Json.toJson(btr._1.adresseEntity),
-        "distance" -> btr._2
+        "distanz" -> btr._2
       )
   }
 
@@ -197,6 +197,16 @@ object JsonCombinators {
         "anwenderId" -> leiter.anwenderId,
         "betriebId" -> leiter.betriebId
       )
+  }
+
+  implicit val meineBetriebeWrites: Writes[(BetriebAndAdresse, Boolean, Boolean)] = new Writes[(BetriebAndAdresse, Boolean, Boolean)] {
+    override def writes(v: (BetriebAndAdresse, Boolean, Boolean)): JsValue = {
+      Json.obj(
+        "betrieb" -> Json.toJson(v._1),
+        "isLeiter" -> v._2,
+        "isAnwesend" -> v._3
+      )
+    }
   }
 
   //

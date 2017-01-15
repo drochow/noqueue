@@ -123,14 +123,27 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def meineMitarbeiterBetriebe() = {
-    //@todo implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  def meineLeiterBetriebe() = {
-    //@todo implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def meineBetriebe(): Future[Seq[(BetriebAndAdresse, Boolean, Boolean)]] = {
+    for {
+      anw <- anwender
+      leiter <- db.run(dal.getBetriebeWhereAnwenderIsLeiter(anw.id.get)) map {
+        case (ll: Seq[(BetriebEntity, AdresseEntity, LeiterEntity)]) => ll.map(
+          (l: (BetriebEntity, AdresseEntity, LeiterEntity)) => {
+            System.out.println(l._1.name)
+            (BetriebAndAdresse(l._1, l._2), true, false)
+          }
+        )
+      } recover {
+        case nse: NoSuchElementException => Seq.empty
+      }
+      mitarbeiter <- db.run(dal.getBetriebeWhereAnwenderIsMitarbeiter(anw.id.get)) map {
+        case (ml: Seq[(BetriebEntity, AdresseEntity, MitarbeiterEntity)]) => ml.map(
+          (m: (BetriebEntity, AdresseEntity, MitarbeiterEntity)) => (BetriebAndAdresse(m._1, m._2), false, m._3.anwesend)
+        )
+      } recover {
+        case nse: NoSuchElementException => Seq.empty
+      }
+    } yield (leiter ++ mitarbeiter)
   }
 
   def betriebAnzeigen(id: PK[BetriebEntity]) = {
@@ -156,5 +169,4 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       anw <- anwender
       leiter <- db.run(dal.getLeiterOfById(betriebId, anw.id.get))
     } yield (leiter)
-
 }
