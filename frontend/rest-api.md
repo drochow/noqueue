@@ -29,7 +29,7 @@ Name          	| Route            | Request                    | Response | Call
 -----------------|------------------|-------------------------|----------|---
 Get Shops | GET /betrieb<br>?size=5<br>&page=1<br>&q=filter<br>&radius=2 | size<br>page<br>q<br>radius | [ id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}<br>distanz ] | dashboard.ts<br>shops.ts
 **~~Get Shops Nearby~~** | | | 
-==Get My Shops== | GET /anwender/betrieb | | [id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}<br>distanz<br>isLeiter (bool)<br>isAnwesend (bool)] | dashboard.ts<br>my-shops.ts
+Get My Shops | GET /anwender/betrieb | | [betrieb: {id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}}<br>isLeiter (bool)<br>isAnwesend (bool)] | dashboard.ts<br>my-shops.ts
 Get Shop | GET /betrieb/:id | | id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}<br>distanz | my-shop-single.ts<br>shop-info.ts<br>shop-single.ts
 Create Shop | POST /betrieb | name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse} | | shop-info.ts
 Edit Shop | PUT /betrieb/:id | name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse} | | shop-info.ts
