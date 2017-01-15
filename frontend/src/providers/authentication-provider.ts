@@ -57,7 +57,7 @@ export class AuthenticationProvider {
           (token) => {
             auth.storage.set('token', token);
             auth.token = token;
-            auth.httpProvider.readToken();
+            auth.httpProvider.setToken(token);
             resolve("Logged In");
           },
           (error) => reject(error.message)
@@ -74,7 +74,7 @@ export class AuthenticationProvider {
           (token) => {
             auth.storage.set('token', token);
             auth.token = token;
-            auth.httpProvider.readToken();
+            auth.httpProvider.setToken(token);
             resolve("Signed Up");
           },
           (error) => reject(error)

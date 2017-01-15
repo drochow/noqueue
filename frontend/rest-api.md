@@ -8,8 +8,8 @@
 
 Name          	| Route            | Request                    | Response | Calling Files 
 -----------------|------------------|-------------------------|----------|---
-Login		 	 	| POST /auth       | nutzerName<br>password | token | login.ts
-Signup          | POST /anwender   | nutzerName<br>nutzerEmail<br>password|token | signup.ts 
+✔︎ Login		 	 	| POST /auth       | nutzerName<br>password | token | login.ts
+✔︎ Signup          | POST /anwender   | nutzerName<br>nutzerEmail<br>password|token | signup.ts 
 
 
 ## UsersProvider
@@ -18,9 +18,9 @@ Name          	| Route            | Request                    | Response | Call
 -----------------|------------------|-------------------------|----------|---
 Get Users with name | GET /anwender/directory<br>?q=name | q=name| [ id<br>nutzerName<br>nutzerEmail ] | coworkers.ts
 Get User | GET /anwender/directory/:id | | id<br>nutzerName<br>nutzerEmail
-Get Me | GET /anwender | | [ id<br>nutzerName<br>nutzerEmail<br>adresse:{<br>id,straße,hausNummer,plz,stadt<br>}] | edit-profile.ts
-Change Profile Info | PUT /anwender | [nutzerName<br>nutzerEmail<br>{adresse}] | | edit-profile.ts
-Change Password | PUT /anwender/password | password<br>nutzerName<br>nutzerEmail | | edit-password.ts
+✔︎ Get Me | GET /anwender | | [ id<br>nutzerName<br>nutzerEmail<br>adresse:{<br>id,straße,hausNummer,plz,stadt<br>}] | edit-profile.ts
+✔︎ Change Profile Info | PUT /anwender | [nutzerName<br>nutzerEmail<br>{adresse}] | | edit-profile.ts
+✔︎ Change Password | PUT /anwender/password | password<br>nutzerName<br>nutzerEmail | | edit-password.ts
 
 
 ## ShopsProvider

@@ -46,6 +46,6 @@ export class UsersProvider {
   }
 
   changePassword(data: any) : Observable<any>{
-    return this.httpProvider.put(this.httpProvider.ROUTES.users + "/password", {password: data.password, nutzerName: data.username, nutzerEmail: data.email});
+    return this.httpProvider.put(this.httpProvider.ROUTES.users + "/password", {oldPassword: data.oldPassword, newPassword: data.newPassword, nutzerName: data.username, nutzerEmail: data.email});
   }
 }

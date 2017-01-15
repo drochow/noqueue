@@ -93,7 +93,9 @@ export class EditProfilePage {
           this.navCtrl.pop();
         },
         (error) => {
-          let jsonError = JSON.parse(error);
+          console.log("Error while updating profile info: ", error);
+          let jsonError = JSON.parse(error._body);
+          console.log("Error ", jsonError);
           this.registerError(jsonError.message);
         }
       )
