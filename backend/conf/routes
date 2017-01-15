@@ -39,6 +39,7 @@ POST            /betrieb/:id/mitarbeiter                controllers.Betrieb.addM
 DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
 GET            /betrieb/:id/mitarbeiter                 controllers.Betrieb.listMitarbeiter(id: Long, page: Int ?=0, size: Int ?= 10)
 PUT            /betrieb/:id/mitarbeiter                 controllers.Betrieb.mitarbeiterAnwesenheitVeraendern(id: Long)
+DELETE          /betrieb/:id/mitarbeiter/:mid           controllers.Betrieb.removeMitarbeiter(id: Long, mid: Long)
 
 
 POST            /betrieb/:id/leiter                controllers.Betrieb.addLeiter(id: Long)
@@ -50,6 +51,8 @@ PUT            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.upd
 DELETE            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
 GET             /betrieb/:id/dienstleistung         controllers.Betrieb.listDienstleistung(id: Long, page: Int ?=0, size: Int ?= 10)
 
+POST            /warteschlangenplatz                 controllers.WarteschlangenPlatz.create
+
 GET             /dlt                                 controllers.Betrieb.searchDLT(q: String ?="", page: Int ?=0, size: Int ?= 10)
 
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
@@ -59,7 +62,7 @@ GET          /betrieb/leitertest/:id                           controllers.Betri
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
 POST          /auth                               controllers.Anwender.auth
-POST           /dlts                              controllers.Application.getDienstleistungsTypen
+GET           /dlts                              controllers.Application.getDienstleistungsTypen( page: Int ?=0, size: Int ?= 10)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)

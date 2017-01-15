@@ -21,22 +21,22 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def wspBearbeitungBeginnen(wsp: Future[WarteSchlangenPlatzEntity]) = {
+  def wspBearbeitungBeginnen(wsp: Future[WarteschlangenPlatzEntity]) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def wspBearbeitungBeginnen(wspPrimaryKey: PK[WarteSchlangenPlatzEntity]) = {
+  def wspBearbeitungBeginnen(wspPrimaryKey: PK[WarteschlangenPlatzEntity]) = {
     //@todo maybe implement me
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wspBearbeitungBeenden(wsp: Future[WarteSchlangenPlatzEntity]) = {
+  def wspBearbeitungBeenden(wsp: Future[WarteschlangenPlatzEntity]) = {
     //@todo implement me
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def wspBearbeitungBeenden(wspPrimaryKey: PK[WarteSchlangenPlatzEntity]) = {
+  def wspBearbeitungBeenden(wspPrimaryKey: PK[WarteschlangenPlatzEntity]) = {
     //@todo maybe implement me
     throw new NotImplementedError("Not implemented yet, may implement it")
   }

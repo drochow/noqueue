@@ -97,11 +97,8 @@ class Application @Inject() (val messagesApi: MessagesApi, val config: Configura
   }
 
   //please put this method where it belongs, but for now i will leave it here
-  def getDienstleistungsTypen = ApiActionWithBody { implicit request =>
-    readFromRequest[(Long, Long)] {
-      case (limit, offset) =>
-        okF((new UnregistrierterAnwender).getDienstleistungsTypen(limit, offset))
-    }
+  def getDienstleistungsTypen(page: Int, size: Int) = ApiActionWithBody { implicit request =>
+    okF((new UnregistrierterAnwender).getDienstleistungsTypen(page, size))
   }
 
 }
