@@ -63,29 +63,140 @@ trait BetriebComponent {
       leiter: LeiterEntity <- insert(LeiterEntity(anwenderId = anw.id.get, betriebId = btr.id.get))
     } yield (btr, adr)).transactionally
 
+  /**
+   *
+   * @param id
+   * @return
+   */
   def getBetriebById(id: PK[BetriebEntity]): DBIO[BetriebEntity] = betriebe.filter(_.id === id).result.head
 
+  /**
+   *
+   * @param id
+   * @return
+   */
   def getBetriebWithAdresseById(id: PK[BetriebEntity]): DBIO[(BetriebEntity, AdresseEntity)] =
     (betriebe join adresses on (_.adresseId === _.id)).filter {
       case (betrieb, adresse) => betrieb.id === id
     }.result.head
 
+  /**
+   *
+   * @param id
+   * @param betrieb
+   * @param adresse
+   * @return
+   */
   def update(id: PK[BetriebEntity], betrieb: BetriebEntity, adresse: AdresseEntity): DBIO[Int] =
     (for {
       adr: AdresseEntity <- findOrInsert(adresse)
       count: Int <- betriebe.filter(_.id === id).update(betrieb.copy(adresseId = adr.id.get, id = Option(id)))
     } yield count).transactionally
 
+  /**
+   *
+   * @param betriebId
+   * @param anwenderId
+   * @return
+   */
   def addMitarbeiter(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[MitarbeiterEntity] =
     insert(MitarbeiterEntity(anwesend = false, betriebId = betriebId, anwenderId = anwenderId))
 
+  /**
+   *
+   * @param betriebId
+   * @param page
+   * @param size
+   * @return
+   */
   def listDienstleistungOfBetrieb(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[DienstleistungEntity]] =
     (for {
       (betrieb, dienstleistung) <- (betriebe.filter(_.id === betriebId) join dienstleistungen on (_.id === _.betriebId)).drop(page * size).take(size)
     } yield dienstleistung).result
 
+  def getBetriebeWhereAnwenderIsMitarbeiter(anwId: PK[AnwenderEntity]): DBIO[Seq[(BetriebEntity, AdresseEntity, MitarbeiterEntity)]] =
+    (for {
+      m <- betriebe join adresses join mitarbeiters on {
+        case ((betrieb: BetriebTable, adr: AdresseTable), mta: MitarbeiterTable) =>
+          betrieb.adresseId === adr.id && mta.anwenderId === anwId && mta.betriebId === betrieb.id
+      }
+    } yield (m._1._1, m._1._2, m._2)).result
+
+  def getBetriebeWhereAnwenderIsLeiter(anwId: PK[AnwenderEntity]): DBIO[Seq[(BetriebEntity, AdresseEntity, LeiterEntity)]] =
+    (for {
+      l <- betriebe join adresses join leiters on {
+        case ((betrieb: BetriebTable, adr: AdresseTable), ltd: LeiterTable) =>
+          betrieb.adresseId === adr.id && ltd.anwenderId === anwId && ltd.betriebId === betrieb.id
+      }
+    } yield (l._1._1, l._1._2, l._2)).result
+
+  //  /**
+  //   * Getting all "BetriebeAndAdresse" Entities with a relation to the AnwenderEntity with the provided PrimaryKey
+  //   *
+  //   * @param anwId
+  //   * @return [{{BetriebAndAdresse}, isLeiter, isAnwesend}]
+  //   */
+  //  def getBetriebeOfAnwender(anwId: PK[AnwenderEntity]):
+  //    DBIO[(Seq[(BetriebAndAdresse, Boolean, Boolean)]] = {
+  //    val q = Option(anwId);
+  //    (for {
+  //      mitarbeiterList: Seq[(BetriebAndAdresse, Boolean, Boolean)] <- (betriebe join adresses join mitarbeiters on {
+  //        case ((betrieb: BetriebTable, adr: AdresseTable), mta: MitarbeiterTable) =>
+  //          betrieb.adresseId === adr.id && mta.anwenderId === anwId
+  //      }).map(
+  //        (m: ((BetriebTable, AdresseTable), MitarbeiterTable)) => (
+  //          BetriebAndAdresse(BetriebEntity(
+  //            name = m._1._1.name,
+  //            tel = m._1._1.tel,
+  //            oeffnungszeiten = m._1._1.oeffnungszeiten,
+  //            kontaktEmail = m._1._1.kontaktEmail,
+  //            adresseId = m._1._1.adresseId,
+  //            id = m._1._1.id
+  //          ),
+  //            AdresseEntity(
+  //              m._1._2
+  //            )
+  //          ),
+  //          false,
+  //          false)
+  //      )
+  //      leiterList: Seq[(BetriebAndAdresse, Boolean, Boolean)] <- (betriebe join adresses join leiters on {
+  //        case ((betrieb: BetriebTable, adr: AdresseTable), ltd: LeiterTable) =>
+  //          betrieb.adresseId === adr.id && ltd.anwenderId === anwId
+  //      }).map(
+  //        (l: ((BetriebTable, AdresseTable), MitarbeiterTable)) => (BetriebAndAdresse(l._1._1, l._1._2), true, false)
+  //      )
+  //    } yield (mitarbeiterList ++ leiterList)).result.
+  //  }
+
+  //    private def betriebOfAnwenderMap(betrieb: BetriebEntity,
+  //                                     adresse: AdresseEntity,
+  //                                     isLeiter: Boolean,
+  //                                     isAnwesend: Boolean): (BetriebAndAdresse, Boolean, Boolean) =
+  //      (BetriebAndAdresse(BetriebEntity(
+  //        name = betrieb.name,
+  //        tel = betrieb.tel,
+  //        oeffnungszeiten = betrieb.oeffnungszeiten,
+  //        kontaktEmail = betrieb.kontaktEmail,
+  //        adresseId = betrieb.adresseId,
+  //        id = betrieb.id
+  //      ),
+  //        AdresseEntity(
+  //          id = adresse.id,
+  //          strasse = adresse.strasse,
+  //          hausNummer = adresse.hausNummer,
+  //          plz = adresse.plz,
+  //          stadt = adresse.stadt,
+  //          latitude = adresse.latitude,
+  //          longitude = adresse.longitude
+  //        )
+  //      ),
+  //      isLeiter,
+  //      isAnwesend)
+
   /**
    *
+   * @todo error handling
    * @param suchBegriff substring wich hast to be present in BetriebEntity.name or DL.kommentar or DLT.name
    * @param umkreisM    the maximum BetriebEntity distance in meters
    * @param longitude   current position longitude coordinate
@@ -121,14 +232,15 @@ trait BetriebComponent {
           LIMIT $size
           OFFSET $offset
           """.as[(BetriebAndAdresse, String)]
-//    System.out.println(result.statements)
-//    System.out.println(result.statements)
-//    System.out.println("Query: " + q);
-//    System.out.println("latitude: " + latitude);
-//    System.out.println("longitude: " + longitude);
-//    System.out.println("UmkreisDouble: " + umkreisDouble);
-//    System.out.println("offset: " + offset);
-//    System.out.println("limit: " + size);
+    //@todo add debugging log entry
+    //    System.out.println(result.statements)
+    //    System.out.println(result.statements)
+    //    System.out.println("Query: " + q);
+    //    System.out.println("latitude: " + latitude);
+    //    System.out.println("longitude: " + longitude);
+    //    System.out.println("UmkreisDouble: " + umkreisDouble);
+    //    System.out.println("offset: " + offset);
+    //    System.out.println("limit: " + size);
     result
   }
 

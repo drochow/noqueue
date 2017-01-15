@@ -172,4 +172,15 @@ class Anwender @Inject() (val as: AdressService, val messagesApi: MessagesApi, v
     }
   }
 
+  def myBetriebe = SecuredApiAction { implicit request =>
+    request.anwender.meineBetriebe() flatMap {
+      betriebe => ok(betriebe)
+    } recover {
+      case nfe: NoSuchElementException => ApiError.errorAnwenderNotFound
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+      }
+    }
+  }
 }

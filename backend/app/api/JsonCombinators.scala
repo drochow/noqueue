@@ -199,6 +199,16 @@ object JsonCombinators {
       )
   }
 
+  implicit val meineBetriebeWrites: Writes[(BetriebAndAdresse, Boolean, Boolean)] = new Writes[(BetriebAndAdresse, Boolean, Boolean)] {
+    override def writes(v: (BetriebAndAdresse, Boolean, Boolean)): JsValue = {
+      Json.obj(
+        "betrieb" -> Json.toJson(v._1),
+        "isLeiter" -> v._2,
+        "isAnwesend" -> v._3
+      )
+    }
+  }
+
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(
