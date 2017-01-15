@@ -78,7 +78,7 @@ export class ShopSinglePage {
         (employees) => {
           let activeEmployees = employees.filter(e => e.anwesend);
           this.employees = activeEmployees;
-          this.employees.push({nutzerName: "any"});
+          // this.employees.push({nutzerName: "any"});
           if(this.employees.length === 0){
             this.shopActive = false;
           }

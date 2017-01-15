@@ -75,7 +75,7 @@ export class ServiceInfoPage {
           this.service = {
             duration: service.dauer,
             type: service.typ,
-            description: service.beschreibung
+            description: service.kommentar
           }
         },
         (error) => this.registerError(error.message || "Couldn't retrieve service from server")

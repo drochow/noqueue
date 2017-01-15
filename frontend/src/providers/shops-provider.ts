@@ -17,17 +17,19 @@ export class ShopsProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider) {
   }
 
+  // @TODO - see getNearbyShops
   getAllShops() : Observable<any>{
     return this.httpProvider.get(this.httpProvider.ROUTES.shops);
   }
 
+  // @TODO - merge this method and the above one into one (getShops, with get params: size,page,q,radius [see rest-api.md])
   getNearbyShops(limit: number, page: number, filter: string) : Observable<any>{
     let searchOptions = { size: limit, page, q: filter };
     return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
   }
 
   getMyShops() : Observable<any>{
-    let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/betrieb";
+    let route = this.httpProvider.ROUTES.users + "/betrieb";
     return this.httpProvider.get(route);
   }
 

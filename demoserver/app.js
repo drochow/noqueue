@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 // Dummy Data Collections
 var id = 0;
 
-function createShop(name, phone, email, openingHours, street, streetNr, zip, city, distance){
+function createShop(name, phone, email, openingHours, street, streetNr, zip, city, distance, leiter, anwesend){
     id += 1;
     return {
         betriebID: id,
@@ -37,11 +37,13 @@ function createShop(name, phone, email, openingHours, street, streetNr, zip, cit
             plz: zip,
             stadt: city
         },
-        distanz: distance
+        distanz: distance,
+        isLeiter: leiter || false,
+        isAnwesend: anwesend || false
     }
 }
 
-var shops = [   createShop("Salon Marko", "01577-368-1252", "contact@salonmarco.de", "08:00 - 17:00 Mo - Sa", "Milcshtr", "2", "13555", "Berlin", "2100"),
+var shops = [   createShop("Salon Marko", "01577-368-1252", "contact@salonmarco.de", "08:00 - 17:00 Mo - Sa", "Milcshtr", "2", "13555", "Berlin", "2100", true, true),
                 createShop("Frisur für Dich!", "01686-125-5552", "frisurfuerdich@gmail.com", "09:00 - 15:00 Mo - Fr", "Musterstr", "52", "27555", "Hamburg", "14200"),
                 createShop("Beauty Salon Nature", "01578-3512-444", "beautysalonnature@gmx.de", "08:00 - 18:00 Mo - Do", "Schönstr", "21", "39952", "Magdeburg", "20500"),
                 createShop("Studio Schöneberg", "01562-555-5125", "studioschoneberg@gmx.de", "08:00 - 13:00 Mo, Mi, Do 14:00 - 18:00 Di", "Rathaus Schöneberg", "12", "13071", "Berlin", "800"),
@@ -169,6 +171,17 @@ var users = [   createUser("otto_schmelzer", "ottoschmelzer@gmx.de"),
 
 var token = "eyJhbGciOiJIUzI1NiJ9.eyJiIjoidGVzdCJ9.s5IHuxC-TfFLX8Nu_t_RJoMugvYX_7dVCYShpMWmxS4";
 
+var slots = [
+{
+    anwenderId: 2,
+    time: "12:00"
+},
+{
+    anwenderId: 3,
+    time: "12:15"
+}
+]
+
 
 // Routes ***************************************
 
@@ -188,7 +201,7 @@ anwenderRouter.post('/', function(req,res,next){
     res.json(token);
 });
 
-anwenderRouter.get('/:id/betrieb', function(req,res,next){
+anwenderRouter.get('/betrieb', function(req,res,next){
     res.status(200).json([shops[0]]);
 });
 
@@ -196,7 +209,7 @@ anwenderRouter.get('/:id/queues', function(req, res, next){
     res.status(200).json(myQueues);
 });
 
-anwenderRouter.get('/:id/queues/:qid', function(req, res, next){
+anwenderRouter.get('/queues/:qid', function(req, res, next){
     let result;
     myQueues.forEach(q => {
         if(q.queueID === req.params.qid){
@@ -206,7 +219,11 @@ anwenderRouter.get('/:id/queues/:qid', function(req, res, next){
     res.status(200).json(result || myQueues[0]);
 });
 
-anwenderRouter.get('/:id/queueposition', function(req, res, next){
+anwenderRouter.post('/queues/:id', function(req, res, next){
+    res.status(200).end();
+});
+
+anwenderRouter.get('/queueposition', function(req, res, next){
     console.log("------", myQueuePosition);
     res.status(200).json(myQueuePosition);
 });
@@ -320,6 +337,18 @@ shopsRouter.get('/:id/dienstleistung/:dlid', function(req, res, next){
     res.status(200).json(result);
 });
 
+shopsRouter.get('/:id/dienstleistung/:dlid/slots', function(req, res, next){
+    res.status(200).json(slots);
+});
+
+shopsRouter.post('/:id/mitarbeiter/:mid/anwesend', function(req, res, next){
+    res.status(200).end();
+});
+
+shopsRouter.post('/:id/mitarbeiter/:mid/wsschliessen', function(req, res, next){
+    res.status(200).end();
+});
+
 app.use("/betrieb", shopsRouter);
 
 
@@ -346,6 +375,9 @@ app.use('/betrieb/:id/dienstleistung', servicesRouter);
 
 var dltsRouter = express.Router();
 dltsRouter.get('/', function(req,res,next){
+    res.status(200).json(servicesTypes);
+});
+dltsRouter.post('/', function(req,res,next){
     res.status(200).json(servicesTypes);
 });
 app.use('/dlts', dltsRouter);

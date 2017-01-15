@@ -25,6 +25,11 @@ export class ServicesProvider {
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     return this.httpProvider.get(route);
   }
+  
+  // @TODO
+  getNextTimeSlots(serviceID, shopID){
+    // ...
+  }
 
   getAllServiceTypes() : Observable<any>{
     return this.httpProvider.get(this.httpProvider.ROUTES.services);

@@ -18,24 +18,35 @@ export class QueuesProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, public auth: AuthenticationProvider) {
   }
 
+  // @TODO - use getMyShops() instead and check if the user is 'isAnwesend'
   getMyQueues() : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queues";
     return this.httpProvider.get(route);
   }
 
   getMyQueuePosition() : Observable<any>{
-    let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queueposition";
+    let route = this.httpProvider.ROUTES.users + "/queueposition";
     return this.httpProvider.get(route);
   }
 
   getQueue(queueID) : Observable<any>{
-    let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queues/" + queueID;
+    let route = this.httpProvider.ROUTES.users + "/queues/" + queueID;
     return this.httpProvider.get(route);
   }
 
-  lineup(shopID, serviceID, employeeName) : Observable<any>{
-    console.log(shopID, serviceID, employeeName);
-    let body = this.mapToExpectedJson(shopID, serviceID, employeeName);
+  // @TODO
+  changeAttendance(shopID, userID, isThere: boolean){
+    // ...
+  }
+
+  // @TODO
+  closeQueue(shopID, userID){
+    // ...
+  }
+
+  lineup(shopID, serviceID, employeeID) : Observable<any>{
+    console.log(shopID, serviceID, employeeID);
+    let body = this.mapToExpectedJson(shopID, serviceID, employeeID);
     console.log("body: ", body);
     return this.httpProvider.post(this.httpProvider.ROUTES.queues, body);
   }
@@ -44,7 +55,8 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.queues + "/" + queuePositionID);
   }
 
-  // remove the default userid  value; it's only used for testing purposes
+
+  // @TODO remove the default userid  value; it's only used for testing purposes
   // as the token from the fake server doesn't contain userID
   private mapToExpectedJson(shopID, serviceID, employeeName){
     let body = {
@@ -52,7 +64,7 @@ export class QueuesProvider {
       betriebId: shopID,
       dlId: serviceID,
       mitarbeiterName: employeeName
-    }
+    };
     return body;
   }
 

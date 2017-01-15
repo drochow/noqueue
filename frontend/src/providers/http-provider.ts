@@ -15,8 +15,8 @@ export class HttpProvider {
 
   // Server configuration
   private localServer = "http://localhost:9000";
-  private fakeServer = "http://localhost:9000";
-  public workingServer = "http://localhost:9000";
+  private fakeServer = "http://localhost:3000";
+  public workingServer = this.fakeServer;
 
   public ROUTES = {
     authentication: "/auth",

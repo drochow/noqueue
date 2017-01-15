@@ -109,6 +109,7 @@ export class DashboardPage {
             this.hasShops = true;
           }
         );
+      //@TODO - use getMyShops() instead
       this.queues.getMyQueues()
         .subscribe(
           (queues) => {
