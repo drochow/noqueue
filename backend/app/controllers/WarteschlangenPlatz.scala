@@ -28,9 +28,9 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
   )((dlId, mitarbeiterId) => (dlId, mitarbeiterId))
 
   def create = SecuredApiActionWithBody { implicit request =>
-    readFromRequest[WarteschlangenPlatzEntity] {
-      case wsp =>
-        request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(wsp.dienstLeistungId.value, wsp.mitarbeiterId.value) flatMap {
+    readFromRequest[(Long, Long)] {
+      case (dlId, mitarbeiterId) =>
+        request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId) flatMap {
           wsp => ok(wsp)
         } recover {
           case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("Mitarbeiter is not anwesend")
@@ -41,7 +41,29 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
             ApiError.errorInternal("Unknown Exception..." + e.getMessage)
           }
         }
-    }
+    }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
+  }
+
+  val wspVerlassenReads = ((__ \ "warteschlangenplatzId").read[Long])
+
+  def verlassen = SecuredApiActionWithBody { implicit request =>
+    readFromRequest[Long] {
+      case wspId =>
+        request.anwender.wsVerlassen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
+          del =>
+            if (del < 1) {
+              ApiError.errorItemNotFound
+            } else {
+              noContent()
+            }
+        } recover {
+          case nfe: NoSuchElementException => ApiError.errorMethodForbidden
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+          }
+        }
+    }(request, wspVerlassenReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 
   def getWarteSchlangeOfMitarbeiter(betriebId: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) {

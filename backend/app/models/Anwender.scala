@@ -105,11 +105,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     db.run(dal.searchDienstleistung(query, page, size))
   }
 
-  def passwordAendern(password: String) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
   def wsBeitreten(dlPrimaryKey: PK[DienstleistungEntity]) = {
     //@todo maybe implement me
     throw new NotImplementedError("Not implemented yet, may implement it")
@@ -121,8 +116,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   }
 
   def wsVerlassen(wsp: PK[WarteschlangenPlatzEntity]) = {
-    //@todo implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, implement it")
+    for {
+      anw <- anwender
+      del <- db.run(dal.delete(wsp, anw.id.get))
+    } yield del
   }
 
   def meineBetriebe(): Future[Seq[(BetriebAndAdresse, Boolean, Boolean)]] = {

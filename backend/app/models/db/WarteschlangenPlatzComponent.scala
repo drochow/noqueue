@@ -88,6 +88,13 @@ trait WarteschlangenPlatzComponent {
     } yield persistedWsp).transactionally
   }
 
+  def delete(wspId: PK[WarteschlangenPlatzEntity], anwID: PK[AnwenderEntity]) =
+    for {
+      wsp <- warteschlangenplaetze.filter(_.id === wspId).result.head
+      prevWsp <- warteschlangenplaetze.filter(_.folgePlatzId === wsp.id).map(_.folgePlatzId).update(wsp.folgeNummer)
+      del <- warteschlangenplaetze.filter(_.id === wspId).filter(_.anwenderId === anwID).delete
+    } yield del
+
   //  def wspsOfMitarbeiter = 1
   /*
     //@todo do not ignore the newest wsp if beginnzeitpunkt is not wsp.dl.dauer ago
