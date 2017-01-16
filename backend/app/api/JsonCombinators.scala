@@ -6,7 +6,7 @@ import models._
 import java.util.Date
 
 import models.db._
-import play.api.libs.json._
+import play.api.libs.json.{ Writes, _ }
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes.{ DefaultDateWrites => _, _ }
@@ -129,6 +129,17 @@ object JsonCombinators {
   )((dlt, name, dauer, kommentar) => (dlt, name, dauer, kommentar))
 
   implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
+
+  implicit val dienstLeistungWithTypWrites: Writes[(DienstleistungEntity, DienstleistungsTypEntity)] = new Writes[(DienstleistungEntity, DienstleistungsTypEntity)] {
+    def writes(v: (DienstleistungEntity, DienstleistungsTypEntity)): JsValue = {
+      Json.obj(
+        "id" -> v._1.id.get.value,
+        "name" -> v._2.name,
+        "dauer" -> v._1.dauer,
+        "kommentar" -> v._1.kommentar
+      )
+    }
+  }
 
   implicit val betriebAndAdresseWrites: Writes[BetriebAndAdresse] = new Writes[BetriebAndAdresse] {
     def writes(btr: BetriebAndAdresse) =
@@ -259,6 +270,15 @@ object JsonCombinators {
 
   implicit val wspWrites = Json.writes[WarteschlangenPlatzEntity]
 
+  implicit val nextSlotWrites: Writes[(PK[MitarbeiterEntity], String, Long)] = new Writes[(PK[MitarbeiterEntity], String, Long)] {
+    override def writes(v: (PK[MitarbeiterEntity], String, Long)): JsValue = {
+      Json.obj(
+        "id" -> v._1.value,
+        "mitarbeiter" -> v._2,
+        "schaetzZeitpunkt" -> v._3
+      )
+    }
+  }
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

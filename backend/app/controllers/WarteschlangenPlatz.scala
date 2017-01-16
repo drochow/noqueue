@@ -75,4 +75,16 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
         }
       }
   }
+
+  def getNextSlots(betriebId: Long) = SecuredApiAction {
+    implicit request =>
+      request.anwender.getNextTimeSlotsForBetrieb(betriebId) flatMap {
+        list => ok(list)
+      } recover {
+        case e: Exception => {
+          e.printStackTrace()
+          ApiError.errorBadRequest("Invalid data..")
+        }
+      }
+  }
 }

@@ -109,10 +109,13 @@ trait BetriebComponent {
    * @param size
    * @return
    */
-  def listDienstleistungOfBetrieb(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[DienstleistungEntity]] =
+  def listDienstleistungOfBetrieb(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[(DienstleistungEntity, DienstleistungsTypEntity)]] =
     (for {
-      (betrieb, dienstleistung) <- (betriebe.filter(_.id === betriebId) join dienstleistungen on (_.id === _.betriebId)).drop(page * size).take(size)
-    } yield dienstleistung).result
+      ((betrieb, dienstleistung), dlt) <- (betriebe.filter(_.id === betriebId)
+        join dienstleistungen on (_.id === _.betriebId)
+        join dienstleistungsTypen on (_._2.dlTypId === _.id))
+        .drop(page * size).take(size)
+    } yield (dienstleistung, dlt)).result
 
   def getBetriebeWhereAnwenderIsMitarbeiter(anwId: PK[AnwenderEntity]): DBIO[Seq[(BetriebEntity, AdresseEntity, MitarbeiterEntity)]] =
     (for {
