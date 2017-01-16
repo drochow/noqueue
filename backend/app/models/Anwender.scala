@@ -186,11 +186,12 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
           Future.successful(new Timestamp(System.currentTimeMillis / 1000))
 
         val lastTime = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._3.get.getTime())._3.get.getTime() else System.currentTimeMillis / 1000;
+        val lastDuration = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._3.get.getTime())._4 else 0;
 
         //aggregate all the done
         Future.successful(new Timestamp(doneAndNotDone._2.foldLeft(0)(
           (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)) => x + y._4
-        ) + lastTime))
+        ) + lastTime + lastDuration))
       }
     } yield (wsp.get._1, wsp.get._3, wsp.get._4, wsp.get._5, wsp.get._6, wsp.get._7, res)
     // wspId,  mitarbeiterName, BetriebName, dlId, dldauer, dlname, schaetzZeitpunkt
@@ -216,9 +217,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
                 doneAndNotDone._1.maxBy(_._4.get.getTime())._4.get.getTime()
               else
                 System.currentTimeMillis / 1000;
+              val lastDuration = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._4.get.getTime())._5 else 0;
               val time = doneAndNotDone._2.foldLeft(0)(
                 (x: Int, y: (PK[MitarbeiterEntity], PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int, String)) => x + y._5
-              ) + lastTime
+              ) + lastTime + lastDuration
 
               (m._1, m._2, time) //return mitarbeiterId, mitarbeiterName, schaetzZeit
             }

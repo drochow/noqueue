@@ -198,6 +198,14 @@ object JsonCombinators {
       )
   }
 
+  implicit val leiterAndAnwenderWrites: Writes[(LeiterEntity, AnwenderEntity)] = new Writes[(LeiterEntity, AnwenderEntity)] {
+    override def writes(mitarbAndAnw: (LeiterEntity, AnwenderEntity)): JsValue =
+      Json.obj(
+        "leiter" -> Json.toJsFieldJsValueWrapper(mitarbAndAnw._1),
+        "anwender" -> Json.toJsFieldJsValueWrapper(mitarbAndAnw._2)
+      )
+  }
+
   implicit val leiterReads: Reads[LeiterEntity] = (
     (__ \ "anwenderId").read[Long] and
     (__ \ "betriebId").read[Long]

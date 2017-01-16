@@ -87,4 +87,18 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
         }
       }
   }
+
+  def startWorkOn(betriebId: Long, wspId: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) {
+    implicit request =>
+      request.mitarbeiter.wspBearbeitungBeginnen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
+        _ => accepted()
+      } recover {
+        case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
+        case uae: UnauthorizedException => ApiError.errorUnauthorized
+        case e: Exception => {
+          e.printStackTrace()
+          ApiError.errorBadRequest("Invalid data..")
+        }
+      }
+  }
 }

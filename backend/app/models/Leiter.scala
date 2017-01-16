@@ -65,7 +65,7 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
   def leiterEntlassen(leiterId: PK[LeiterEntity], betriebId: PK[BetriebEntity]): Future[Int] =
     authorizedAction(() => db.run(dal.deleteLeiter(leiterId, betriebId)), betriebId)
 
-  def leiterAnzeigen(page: Int, size: Int): Future[Seq[AnwenderEntity]] =
+  def leiterAnzeigen(page: Int, size: Int): Future[Seq[(LeiterEntity, AnwenderEntity)]] =
     betrieb flatMap {
       case betrieb => db.run(dal.listLeiterOf(betrieb.id.get, page, size))
     } recover {

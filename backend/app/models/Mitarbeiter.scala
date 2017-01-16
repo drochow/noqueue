@@ -24,19 +24,14 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
     throw new NotImplementedError("Not implemented yet, implement it")
   }
 
-  def wspBearbeitungBeginnen(wsp: Future[WarteschlangenPlatzEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  def wspBearbeitungBeginnen(wspPrimaryKey: PK[WarteschlangenPlatzEntity]) = {
-    //@todo maybe implement me
-    throw new NotImplementedError("Not implemented yet, may implement it")
-  }
-
-  def wspBearbeitungBeenden(wsp: Future[WarteschlangenPlatzEntity]) = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
+  def wspBearbeitungBeginnen(wspId: PK[WarteschlangenPlatzEntity]) = {
+    for {
+      m <- mitarbeiter recover {
+        case nse: NoSuchElementException => throw new UnauthorizedException
+      }
+      rows <- db.run(dal.startWorkOn(wspId, m.id.get))
+      success <- if (rows > 0) Future.successful(true) else Future.failed(throw new NoSuchElementException)
+    } yield success
   }
 
   def wspBearbeitungBeenden(wspPrimaryKey: PK[WarteschlangenPlatzEntity]) = {
@@ -58,10 +53,11 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
         val lastDone = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._2.get.getTime()) else doneAndNotDone._2(0)
         val lastTime = if (!doneAndNotDone._1.isEmpty) lastDone._2.get.getTime() else System.currentTimeMillis / 1000;
         val fullList = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._2 :+ lastDone else doneAndNotDone._2;
+        val lastDuration = if (!doneAndNotDone._1.isEmpty) lastDone._5 else 0;
 
         val agregattedTime = new Timestamp(doneAndNotDone._2.foldLeft(0)(
           (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])) => x + y._5
-        ) + lastTime)
+        ) + lastTime + lastDuration)
         Future.successful((fullList, agregattedTime))
       }
     } yield res

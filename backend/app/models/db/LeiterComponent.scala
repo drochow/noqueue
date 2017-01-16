@@ -44,12 +44,12 @@ trait LeiterComponent {
 
   def getLeiterById(id: PK[LeiterEntity]) = leiters.filter(_.id === id).result
 
-  def listLeiterOf(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[AnwenderEntity]] =
+  def listLeiterOf(betriebId: PK[BetriebEntity], page: Int, size: Int): DBIO[Seq[(LeiterEntity, AnwenderEntity)]] =
     (for {
       (leiter, anwender) <- (leiters join anwenders on (_.anwenderId === _.id)).filter {
         case (mitarbeiter, anwender) => mitarbeiter.betriebId === betriebId
       }.drop(page * size).take(size)
-    } yield anwender).result
+    } yield (leiter, anwender)).result
 
   //  def getLeiterOf(betriebId: PK[BetriebEntity], anwender: AnwenderEntity): DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)] = {
   //
