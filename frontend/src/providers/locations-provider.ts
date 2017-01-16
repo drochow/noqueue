@@ -11,7 +11,7 @@ import { Geolocation } from 'ionic-native';
 */
 @Injectable()
 export class LocationsProvider {
-
+  
   constructor(public http: Http) {
   }
 

@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { HttpProvider } from '../providers/http-provider';
 import { AuthenticationProvider } from '../providers/authentication-provider';
+import { LocationsProvider } from '../providers/locations-provider';
 
 /*
   Generated class for the ShopsProvider provider.
@@ -14,12 +15,42 @@ import { AuthenticationProvider } from '../providers/authentication-provider';
 @Injectable()
 export class ShopsProvider {
 
-  constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider) {
+  constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider, public locations: LocationsProvider) {
   }
 
   // @TODO - see getNearbyShops
   getAllShops() : Observable<any>{
     return this.httpProvider.get(this.httpProvider.ROUTES.shops);
+  }
+
+  // getShops(limit: number, page: number, filter: string, radius: number): Promise<any>{
+  //   var self = this;
+  //   return new Promise(function(resolve, reject){
+  //     self.locations.getUserLocation()
+  //       .then(
+  //         (location) => {
+  //           let lat = location.latitude;
+  //           let long = location.longitude;
+  //           var searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
+  //           if(!limit) delete searchOptions.size;
+  //           if(!page) delete searchOptions.page;
+  //           if(!filter) delete searchOptions.q;
+  //           if(!radius) delete searchOptions.radius;
+  //           console.log("GET shops with searchOptions: ", searchOptions);
+  //           resolve(self.httpProvider.get(self.httpProvider.ROUTES.shops, searchOptions));
+  //         },
+  //         (error) => {
+  //           console.log("Couldn't read user Location: ", error);
+  //           reject(error);
+  //         }
+  //       );
+  //   });
+  // }
+
+  getShops(limit: number, page: number, filter: string, radius: number, lat: number, long: number): Observable<any>{
+    let searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
+    console.log("SEARCH OPTIONS: ", searchOptions);
+    return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
   }
 
   // @TODO - merge this method and the above one into one (getShops, with get params: size,page,q,radius [see rest-api.md])
