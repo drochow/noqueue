@@ -48,7 +48,7 @@ Name          	| Route            | Request                    | Response | Call
 -----------------|------------------|-------------------------|----------|---
 Get Services For | GET /betrieb/:id/dienstleistung | | [ serviceID<br>typ] | my-shop-single.ts<br>shop-single.ts
 Get Service | GET /betrieb/:id/dienstleistung/:serviceID | | serviceID<br>betriebID<br>typ<br>dauer<br>kommentar | service-info.ts<br>service-single.ts
-==Get Next Time Slots== | GET /betrieb/:id/dienstleistung/:serviceID/slots ? | | [{anwenderId, time}] | **service-single.ts**
+**Get Next Time Slots** | **GET /betrieb/:id/dienstleistung/mitarbeiter** | | **[<br>{<br>id<br>mitarbeiter<br>schaetzZeitpunkt<br>}<br>]** | **service-single.ts**
 Get All Service Types | **GET /dlt?q=(string)<br>&page=(int)<br>&size=(int)**  | **q <br> page <br> size** | **[ {id: (long), name: (string)} ]** | service-info.ts
 Create Service | POST /betrieb/:id/dienstleistung | dauer<br>typ<br>kommentar | | service-info.ts
 Edit Service | PUT /betrieb/:id/dienstleistung/:serviceID | dauer<br>typ<br>kommentar | | service-info.ts
@@ -60,10 +60,10 @@ Edit Service | PUT /betrieb/:id/dienstleistung/:serviceID | dauer<br>typ<br>komm
 
 Name          	| Route            | Request                    | Response | Calling Files
 -----------------|------------------|-------------------------|----------|---
-**~~Get My Queues~~** | 
 **Get Mitarbeiter Queue**     | **GET /betrieb/:id/ws** | | **{<br>wsps:<br>[<br>id<br>beginnZeitpunkg<br>next<br>anwender<br>dauer<br>dlName<br>dlId<br>]<br>schaetzEnde(timestamp)<br>}** | my-queue-single.ts
 **Change Attendance** | **PUT /betrieb/:id/mitarbeiter** | **{ anwesend: (bool) }** | | **my-queue.single.ts**
-**~~Close Queue~~** | POST /betrieb/:id/mitarbeiter/:mid/wsschliessen | ? nachricht: String | | **my-queue.single.ts**
 **Get My Queue Position** | **GET /anwender/wsp** | | **{<br>id<br>mitarbeiter<br>betrieb<br>dlId<br>dlDauer<br>dlName<br><br>schaetzZeitpunkt<br>}** | dashboard.ts<br>my-queue-position.ts
-==Line Up== | POST /queues |userID<br>dienstleistungID<br>mitarbeiterID | | service-single.ts
-==Leave== | DELETE /queues/:queueID | | | my-queue.position.ts
+**Line Up** | **POST /anwender/wsp** | **{ <br> dienstleistung: (long)<br>mitarbeiter: (long) <br>}** | **{<br>  id<br>  mitarbeiter<br>  betrieb<br>  dlId<br>  dlDauer<br>  dlName<br>schaetzZeitpunkt<br>}**| service-single.ts
+**Leave** | **DELETE /anwender/wsp**  | | | my-queue.position.ts
+**Start Work** | **PUT  /betrieb/:id/wsp/:wid**  | | | 
+==End Work== | **DELETE  /betrieb/:id/wsp/:wid**  | | | 
