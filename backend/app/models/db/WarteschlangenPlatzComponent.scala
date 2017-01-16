@@ -181,7 +181,7 @@ trait WarteschlangenPlatzComponent {
       } join dienstleistungen on {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
       } filter {
-        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId < mitarbeiterId
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId === mitarbeiterId
       } filter {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
       }
