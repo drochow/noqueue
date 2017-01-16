@@ -17,15 +17,14 @@ export class ValidatorProvider {
   // 6 to 30 alphanumeric + special characters - _ .
   username = string => /^[a-zA-Z\d\.\-\_]{6,30}$/.test(string);
 
-  //@TODO find a better expression for password
-  // 6 to 30 alphanumeric
-  password = string => /^[a-zA-Z\d\.]{6,30}$/.test(string);
+  // 8 to 30 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number) and
+  // 1 special character
+  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,30}$/.test(string);
 
   passwordMatching = (string1, string2) => string1 === string2;
 
-  // @TODO check if you can use the HTML5 email validation
-  // simple email xxx@yyy.zzz
-  email = string => /.+\@.+\..+/.test(string);
+  email = string => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      .test(string);
 
   // 1 to 50 characters
   searchTerm = string => /.{1,50}/.test(string);
@@ -48,8 +47,9 @@ export class ValidatorProvider {
   // 2-30 alphanumeric, . - _ space
   shopName = string => /^[a-zA-Z\d\.\-\_\'\"\s]{2,30}$/.test(string);
 
-  // @TODO - find better ?
-  phone = string => /[0-9\+\(\)\-]{1,16}/.test(string);
+  //includes +4930 1234, 030 1234, +4938293 1234, 038293 1234, 0173 12345678, +49173 12345678
+  // +49301234, 0301234, +49382931234, 0382931234, 017312345678, +4917312345678
+  phone = string => /^((^\(\+?\d+[\ ]*\d*\)|^\(\d+\)|^\+?\d+|^\d+)+([\-\/\ ])*(\d)+)*$/.test(string);
 
   // 1-50 chars from any kind
   openingHours = string => /.{1,50}/.test(string);

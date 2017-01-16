@@ -50,14 +50,14 @@ export class AuthenticationProvider {
 
   login(username: string, password: string): Promise<any>{
     let auth = this;
-    let body = JSON.stringify({nutzerName: username, password});
+    let body = {nutzerName: username, password};
     return new Promise(function(resolve, reject){
       auth.httpProvider.post(auth.httpProvider.ROUTES.authentication, body)
         .subscribe(
           (token) => {
             auth.storage.set('token', token);
             auth.token = token;
-            auth.httpProvider.readToken();
+            auth.httpProvider.setToken(token);
             resolve("Logged In");
           },
           (error) => reject(error.message)
@@ -67,17 +67,17 @@ export class AuthenticationProvider {
 
   signup(username: string, email: string, password: string): Promise<any>{
     let auth = this;
-    let body = {nutzerName: username, nutzerEmail: email, password};
+    let body = {nutzerName: username, nutzerEmail: email, password: password};
     return new Promise(function(resolve, reject){
       auth.httpProvider.post(auth.httpProvider.ROUTES.users, body)
         .subscribe(
           (token) => {
             auth.storage.set('token', token);
             auth.token = token;
-            auth.httpProvider.readToken();
+            auth.httpProvider.setToken(token);
             resolve("Signed Up");
           },
-          (error) => reject(error.message)
+          (error) => reject(error)
         )
     })
   }

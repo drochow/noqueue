@@ -12,7 +12,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-edit-password',
   templateUrl: 'edit-password.html',
-  providers: [ ValidatorProvider ]
+  providers: [ ValidatorProvider, UsersProvider ]
 })
 export class EditPasswordPage {
 
@@ -27,6 +27,8 @@ export class EditPasswordPage {
   constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {}
 
   ionViewDidLoad() {
+    this.resetError();
+
     this.users.getMe()
       .subscribe(
         (user) => {
@@ -34,24 +36,34 @@ export class EditPasswordPage {
             this.username = user.nutzerName;
         },
         (error) => {
-          this.registerError(error || "Couldnt get user from server");
+          let jsonError = JSON.parse(error._body);
+          console.log("Error ", jsonError);
+          this.registerError(jsonError.message);
         }
       )
   }
 
   changePassword(){
+    this.resetError();
     if(!this.validator.passwordMatching(this.confirmPassword, this.newPassword)){
-      this.registerError("Passwords not matching");
+      this.registerError("New password and confirm password not matching");
     }
     if(!this.validator.password(this.newPassword)){
       this.registerError("New Password not valid");
     }
+    if(this.validator.passwordMatching(this.oldPassword, this.newPassword)){
+      this.registerError("New password matches old password!")
+    }
     if(this.error) return;
 
-    this.users.changePassword({username: this.username, email: this.email, password: this.newPassword})
+    this.users.changePassword({username: this.username, email: this.email, oldPassword: this.oldPassword, newPassword: this.newPassword})
       .subscribe(
         () => this.navCtrl.pop(),
-        (error) => this.registerError(error || "Couldn't save password")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error ", jsonError);
+          this.registerError(jsonError.message);
+        }
       );
     //..
   }
@@ -59,5 +71,10 @@ export class EditPasswordPage {
   registerError(message){
     this.error = true;
     this.errorMessage = message;
+  }
+
+  resetError(){
+    this.error = false;
+    this.errorMessage = "";
   }
 }

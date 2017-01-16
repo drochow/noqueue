@@ -8,8 +8,8 @@
 
 Name          	| Route            | Request                    | Response | Calling Files 
 -----------------|------------------|-------------------------|----------|---
-Login		 	 	| POST /auth       | nutzerName<br>password | token | login.ts
-Signup          | POST /anwender   | nutzerName<br>nutzerEmail<br>password|token | signup.ts 
+✔︎ Login		 	 	| POST /auth       | nutzerName<br>password | token | login.ts
+✔︎ Signup          | POST /anwender   | nutzerName<br>nutzerEmail<br>password|token | signup.ts 
 
 
 ## UsersProvider
@@ -18,9 +18,9 @@ Name          	| Route            | Request                    | Response | Call
 -----------------|------------------|-------------------------|----------|---
 Get Users with name | GET /anwender/directory<br>?q=name | q=name| [ id<br>nutzerName<br>nutzerEmail ] | coworkers.ts
 Get User | GET /anwender/directory/:id | | id<br>nutzerName<br>nutzerEmail
-Get Me | GET /anwender | | [ id<br>nutzerName<br>nutzerEmail<br>adresse:{<br>id,straße,hausNummer,plz,stadt<br>}] | edit-profile.ts
-Change Profile Info | PUT /anwender | [nutzerName<br>nutzerEmail<br>{adresse}] | | edit-profile.ts
-Change Password | PUT /anwender/password | password<br>nutzerName<br>nutzerEmail | | edit-password.ts
+✔︎ Get Me | GET /anwender | | [ id<br>nutzerName<br>nutzerEmail<br>adresse:{<br>id,straße,hausNummer,plz,stadt<br>}] | edit-profile.ts
+✔︎ Change Profile Info | PUT /anwender | [nutzerName<br>nutzerEmail<br>{adresse}] | | edit-profile.ts
+✔︎ Change Password | PUT /anwender/password | password<br>nutzerName<br>nutzerEmail | | edit-password.ts
 
 
 ## ShopsProvider
@@ -61,9 +61,9 @@ Edit Service | PUT /betrieb/:id/dienstleistung/:serviceID | dauer<br>typ<br>komm
 Name          	| Route            | Request                    | Response | Calling Files
 -----------------|------------------|-------------------------|----------|---
 **~~Get My Queues~~** | 
-==Get Queue==     | GET /anwender/queues/:queueID | | queueID<br>betriebID<br>serviceID<br>**~~name~~**<br>dienstleistung<br>wsoffen<br>[ kunden:<br> {nutzerName<br> userID<br> uhrzeit}<br>] | my-queue-single.ts
-==Change Attendance== | POST /betrieb/:id/mitarbeiter/:mid/anwesend | ? isAnwesend (bool) | | **my-queue.single.ts**
-==Close Queue== | POST /betrieb/:id/mitarbeiter/:mid/wsschliessen | ? nachricht: String | | **my-queue.single.ts**
-==Get My Queue Position== | GET /anwender/queueposition | | uhrzeit<br>mitarbeiterID<br>betriebID<br>positionID | dashboard.ts<br>my-queue-position.ts
+**Get Mitarbeiter Queue**     | **GET /betrieb/:id/ws** | | **{<br>wsps:<br>[<br>id<br>beginnZeitpunkg<br>next<br>anwender<br>dauer<br>dlName<br>dlId<br>]<br>schaetzEnde(timestamp)<br>}** | my-queue-single.ts
+**Change Attendance** | **PUT /betrieb/:id/mitarbeiter** | **{ anwesend: (bool) }** | | **my-queue.single.ts**
+**~~Close Queue~~** | POST /betrieb/:id/mitarbeiter/:mid/wsschliessen | ? nachricht: String | | **my-queue.single.ts**
+**Get My Queue Position** | **GET /anwender/wsp** | | **{<br>id<br>mitarbeiter<br>betrieb<br>dlId<br>dlDauer<br>dlName<br><br>schaetzZeitpunkt<br>}** | dashboard.ts<br>my-queue-position.ts
 ==Line Up== | POST /queues |userID<br>dienstleistungID<br>mitarbeiterID | | service-single.ts
 ==Leave== | DELETE /queues/:queueID | | | my-queue.position.ts
