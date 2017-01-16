@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ShopSinglePage } from '../shop-single/shop-single';
+import { LocationsProvider } from '../../providers/locations-provider';
 
 /*
   Generated class for the Shops page.
@@ -13,7 +14,7 @@ import { ShopSinglePage } from '../shop-single/shop-single';
 @Component({
   selector: 'page-shops',
   templateUrl: 'shops.html',
-  providers: [ShopsProvider],
+  providers: [ShopsProvider, LocationsProvider],
   entryComponents: [ ShopSinglePage ]
 })
 export class ShopsPage {
@@ -27,9 +28,14 @@ export class ShopsPage {
   errorMessage = "";
   allShopsFetched = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
+  public locations: LocationsProvider) {}
 
   ionViewDidLoad() {
+    this.locations.getUserLocation()
+      .then(
+        (location) => console.log("Test locations provider: ", location)
+      )
   }
 
   search(){
