@@ -9,6 +9,7 @@ import api.auth.Credentials
 import models.db.{ BetriebEntity, MitarbeiterEntity, PK, WarteschlangenPlatzEntity }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.inject.ApplicationLifecycle
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -20,7 +21,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Created by anwender on 09.01.2017.
  */
 
-class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   val dlUndMitarbeiterReads = (
     (__ \ "dienstleistung").read[Long] and
@@ -33,8 +34,8 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
         request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId) flatMap {
           wsp => ok(wsp)
         } recover {
-          case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("Mitarbeiter is not anwesend")
-          case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("Anwender already lined up somewhere")
+          case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("This Mitarbeiter is not anwesend")
+          case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("This Anwender already lined up somewhere")
           case dlie: DLInvalidException => ApiError.errorBadRequest("This DL is not provided by this Mitarbeiter")
           case nfe: NoSuchElementException => ApiError.errorMethodForbidden
           case e: Exception => {
@@ -115,6 +116,8 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
       request.mitarbeiter.wspBearbeitungBeginnen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
         _ => accepted()
       } recover {
+        case aibe: AlreadWorkingOnAWspException => ApiError.errorBadRequest("You need to finish all WSPs first.")
+        case nfwspe: NotFirstWspException => ApiError.errorBadRequest("You have to start with the first WSP.")
         case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
         case uae: UnauthorizedException => ApiError.errorUnauthorized
         case e: Exception => {

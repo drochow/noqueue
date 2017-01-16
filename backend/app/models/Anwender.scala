@@ -7,6 +7,7 @@ import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
 import org.mindrot.jbcrypt.BCrypt
+import play.api.inject.ApplicationLifecycle
 import slick.dbio.{ DBIO, DBIOAction }
 import utils.{ UnauthorizedException, WspDoesNotExistException }
 
@@ -15,7 +16,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
-class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]) extends UnregistrierterAnwender {
+class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])], applicationLifecycle: ApplicationLifecycle) extends UnregistrierterAnwender(applicationLifecycle) {
 
   lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
 
@@ -39,7 +40,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
   def leitet(betriebId: PK[BetriebEntity]): Future[Leiter] =
-    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get)))
+    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get), applicationLifecycle))
 
   def profilAnzeigen(): Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 

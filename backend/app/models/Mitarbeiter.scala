@@ -3,13 +3,18 @@ package models
 import java.sql.Timestamp
 
 import models.db._
+import play.api.inject.ApplicationLifecycle
 import slick.dbio.DBIO
 import utils.UnauthorizedException
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)]) extends Base {
+class Mitarbeiter(
+  mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)],
+  applicationLifecycle: ApplicationLifecycle
+)
+    extends Base(applicationLifecycle) {
 
   lazy val betrieb: Future[BetriebEntity] = mitarbeiterComposition map (_._1)
 
