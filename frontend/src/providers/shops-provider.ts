@@ -59,7 +59,7 @@ export class ShopsProvider {
 
   hireEmployee(userID, shopID, anwesend) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter";
-    return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwsend: anwesend || false});
+    return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwesend: anwesend || false});
   }
 
   hireManager(userID, shopID, anwesend) : Observable<any>{
@@ -119,10 +119,10 @@ export class ShopsProvider {
     return {
       name: shop.name,
       adresse: {
-        strasse: shop.street,
-        hausNummer: shop.streetNr,
-        plz: shop.zip,
-        stadt: shop.city
+        strasse: shop.address.street,
+        hausNummer: shop.address.streetNr,
+        plz: shop.address.zip,
+        stadt: shop.address.city
       },
       tel: shop.phone,
       kontaktEmail: shop.email,

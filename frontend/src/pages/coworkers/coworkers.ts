@@ -51,7 +51,10 @@ export class CoworkersPage {
     }
     this.usersProvider.getUsersWithName(this.searchName)
       .subscribe(
-        (users) => this.users = users,
+        (users) => {
+          console.log("GET users with name: ", users);
+          this.users = users;
+        },
         (error) => this.registerError(error.message || "Couldn't get users from server")
       )
   }
@@ -67,7 +70,11 @@ export class CoworkersPage {
             }
           })
         },
-        (error) => this.registerError(error.message || "Couldn't hire employee")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while hiring employee: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       );
   }
 

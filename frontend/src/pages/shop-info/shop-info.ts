@@ -55,16 +55,17 @@ export class ShopInfoPage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
+          console.log("Get shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
             email: shop.kontaktEmail,
             openingHours: shop.oeffnungszeiten,
             address: {
-              city: shop.stadt,
-              zip: shop.plz,
-              streetNr: shop.hausNummer,
-              street: shop.street
+              city: shop.adresse.stadt,
+              zip: shop.adresse.plz,
+              streetNr: shop.adresse.hausNummer,
+              street: shop.adresse.strasse
             }
           }
         },
@@ -119,7 +120,11 @@ export class ShopInfoPage {
         () => {
           this.navCtrl.pop();
         },
-        (error) => this.registerError(error.message || "Couldn't save the shop info")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while saving shop: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       )
   }
 
@@ -131,10 +136,14 @@ export class ShopInfoPage {
     this.shopsProvider.createShop(this.shop)
       .subscribe(
         (id) => {
-          console.log("will push to service info page with new shop ID: " + id);
-          this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: this.shopID, newService: true});
+          console.log("will push to service info page with new shop ID: ", id);
+          this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: id, newService: true});
         },
-        (error) => this.registerError(error.message || "Couldn't save the new shop info")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while saving new shop: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       )
   }
 

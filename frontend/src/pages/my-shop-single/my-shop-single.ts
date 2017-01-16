@@ -59,6 +59,7 @@ export class MyShopSinglePage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
+          console.log("GET Shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -72,13 +73,17 @@ export class MyShopSinglePage {
 
     this.shopsProvider.getEmployees(this.shopID)
       .subscribe(
-        (employees) => this.employees = employees,
+        (employees) => {
+          console.log("GET Employees: ", employees);
+          this.employees = employees;
+        },
         (error) => this.registerError(error.message || "Something went wrong")
       );
 
     this.shopsProvider.getManagers(this.shopID)
       .subscribe(
         (managers) => {
+          console.log("GET Managers: ", managers);
           this.managers = managers;
           this.currentManagerWorking = this.managers.filter(m => m.anwenderId && m.anwenderId === this.auth.getUserId())[0].anwesend;
         },
@@ -115,7 +120,11 @@ export class MyShopSinglePage {
     this.shopsProvider.fireManager(userID, this.shopID)
       .subscribe(
         () => this.reloadData(),
-        (error) => this.registerError("Couldn't fire manager")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing manager: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       )
   }
 
@@ -124,7 +133,11 @@ export class MyShopSinglePage {
     this.shopsProvider.fireEmployee(userID, this.shopID)
       .subscribe(
         () => this.reloadData(),
-        (error) => this.registerError("Couldn't fire employee")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing employee: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       )
   }
 
