@@ -48,15 +48,16 @@ DELETE          /betrieb/:id/leiter/:lid           controllers.Betrieb.removeLei
 GET            /betrieb/:id/leiter                controllers.Betrieb.listLeiter(id: Long, page: Int ?=0, size: Int ?= 10)
 
 #Betrieb / DL
-POST            /betrieb/:id/dienstleistung         controllers.Betrieb.addDienstleistung(id: Long)
-PUT            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.updateDienstleistung(id: Long, dlid: Long)
-DELETE            /betrieb/:id/dienstleistung/:dlid         controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
-GET             /betrieb/:id/dienstleistung         controllers.Betrieb.listDienstleistung(id: Long, page: Int ?=0, size: Int ?= 10)
+POST        /betrieb/:id/dienstleistung             controllers.Betrieb.addDienstleistung(id: Long)
+PUT         /betrieb/:id/dienstleistung/:dlid       controllers.Betrieb.updateDienstleistung(id: Long, dlid: Long)
+DELETE      /betrieb/:id/dienstleistung/:dlid       controllers.Betrieb.removeDienstleistung(id: Long, dlid: Long)
+GET         /betrieb/:id/dienstleistung             controllers.Betrieb.listDienstleistung(id: Long, page: Int ?=0, size: Int ?= 10)
 
 ##WSP
-POST            /anwender/wsp                           controllers.WarteschlangenPlatz.create
-GET         /betrieb/:id/ws                             controllers.WarteschlangenPlatz.getWarteSchlangeOfMitarbeiter(id: Long)
-GET         /anwender/wsp                               controllers.WarteschlangenPlatz.getWarteSchlangenPlatzOfAnwender
+POST        /anwender/wsp                           controllers.WarteschlangenPlatz.create
+DELETE      /anwender/wsp                           controllers.WarteschlangenPlatz.verlassen
+GET         /betrieb/:id/ws                         controllers.WarteschlangenPlatz.getWarteSchlangeOfMitarbeiter(id: Long)
+GET         /anwender/wsp                           controllers.WarteschlangenPlatz.getWarteSchlangenPlatzOfAnwender
 GET         /betrieb/:id/dienstleistung/mitarbeiter     controllers.WarteschlangenPlatz.getNextSlots(id: Long)
 
 PUT         /betrieb/:id/wsp/:wid           controllers.WarteschlangenPlatz.startWorkOn(id: Long, wid: Long)

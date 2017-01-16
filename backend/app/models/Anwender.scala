@@ -112,8 +112,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   }
 
   def wsVerlassen(wsp: PK[WarteschlangenPlatzEntity]) = {
-    //@todo implement me and return Future[Boolean]
-    throw new NotImplementedError("Not implemented yet, implement it")
+    for {
+      anw <- anwender
+      del <- db.run(dal.delete(wsp, anw.id.get))
+    } yield del
   }
 
   def meineBetriebe(): Future[Seq[(BetriebAndAdresse, Boolean, Boolean)]] = {
