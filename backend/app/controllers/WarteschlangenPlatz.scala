@@ -32,7 +32,10 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     readFromRequest[(Long, Long)] {
       case (dlId, mitarbeiterId) =>
         request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId) flatMap {
-          wsp => ok(wsp)
+          wsp =>
+            request.anwender.wspAnzeigen() flatMap {
+              fin => ok(fin)
+            }
         } recover {
           case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("This Mitarbeiter is not anwesend")
           case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("This Anwender already lined up somewhere")
