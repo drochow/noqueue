@@ -257,6 +257,12 @@ class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, va
           } else {
             ApiError.errorInternal("could not complete anwesenheitSetting")
           }
+        } recover {
+          case ua: UnauthorizedException => ApiError.errorUnauthorized
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorBadRequest("Unkown Exception.." + e.getMessage)
+          }
         }
     }(request, anwesendReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }

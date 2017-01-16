@@ -231,7 +231,7 @@ object JsonCombinators {
       override def writes(v: (Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)): JsValue = {
         Json.obj(
           "wsps" -> Json.toJson(v._1),
-          "schätzEnde" -> v._2.getTime
+          "schaetzEnde" -> v._2.getTime
         )
       }
     }
@@ -250,6 +250,12 @@ object JsonCombinators {
         )
       }
     }
+
+  implicit val wspReads: Reads[WarteschlangenPlatzEntity] = (
+    (__ \ "dlId").read[Long] and
+    (__ \ "mitarbeiterId").read[Long]
+  )((dlId, mId) =>
+      WarteschlangenPlatzEntity(None, PK[AnwenderEntity](0L), PK[MitarbeiterEntity](mId), PK[DienstleistungEntity](dlId), None, None))
 
   implicit val wspWrites = Json.writes[WarteschlangenPlatzEntity]
 

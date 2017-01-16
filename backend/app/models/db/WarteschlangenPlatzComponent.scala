@@ -3,6 +3,7 @@ package models.db
 import java.sql.Timestamp
 
 import slick.profile.SqlProfile.ColumnOption.SqlType
+import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,7 +19,7 @@ trait WarteschlangenPlatzComponent {
     def dienstleistungsId = column[PK[DienstleistungEntity]]("DLT_ID")
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
-    def beginnZeitpunkt = column[Option[Timestamp]]("BEGINNZEIT", SqlType("timestamp"));
+    def beginnZeitpunkt = column[Timestamp]("BEGINNZEIT", SqlType("timestamp"));
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
@@ -28,7 +29,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt.?, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -36,11 +37,16 @@ trait WarteschlangenPlatzComponent {
 
   val warteschlangenplaetzeAutoInc = warteschlangenplaetze returning warteschlangenplaetze.map(_.id)
 
-  def insert(wsp: WarteschlangenPlatzEntity) = {
+  def insertMe(wsp: WarteschlangenPlatzEntity) = {
     for {
       mitarbeiterAndDl <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
-        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on ((mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId)
-        joinLeft warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
+        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on (
+          (mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId
+        ) joinLeft warteschlangenplaetze on {
+            case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) =>
+              mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId
+          })
+        .filter {
           case ((mitarbeiter, dl), wspOfMitarbeiter) => {
             System.out.print(wspOfMitarbeiter.isEmpty)
             wspOfMitarbeiter.map(_.folgePlatzId).isEmpty
@@ -66,7 +72,23 @@ trait WarteschlangenPlatzComponent {
     } yield persistedWsp
   }
 
-  def wspsOfMitarbeiter = 1
+  def insert(wsp: WarteschlangenPlatzEntity) = {
+    (for {
+      anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
+      anwenderHasWspCheck <- if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
+      mitarbeiterIsAnwesendCheck <- if (mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
+      prevWsp <- warteschlangenplaetze
+        .filterNot(_.id === persistedWsp.id)
+        .filter(_.mitarbeiterId === wsp.mitarbeiterId)
+        .filter(_.folgePlatzId.?.isEmpty)
+        .map(_.folgePlatzId)
+        .update(persistedWsp.id.get)
+    } yield persistedWsp).transactionally
+  }
+
+  //  def wspsOfMitarbeiter = 1
   /*
     //@todo do not ignore the newest wsp if beginnzeitpunkt is not wsp.dl.dauer ago
     val wspAndMitarbeiterAndDl = (
