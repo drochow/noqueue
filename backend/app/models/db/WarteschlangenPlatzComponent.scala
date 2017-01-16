@@ -224,4 +224,16 @@ trait WarteschlangenPlatzComponent {
       else warteschlangenplaetze.filter(_.id === id).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
     } yield res
   }
+
+  def finishWorkOn(id: PK[WarteschlangenPlatzEntity], mid: PK[MitarbeiterEntity]): DBIO[Int] = {
+    for {
+      isInBearbeitung <- warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
+      res <- if (isInBearbeitung) {
+        warteschlangenplaetze.filter(_.id === id).delete
+      } else {
+        throw new AlreadWorkingOnAWspException
+      }
+    } yield res
+  }
+
 }

@@ -61,7 +61,7 @@ GET         /anwender/wsp                           controllers.WarteschlangenPl
 GET         /betrieb/:id/dienstleistung/mitarbeiter     controllers.WarteschlangenPlatz.getNextSlots(id: Long)
 
 PUT         /betrieb/:id/wsp/:wid           controllers.WarteschlangenPlatz.startWorkOn(id: Long, wid: Long)
-#DELETE      /wsp/:id
+DELETE      /betrieb/:id/wsp/:wid                         controllers.WarteschlangenPlatz.finishWorkOn(id: Long, wid: Long)
 
 #DLT
 GET             /dlt                                 controllers.Betrieb.searchDLT(q: String ?="", page: Int ?=0, size: Int ?= 10)

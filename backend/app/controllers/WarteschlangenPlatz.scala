@@ -125,4 +125,24 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
         }
       }
   }
+
+  //val wspBearbeitungBeendenReads = ((__ \ "warteschlangenplatzId").read[Long])
+
+  def finishWorkOn(betriebId: Long, wid: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
+    //readFromRequest[Long] {
+    //case wspId =>
+    request.mitarbeiter.wspBearbeitungBeenden(PK[WarteschlangenPlatzEntity](wid)) flatMap {
+      _ => accepted()
+    } recover {
+      case aibe: NotWorkingOnAWSPEXception => ApiError.errorBadRequest("You need to start working on this WSP first.")
+      case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
+      case uae: UnauthorizedException => ApiError.errorUnauthorized
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorBadRequest("Invalid data..")
+      }
+    }
+    //}(request, wspBearbeitungBeendenReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
+
+  }
 }
