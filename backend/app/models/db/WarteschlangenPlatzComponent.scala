@@ -17,7 +17,7 @@ trait WarteschlangenPlatzComponent {
     def dienstleistungsId = column[PK[DienstleistungEntity]]("DLT_ID")
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
-    def beginnZeitpunkt = column[Timestamp]("BEGINNZEIT", SqlType("timestamp"));
+    def beginnZeitpunkt = column[Option[Timestamp]]("BEGINNZEIT", SqlType("timestamp"));
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
@@ -27,7 +27,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -39,20 +39,29 @@ trait WarteschlangenPlatzComponent {
     for {
       mitarbeiterAndDl <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
         join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on ((mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId)
-        join warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
-          case ((dl, mitarbeiter), wspOfMitarbeiter) => wspOfMitarbeiter.folgePlatzId.isEmpty
-        }.result.head.nonFusedEquivalentAction
+        joinLeft warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
+          case ((mitarbeiter, dl), wspOfMitarbeiter) => {
+            System.out.print(wspOfMitarbeiter.isEmpty)
+            wspOfMitarbeiter.map(_.folgePlatzId).isEmpty
+          }
+        }.filter {
+          case (((mitarbeiter, dl)), wspOfMitarbeiter) => mitarbeiter.anwesend === true
+        }
+        .result.head.nonFusedEquivalentAction
       //.head fails if empty
-      anwesend <- Future.successful(mitarbeiterAndDl match {
+      /*anwesend <- mitarbeiterAndDl match {
         case ((mitarbeiter: MitarbeiterEntity, dl: DienstleistungEntity), wspOfMitarbeiter: WarteschlangenPlatzEntity) => wspOfMitarbeiter.folgeNummer.isEmpty
         //case _ => False
-      })
-      persistedWsp <- if (anwesend) (warteschlangenplaetzeAutoInc += wsp).map(id => {
-        warteschlangenplaetze.filter(_.id === mitarbeiterAndDl._2.id.get).map(_.folgePlatzId).update(Some(id))
+      }*/
+      persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => {
         // sets FolgePlatzId of earlier WarteschlangenPlatzEntity to persistedWsp.id
         wsp.copy(id = Some(id))
       })
-      else DBIO.failed(new Throwable("anwesend: " + anwesend))
+      /*worked <- if (!mitarbeiterAndDl._2.isEmpty) {
+        warteschlangenplaetze.filter(_.id === mitarbeiterAndDl._2.map(_.id.get)).map(_.folgePlatzId).update(persistedWsp.id)
+      } else {
+        DBIO.successful(0);
+      }*/
     } yield persistedWsp
   }
 

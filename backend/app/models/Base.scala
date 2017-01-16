@@ -9,8 +9,8 @@ import scala.concurrent.Future
  * Created by David on 29.11.16.
  */
 case class Base() {
-  val db = PostgresDB.db;
-  val dal = PostgresDB.dal;
+  val db = H2DB.db;
+  val dal = H2DB.dal;
 
   def exec[T](dbio: DBIO[T]): Future[T] = db.run(dbio)
 

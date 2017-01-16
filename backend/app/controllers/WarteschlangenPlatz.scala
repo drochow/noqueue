@@ -28,8 +28,15 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
   def create = SecuredApiActionWithBody { implicit request =>
     readFromRequest[(Long, Long)] {
       case (dlId, mitarbeiterId) =>
-        val wsP = request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId)
-        okF(wsP)
+        request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId) flatMap {
+          wsp => ok(wsp)
+        } recover {
+          case nfe: NoSuchElementException => ApiError.errorMethodForbidden
+          case e: Exception => {
+            e.printStackTrace()
+            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+          }
+        }
     }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 }
