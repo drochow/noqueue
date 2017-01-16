@@ -49,15 +49,15 @@ export class ShopsPage {
     if(!this.validator.searchTerm(this.searchTerm)){
       this.error = true;
       this.errorMessage = "Search Term not valid";
-      console.log("not valid");
+      console.log("Search term not valid");
       return;
     }
 
     this.shops = [];
     this.loadShops()
       .then(
-        () => console.log("loaded"),
-        () => console.log("error")
+        () => console.log("shops loaded"),
+        () => console.log("error while fetching shops")
       )
   }
 
@@ -66,7 +66,7 @@ export class ShopsPage {
     let self = this;
     return new Promise(function(resolve, reject){
 
-      self.shopsProvider.getShops(size, parseInt("" + (self.shops.length/size)+1), self.searchTerm, this.radius, this.location.latitude, this.location.longitude)
+      self.shopsProvider.getShops(size, parseInt("" + (self.shops.length/size)+1), self.searchTerm, self.radius * 100, self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
               console.log("GET Shops in shops.ts :", shops);

@@ -92,22 +92,12 @@ export class DashboardPage {
 
     this.resetData();
 
-
-    this.shops.getNearbyShops(3,1,"")
-      .subscribe(
-        (shops) => {
-          console.log("nearby shops: ", shops);
-          this.shopsNearby = shops;
-          this.hasShopsNearby = true;
-        }
-      );
-    
     this.locations.getUserLocation()
       .then(
         (location) => {
           let lat = location.latitude;
           let long = location.longitude;
-          this.shops.getShops(3,0,"",2500,lat,long)
+          this.shops.getShops(3,0,"",100000000,lat,long)
             .subscribe(
               (shops) => {
                 console.log("nearby shops: ", shops);

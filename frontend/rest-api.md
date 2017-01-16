@@ -38,7 +38,7 @@ Get Shops | GET /betrieb<br>?size=5<br>&page=1<br>&q=filter<br>&radius=2<br>**&l
 ✔︎ Hire Employee | POST /betrieb/:id/mitarbeiter | anwenderId<br>betriebId<br>anwesend | | coworkers.ts<br>my-shop-single.ts
 ✔︎ Hire Manager | POST /betrieb/:id/leiter | anwenderId<br>betriebId<br>anwesend | | coworkers.ts<br>my-shop-single.ts
 ✔︎ Fire Employee | DELETE /betrieb/:id/mitarbeiter/:userID | | | my-shop-single.ts 
-Fire Manager | DELETE /betrieb/:id/leiter/:userID | | | my-shop-single.ts
+✔︎ Fire Manager | DELETE /betrieb/:id/leiter/:userID | | | my-shop-single.ts
 
 
 
