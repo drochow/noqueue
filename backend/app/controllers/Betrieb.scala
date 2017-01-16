@@ -217,8 +217,8 @@ class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, va
     }
   }
 
-  def listDienstleistung(betriebId: Long, page: Int, size: Int) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
-    request.leiter.dienstleistungAnzeigen(page, size) flatMap {
+  def listDienstleistung(betriebId: Long, page: Int, size: Int) = SecuredApiAction { implicit request =>
+    request.anwender.dienstleistungAnzeigen(betriebId, page, size) flatMap {
       dientleistung => ok(dientleistung)
     } recover {
       case nse: UnauthorizedException => ApiError.errorUnauthorized

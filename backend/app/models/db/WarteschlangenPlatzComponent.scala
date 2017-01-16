@@ -187,4 +187,25 @@ trait WarteschlangenPlatzComponent {
       }
     } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt, res._2.dauer)).result.nonFusedEquivalentAction
   }
+
+  def getWspsOfBetrieb(betriebId: PK[BetriebEntity]): DBIO[Seq[(PK[MitarbeiterEntity], PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int, String)]] = {
+    (for {
+      res <- mitarbeiters join warteschlangenplaetze on {
+        case (m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable) => wsp.mitarbeiterId === m.id
+      } join dienstleistungen on {
+        case ((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
+      } join anwenders on {
+        case (((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable), an: AnwenderTable) => m.anwenderId === an.id
+      } filter {
+        case (((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable), an: AnwenderTable) => m.betriebId === betriebId
+      }
+    } yield (
+      res._1._1._1.id, //mitarbeiter ID
+      res._1._1._2.id, //wsp ID
+      res._1._1._2.folgePlatzId, //next wsp ID
+      res._1._1._2.beginnZeitpunkt, //wsp beginnZeitpunkt
+      res._1._2.dauer, //dl dauer
+      res._2.nutzerName //mitarbeiter Name
+    )).result.nonFusedEquivalentAction
+  }
 }
