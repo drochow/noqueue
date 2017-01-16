@@ -19,7 +19,7 @@ trait WarteschlangenPlatzComponent {
     def dienstleistungsId = column[PK[DienstleistungEntity]]("DLT_ID")
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
-    def beginnZeitpunkt = column[Timestamp]("BEGINNZEIT", SqlType("timestamp"));
+    def beginnZeitpunkt = column[Option[Timestamp]]("BEGINNZEIT", SqlType("timestamp"));
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
@@ -29,7 +29,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt.?, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -75,10 +75,17 @@ trait WarteschlangenPlatzComponent {
   def insert(wsp: WarteschlangenPlatzEntity) = {
     (for {
       anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
-      anwenderHasWspCheck <- if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      anwenderHasWspCheck <- {
+        System.out.println("Anwender has wsp? " + anwenderHasWsp)
+        if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      }
       mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
-      mitarbeiterIsAnwesendCheck <- if (mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      mitarbeiterIsAnwesendCheck <- {
+        System.out.println("Mitarbeiter is Anwesend? " + mitarbeiterIsAnwesend)
+        if (!mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      }
       persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
+
       prevWsp <- warteschlangenplaetze
         .filterNot(_.id === persistedWsp.id)
         .filter(_.mitarbeiterId === wsp.mitarbeiterId)
@@ -122,7 +129,7 @@ trait WarteschlangenPlatzComponent {
       }
     } yield (
       wsps._1._1._1.id, //wsp id
-      wsps._1._1._1.beginnZeitpunkt.?, //wsp beginn
+      wsps._1._1._1.beginnZeitpunkt, //wsp beginn
       wsps._1._1._1.folgePlatzId, //wsp next
       wsps._1._1._2, //anwender entity
       wsps._1._2.dauer, //dl dauer
@@ -173,6 +180,6 @@ trait WarteschlangenPlatzComponent {
       } filter {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
       }
-    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt.?, res._2.dauer)).result.nonFusedEquivalentAction
+    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt, res._2.dauer)).result.nonFusedEquivalentAction
   }
 }
