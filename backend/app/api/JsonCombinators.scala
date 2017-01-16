@@ -6,7 +6,7 @@ import models._
 import java.util.Date
 
 import models.db._
-import play.api.libs.json._
+import play.api.libs.json.{ Writes, _ }
 import play.api.libs.json.Reads.{ DefaultDateReads => _, _ }
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Writes.{ DefaultDateWrites => _, _ }
@@ -130,6 +130,17 @@ object JsonCombinators {
 
   implicit val dienstLeistungWrites: Writes[DienstleistungEntity] = Json.writes[DienstleistungEntity]
 
+  implicit val dienstLeistungWithTypWrites: Writes[(DienstleistungEntity, DienstleistungsTypEntity)] = new Writes[(DienstleistungEntity, DienstleistungsTypEntity)] {
+    def writes(v: (DienstleistungEntity, DienstleistungsTypEntity)): JsValue = {
+      Json.obj(
+        "id" -> v._1.id.get.value,
+        "name" -> v._2.name,
+        "dauer" -> v._1.dauer,
+        "kommentar" -> v._1.kommentar
+      )
+    }
+  }
+
   implicit val betriebAndAdresseWrites: Writes[BetriebAndAdresse] = new Writes[BetriebAndAdresse] {
     def writes(btr: BetriebAndAdresse) =
       Json.obj(
@@ -211,13 +222,13 @@ object JsonCombinators {
     }
   }
 
-  implicit val warteSchlangeOfMitarbeiterWrites: Writes[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])] =
-    new Writes[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])] {
-      override def writes(v: (PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])): JsValue = {
+  implicit val warteSchlangeOfMitarbeiterWrites: Writes[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])] =
+    new Writes[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])] {
+      override def writes(v: (PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])): JsValue = {
         Json.obj(
           "id" -> v._1.value,
           "beginnZeitpunk" -> v._2.getOrElse(new Timestamp(0L)).getTime,
-          "next" -> v._3.value,
+          "next" -> v._3.getOrElse(PK[WarteschlangenPlatzEntity](0L)).value,
           "anwender" -> Json.toJson(v._4),
           "dauer" -> v._5,
           "dlName" -> v._6,
@@ -226,9 +237,9 @@ object JsonCombinators {
       }
     }
 
-  implicit val warteSchlangeOfMitarbeiterWritesWithEstimation: Writes[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] =
-    new Writes[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] {
-      override def writes(v: (Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)): JsValue = {
+  implicit val warteSchlangeOfMitarbeiterWritesWithEstimation: Writes[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] =
+    new Writes[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] {
+      override def writes(v: (Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)): JsValue = {
         Json.obj(
           "wsps" -> Json.toJson(v._1),
           "schaetzEnde" -> v._2.getTime
@@ -259,6 +270,15 @@ object JsonCombinators {
 
   implicit val wspWrites = Json.writes[WarteschlangenPlatzEntity]
 
+  implicit val nextSlotWrites: Writes[(PK[MitarbeiterEntity], String, Long)] = new Writes[(PK[MitarbeiterEntity], String, Long)] {
+    override def writes(v: (PK[MitarbeiterEntity], String, Long)): JsValue = {
+      Json.obj(
+        "id" -> v._1.value,
+        "mitarbeiter" -> v._2,
+        "schaetzZeitpunkt" -> v._3
+      )
+    }
+  }
   //
   //  implicit val userWrites = new Writes[User] {
   //    def writes(u: User) = Json.obj(

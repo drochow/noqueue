@@ -78,17 +78,41 @@ export class ShopsProvider {
   }
 
   promoteEmployee(userID, shopID){
-    this.fireEmployee(userID, shopID).
-        subscribe(
-        () => this.hireManager(userId, shopID)
-    );
+    let self = this;
+    return new Promise(function(resolve, reject){
+      self.fireEmployee(userID, shopID)
+        .subscribe(
+          () => self.hireManager(userID, shopID, false)
+            .subscribe(
+              () => resolve(),
+              (error) => reject(error)
+            ),
+          (error) => reject(error)
+        )
+    });
+    //
+    //
+    // this.fireEmployee(userID, shopID).
+    //     subscribe(
+    //     () => {
+    //       return this.hireManager(userID, shopID, false);
+    //     }
+    // );
   }
 
   demoteManager(userID, shopID){
-    this.fireManager(userID, shopID).
-        subscribe(
-        () => this.hireEmployee(userID, shopID)
-    );
+    let self = this;
+    return new Promise(function(resolve, reject){
+      self.fireManager(userID, shopID)
+        .subscribe(
+          () => self.hireEmployee(userID, shopID, false)
+            .subscribe(
+              () => resolve(),
+              (error) => reject(error)
+            ),
+          (error) => reject(error)
+        )
+    });
   }
 
   private mapToExpectedJson(shop: any){

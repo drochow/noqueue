@@ -1,13 +1,14 @@
 package models
 
 import java.sql.Timestamp
+import java.util.NoSuchElementException
 
 import akka.actor.FSM.Failure
 import api.jwt.TokenPayload
 import models.db._
 import org.mindrot.jbcrypt.BCrypt
 import slick.dbio.{ DBIO, DBIOAction }
-import utils.WspDoesNotExistException
+import utils.{ UnauthorizedException, WspDoesNotExistException }
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -110,11 +111,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wsFuerMitarbeiterBeitreten(mitarbeiterPrimaryKey: PK[MitarbeiterEntity], dlPrimaryKey: PK[DienstleistungEntity]) = {
-    //@todo maybe implement me Future[WarteschlangenPlatzEntity]
-    throw new NotImplementedError("Not implemented yet, may implement it")
-  }
-
   def wsVerlassen(wsp: PK[WarteschlangenPlatzEntity]) = {
     for {
       anw <- anwender
@@ -184,17 +180,52 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       //previous wsps
       prev <- if (wsp.isEmpty) throw new WspDoesNotExistException else db.run(dal.getPrevWarteschlangenplaetze(wsp.get._2, wsp.get._1))
       res <- {
+
         //split wsps that already has begun and wsps that did not
-        val doneAndNotDone = prev.sortWith(_._2 == _._1).partition(!_._3.isEmpty)
-        //get the last done wsp
-        val lastDone = doneAndNotDone._1.maxBy(_._3.get.getTime())
+        val doneAndNotDone = prev.sortWith(_._1 == _._2.getOrElse(PK[WarteschlangenPlatzEntity](0L))).partition(!_._3.isEmpty)
+
+        if (doneAndNotDone._1.isEmpty && doneAndNotDone._2.isEmpty)
+          Future.successful(new Timestamp(System.currentTimeMillis / 1000))
+
+        val lastTime = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._3.get.getTime())._3.get.getTime() else System.currentTimeMillis / 1000;
+
         //aggregate all the done
         Future.successful(new Timestamp(doneAndNotDone._2.foldLeft(0)(
-          (x: Int, y: (PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)) => x + y._4
-        )))
+          (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)) => x + y._4
+        ) + lastTime))
       }
     } yield (wsp.get._1, wsp.get._3, wsp.get._4, wsp.get._5, wsp.get._6, wsp.get._7, res)
     // wspId,  mitarbeiterName, BetriebName, dlId, dldauer, dlname, schaetzZeitpunkt
   }
 
+  def dienstleistungAnzeigen(betriebId: Long, page: Int, size: Int): Future[Seq[(DienstleistungEntity, DienstleistungsTypEntity)]] =
+    for {
+      dls <- db.run(dal.listDienstleistungOfBetrieb(PK[BetriebEntity](betriebId), page, size))
+    } yield dls
+
+  def getNextTimeSlotsForBetrieb(betriebId: Long): Future[Seq[(PK[MitarbeiterEntity], String, Long)]] = {
+    for {
+      wsps <- db.run(dal.getWspsOfBetrieb(PK[BetriebEntity](betriebId)))
+      res <- Future.successful(wsps.map(m => (m._1, m._6)).distinct.map {
+        m =>
+          {
+            val doneAndNotDone = wsps.filter(_._1 == m._1).sortWith(_._2 == _._3.getOrElse(PK[WarteschlangenPlatzEntity](0L))).partition(!_._4.isEmpty)
+
+            if (doneAndNotDone._1.isEmpty && doneAndNotDone._2.isEmpty)
+              (m._1, m._2, System.currentTimeMillis / 1000) //return mitarbeiterId, mitarbeiterName, schaetzZeit
+            else {
+              val lastTime = if (!doneAndNotDone._1.isEmpty)
+                doneAndNotDone._1.maxBy(_._4.get.getTime())._4.get.getTime()
+              else
+                System.currentTimeMillis / 1000;
+              val time = doneAndNotDone._2.foldLeft(0)(
+                (x: Int, y: (PK[MitarbeiterEntity], PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int, String)) => x + y._5
+              ) + lastTime
+
+              (m._1, m._2, time) //return mitarbeiterId, mitarbeiterName, schaetzZeit
+            }
+          }
+      })
+    } yield res
+  }
 }

@@ -15,6 +15,7 @@ import { MyQueueSinglePage } from '../my-queue-single/my-queue-single';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the Dashboard page.
@@ -25,7 +26,7 @@ import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 @Component({
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
-  providers: [ShopsProvider, QueuesProvider],
+  providers: [ShopsProvider, QueuesProvider, ConnectivityProvider],
   entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, MyQueuesPage, MyQueueSinglePage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
 })
 export class DashboardPage {
@@ -41,7 +42,8 @@ export class DashboardPage {
   myQueues = [];
   hasQueues = false;
 
-  constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider) {
+  constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
+  public connectivity: ConnectivityProvider) {
   }
 
   ionViewWillEnter() {
@@ -85,6 +87,7 @@ export class DashboardPage {
 
   reloadData(){
     console.log("token: ", this.auth.getToken());
+    console.log("Internet connection: ", this.connectivity.isOnline());
 
     this.resetData();
 

@@ -35,7 +35,9 @@ function createShop(name, phone, email, openingHours, street, streetNr, zip, cit
             strasse: street,
             hausNummer: streetNr,
             plz: zip,
-            stadt: city
+            stadt: city,
+            latitude: 52.5462067,
+            longitude: 13.3584709
         },
         distanz: distance,
         isLeiter: leiter || false,

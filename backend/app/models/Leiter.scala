@@ -114,11 +114,4 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
     } yield affectedRows) recover {
       case nse: NoSuchElementException => throw new UnauthorizedException
     }
-
-  def dienstleistungAnzeigen(page: Int, size: Int): Future[Seq[DienstleistungEntity]] =
-    betrieb flatMap {
-      case betrieb => db.run(dal.listDienstleistungOfBetrieb(betrieb.id.get, page, size))
-    } recover {
-      case nse: NoSuchElementException => throw new UnauthorizedException
-    }
 }

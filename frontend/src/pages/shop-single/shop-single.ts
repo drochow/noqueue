@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { ElementRef, ViewChild } from '@angular/core';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { ServiceSinglePage } from '../service-single/service-single';
+import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 
 /*
   Generated class for the ShopSingle page.
@@ -14,10 +16,12 @@ import { ServiceSinglePage } from '../service-single/service-single';
 @Component({
   selector: 'page-shop-single',
   templateUrl: 'shop-single.html',
-  providers: [ QueuesProvider, ShopsProvider, ServicesProvider ],
+  providers: [ QueuesProvider, ShopsProvider, ServicesProvider, GoogleMapsProvider ],
   entryComponents: [ ServiceSinglePage ]
 })
 export class ShopSinglePage {
+
+  @ViewChild('map') mapElement: ElementRef;
 
   employees = [];
   shop = {};
@@ -28,7 +32,7 @@ export class ShopSinglePage {
   shopActive = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider) {
+  public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider) {
     this.shopID = this.navParams.get('shopID');
   }
 
@@ -52,8 +56,11 @@ export class ShopSinglePage {
             phone: shop.tel,
             email: shop.kontaktEmail,
             openingHours: shop.oeffnungszeiten,
-            address: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
-          }
+            addressString: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
+          };
+          let mapLoaded = this.maps.init(this.mapElement.nativeElement, shop.adresse.latitude, shop.adresse.longitude);
+          console.log("loaded map: ", mapLoaded);
+          console.log("map object: ", this.mapElement);
         },
         (error) => {
           this.error = true;

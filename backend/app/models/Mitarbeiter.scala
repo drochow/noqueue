@@ -44,21 +44,25 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def warteSchlangeAnzeigen(): Future[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] = {
+  def warteSchlangeAnzeigen(): Future[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] = {
     for {
       m <- mitarbeiter
       list <- db.run(dal.getWarteschlangenPlaetzeOfMitarbeiter(m.id.get))
       res <- {
         //split wsps that already has begun and wsps that did not
-        val doneAndNotDone = list.sortWith(_._3 == _._1).partition(!_._2.isEmpty)
+        val doneAndNotDone = list.sortWith(_._1 == _._3.getOrElse(PK[WarteschlangenPlatzEntity](0L))).partition(!_._2.isEmpty)
+
+        if (doneAndNotDone._1.isEmpty && doneAndNotDone._2.isEmpty)
+          Future.successful((Seq, System.currentTimeMillis / 1000))
         //get the last done wsp
-        val lastDone = doneAndNotDone._1.maxBy(_._2.get.getTime())
-        //aggregate all the done
+        val lastDone = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._2.get.getTime()) else doneAndNotDone._2(0)
+        val lastTime = if (!doneAndNotDone._1.isEmpty) lastDone._2.get.getTime() else System.currentTimeMillis / 1000;
+        val fullList = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._2 :+ lastDone else doneAndNotDone._2;
+
         val agregattedTime = new Timestamp(doneAndNotDone._2.foldLeft(0)(
-          (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])) => x + y._5
-        ) + lastDone._2.get.getTime())
-        //prepend lastDone to List
-        Future.successful((doneAndNotDone._2 :+ lastDone, agregattedTime))
+          (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])) => x + y._5
+        ) + lastTime)
+        Future.successful((fullList, agregattedTime))
       }
     } yield res
   }

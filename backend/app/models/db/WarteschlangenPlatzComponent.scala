@@ -3,7 +3,7 @@ package models.db
 import java.sql.Timestamp
 
 import slick.profile.SqlProfile.ColumnOption.SqlType
-import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException }
+import utils.{ AnwenderAlreadyLinedUpException, DLInvalidException, MitarbeiterNotAnwesendException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,11 +15,11 @@ trait WarteschlangenPlatzComponent {
 
   class WarteSchlangenPlatzTable(tag: Tag) extends Table[WarteschlangenPlatzEntity](tag, "WARTESCHLANGENPLATZ") {
     def id = column[PK[WarteschlangenPlatzEntity]]("DL_ID", O.PrimaryKey, O.AutoInc)
-    def folgePlatzId = column[PK[WarteschlangenPlatzEntity]]("NEXT_ID");
+    def folgePlatzId = column[Option[PK[WarteschlangenPlatzEntity]]]("NEXT_ID");
     def dienstleistungsId = column[PK[DienstleistungEntity]]("DLT_ID")
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
-    def beginnZeitpunkt = column[Timestamp]("BEGINNZEIT", SqlType("timestamp"));
+    def beginnZeitpunkt = column[Option[Timestamp]]("BEGINNZEIT", SqlType("timestamp"));
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
@@ -29,7 +29,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt.?, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -74,17 +74,29 @@ trait WarteschlangenPlatzComponent {
 
   def insert(wsp: WarteschlangenPlatzEntity) = {
     (for {
+      isValidDL <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
+        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on (
+          (mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId
+        )).exists.result
+      checkIsValidDL <- if (!isValidDL) throw new DLInvalidException else DBIO.successful()
       anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
-      anwenderHasWspCheck <- if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      anwenderHasWspCheck <- {
+        System.out.println("Anwender has wsp? " + anwenderHasWsp)
+        if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      }
       mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
-      mitarbeiterIsAnwesendCheck <- if (mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      mitarbeiterIsAnwesendCheck <- {
+        System.out.println("Mitarbeiter is Anwesend? " + mitarbeiterIsAnwesend)
+        if (!mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      }
       persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
+
       prevWsp <- warteschlangenplaetze
         .filterNot(_.id === persistedWsp.id)
         .filter(_.mitarbeiterId === wsp.mitarbeiterId)
-        .filter(_.folgePlatzId.?.isEmpty)
+        .filter(_.folgePlatzId.isEmpty)
         .map(_.folgePlatzId)
-        .update(persistedWsp.id.get)
+        .update(persistedWsp.id)
     } yield persistedWsp).transactionally
   }
 
@@ -115,7 +127,7 @@ trait WarteschlangenPlatzComponent {
    * @param mitarbeiterId
    * @return (Wsp_ID, BeginnZeitpunkt, Folge_Wsp_ID, Anwender, Dauer, DienstleistungsName)
    */
-  def getWarteschlangenPlaetzeOfMitarbeiter(mitarbeiterId: PK[MitarbeiterEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])]] =
+  def getWarteschlangenPlaetzeOfMitarbeiter(mitarbeiterId: PK[MitarbeiterEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])]] =
     (for {
       wsps <- warteschlangenplaetze join anwenders on {
         case (wsp: WarteSchlangenPlatzTable, anw: AnwenderTable) => wsp.anwenderId === anw.id
@@ -129,7 +141,7 @@ trait WarteschlangenPlatzComponent {
       }
     } yield (
       wsps._1._1._1.id, //wsp id
-      wsps._1._1._1.beginnZeitpunkt.?, //wsp beginn
+      wsps._1._1._1.beginnZeitpunkt, //wsp beginn
       wsps._1._1._1.folgePlatzId, //wsp next
       wsps._1._1._2, //anwender entity
       wsps._1._2.dauer, //dl dauer
@@ -169,17 +181,38 @@ trait WarteschlangenPlatzComponent {
       res._2.name //name of dlt
     )).result.headOption
 
-  def getPrevWarteschlangenplaetze(mitarbeiterId: PK[MitarbeiterEntity], wspId: PK[WarteschlangenPlatzEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)]] = {
+  def getPrevWarteschlangenplaetze(mitarbeiterId: PK[MitarbeiterEntity], wspId: PK[WarteschlangenPlatzEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)]] = {
     (for {
       res <- warteschlangenplaetze join mitarbeiters on {
         case (wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable) => wsp.mitarbeiterId === mt.id
       } join dienstleistungen on {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
       } filter {
-        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId < mitarbeiterId
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId === mitarbeiterId
       } filter {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
       }
-    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt.?, res._2.dauer)).result.nonFusedEquivalentAction
+    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt, res._2.dauer)).result.nonFusedEquivalentAction
+  }
+
+  def getWspsOfBetrieb(betriebId: PK[BetriebEntity]): DBIO[Seq[(PK[MitarbeiterEntity], PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int, String)]] = {
+    (for {
+      res <- mitarbeiters join warteschlangenplaetze on {
+        case (m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable) => wsp.mitarbeiterId === m.id
+      } join dienstleistungen on {
+        case ((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
+      } join anwenders on {
+        case (((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable), an: AnwenderTable) => m.anwenderId === an.id
+      } filter {
+        case (((m: MitarbeiterTable, wsp: WarteSchlangenPlatzTable), dl: DienstleistungTable), an: AnwenderTable) => m.betriebId === betriebId
+      }
+    } yield (
+      res._1._1._1.id, //mitarbeiter ID
+      res._1._1._2.id, //wsp ID
+      res._1._1._2.folgePlatzId, //next wsp ID
+      res._1._1._2.beginnZeitpunkt, //wsp beginnZeitpunkt
+      res._1._2.dauer, //dl dauer
+      res._2.nutzerName //mitarbeiter Name
+    )).result.nonFusedEquivalentAction
   }
 }
