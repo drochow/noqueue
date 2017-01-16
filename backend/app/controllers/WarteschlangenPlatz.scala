@@ -12,7 +12,7 @@ import play.api.i18n.MessagesApi
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import utils.{ AnwenderAlreadyLinedUpException, DLInvalidException, MitarbeiterNotAnwesendException, WspDoesNotExistException }
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -50,7 +50,11 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
       request.mitarbeiter.warteSchlangeAnzeigen() flatMap {
         warteschlange => ok(warteschlange)
       } recover {
-        case nse: NoSuchElementException => ApiError.errorUnauthorized
+        case uae: UnauthorizedException => ApiError.errorUnauthorized
+        case nse: NoSuchElementException => {
+          nse.printStackTrace()
+          ApiError.errorNotFound
+        }
         case e: Exception => {
           e.printStackTrace()
           ApiError.errorBadRequest("Invalid data..")
