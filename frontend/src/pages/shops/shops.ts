@@ -27,14 +27,15 @@ export class ShopsPage {
   error = false;
   errorMessage = "";
   allShopsFetched = false;
+  location: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
   public locations: LocationsProvider) {}
 
-  ionViewDidLoad() {
+  ionViewWillEnter() {
     this.locations.getUserLocation()
       .then(
-        (location) => console.log("Test locations provider: ", location)
+        (location) => this.location = location
       )
   }
 
@@ -64,31 +65,32 @@ export class ShopsPage {
     let size = 10;
     let self = this;
     return new Promise(function(resolve, reject){
-      self.shopsProvider.getNearbyShops(size, parseInt("" + (self.shops.length/size)) + 1, self.searchTerm)
+
+      self.shopsProvider.getShops(size, parseInt("" + (self.shops.length/size)+1), self.searchTerm, this.radius, this.location.latitude, this.location.longitude)
         .subscribe(
-          (data) => {
-            console.log("data:", data);
-            if(data.length < size){
-              self.allShopsFetched = true;
-            }
-            for(var item of data){
-              if(self.shops)
-              self.shops.push(item);
-            }
-            if (self.shops.length === 0) {
-              self.error = true;
-              self.errorMessage = "No shops found";
-              self.shouldShowShops = false;
-            }
-            resolve();
-          },
-          (error) => {
-            self.shouldShowShops = false;
-            self.error = true;
-            self.errorMessage = error.message || "Something went wrong";
-            reject();
-          }
-        )
+            (shops) => {
+              console.log("GET Shops in shops.ts :", shops);
+              if(shops.length < size){
+                self.allShopsFetched = true;
+              }
+              for(var item of shops){
+                if(self.shops)
+                  self.shops.push(item);
+              }
+              if (self.shops.length === 0) {
+                self.error = true;
+                self.errorMessage = "No shops found";
+                self.shouldShowShops = false;
+              }
+              resolve();
+            },
+              (error) => {
+                self.shouldShowShops = false;
+                self.error = true;
+                self.errorMessage = error.message || "Something went wrong";
+                reject();
+              }
+        );
     });
   }
 

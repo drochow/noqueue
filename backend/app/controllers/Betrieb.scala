@@ -10,6 +10,7 @@ import models.db._
 import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.inject.ApplicationLifecycle
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import utils.{ OneLeiterRequiredException, UnauthorizedException }
@@ -19,9 +20,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by anwender on 06.11.2016.
  */
-class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Betrieb @Inject() (val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = SecuredApiActionWithBody { implicit request =>
+
     //@todo cleanup and move all recover blocks to the most outer recover to enable generic errorhandling via the template method pattern
     readFromRequest[BetriebAndAdresse] {
       case btrAndAdr: BetriebAndAdresse => {
@@ -298,7 +300,7 @@ class Betrieb @Inject() (val as: AdressService, val messagesApi: MessagesApi, va
   }
 
   def search(q: String, lat: Double, long: Double, radius: Int, page: Int, size: Int) = ApiAction { implicit request =>
-    val ua = new UnregistrierterAnwender
+    val ua = new UnregistrierterAnwender(applicationLifecycle)
     ua.anbieterSuchen(suchBegriff = q, latitude = lat, longitude = long, umkreisM = radius, page = page, size = size) flatMap {
       case (seq: Seq[(BetriebAndAdresse, String)]) => {
         if (seq.length > 0) System.out.println(seq(0)._2)

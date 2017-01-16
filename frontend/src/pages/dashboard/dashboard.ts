@@ -16,6 +16,7 @@ import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { LocationsProvider } from '../../providers/locations-provider';
 
 /*
   Generated class for the Dashboard page.
@@ -26,7 +27,7 @@ import { ConnectivityProvider } from '../../providers/connectivity-provider';
 @Component({
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
-  providers: [ShopsProvider, QueuesProvider, ConnectivityProvider],
+  providers: [ShopsProvider, QueuesProvider, ConnectivityProvider, LocationsProvider],
   entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, MyQueuesPage, MyQueueSinglePage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
 })
 export class DashboardPage {
@@ -43,7 +44,7 @@ export class DashboardPage {
   hasQueues = false;
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
-  public connectivity: ConnectivityProvider) {
+  public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
   }
 
   ionViewWillEnter() {
@@ -98,6 +99,26 @@ export class DashboardPage {
           console.log("nearby shops: ", shops);
           this.shopsNearby = shops;
           this.hasShopsNearby = true;
+        }
+      );
+    
+    this.locations.getUserLocation()
+      .then(
+        (location) => {
+          let lat = location.latitude;
+          let long = location.longitude;
+          this.shops.getShops(3,0,"",2500,lat,long)
+            .subscribe(
+              (shops) => {
+                console.log("nearby shops: ", shops);
+                this.shopsNearby = shops;
+                this.hasShopsNearby = true;
+              },
+              (error) => {
+                let jsonError = JSON.parse(error._body);
+                console.log("Error while fetching shops: ", jsonError);
+              }
+            )
         }
       );
 

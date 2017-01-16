@@ -1,18 +1,20 @@
 package models
 
 import java.sql.SQLException
+import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
 import api.jwt.TokenPayload
 import models.db._
 import org.mindrot.jbcrypt.BCrypt
+import play.api.inject.ApplicationLifecycle
 
 import scala.concurrent.Future
 
 /**
  * Created by David on 29.11.16.
  */
-class UnregistrierterAnwender extends Base {
+class UnregistrierterAnwender(applicationLifecycle: ApplicationLifecycle) extends Base(applicationLifecycle) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,15 +29,15 @@ class UnregistrierterAnwender extends Base {
   }
 
   def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
-    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)))
+    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle)
   }
 
   def anmeldenMitPayloadAlsMitarbeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Mitarbeiter = {
-    new Mitarbeiter(dal.getMitarbeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)))
+    new Mitarbeiter(dal.getMitarbeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle)
   }
 
   def anmeldenMitPayloadAlsLeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Leiter = {
-    new Leiter(dal.getLeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)))
+    new Leiter(dal.getLeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle)
   }
 
   def anbieterSuchen(
