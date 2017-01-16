@@ -3,7 +3,7 @@ package models.db
 import java.sql.Timestamp
 
 import slick.profile.SqlProfile.ColumnOption.SqlType
-import utils.{ AnwenderAlreadyLinedUpException, DLInvalidException, MitarbeiterNotAnwesendException, AlreadWorkingOnAWspException }
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -219,7 +219,8 @@ trait WarteschlangenPlatzComponent {
   def startWorkOn(id: PK[WarteschlangenPlatzEntity], mid: PK[MitarbeiterEntity]): DBIO[Int] = {
     for {
       isAnyInBearbeitung <- warteschlangenplaetze.filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
-      res <- if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException
+      isAnyBefore <- warteschlangenplaetze.filter(_.folgePlatzId === id).exists.result
+      res <- if (isAnyBefore) throw new NotFirstWspException else if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException
       else warteschlangenplaetze.filter(_.id === id).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
     } yield res
   }

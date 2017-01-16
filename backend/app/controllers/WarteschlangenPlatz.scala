@@ -115,6 +115,8 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
       request.mitarbeiter.wspBearbeitungBeginnen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
         _ => accepted()
       } recover {
+        case aibe: AlreadWorkingOnAWspException => ApiError.errorBadRequest("You need to finish all WSPs first.")
+        case nfwspe: NotFirstWspException => ApiError.errorBadRequest("You have to start with the first WSP.")
         case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
         case uae: UnauthorizedException => ApiError.errorUnauthorized
         case e: Exception => {
