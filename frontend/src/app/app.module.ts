@@ -18,6 +18,8 @@ import { UsersProvider } from '../providers/users-provider';
 import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { ValidatorProvider } from '../providers/validator-provider';
 import { ConnectivityProvider } from '../providers/connectivity-provider';
+import { GoogleMapsProvider } from '../providers/google-maps-provider';
+import { LocationsProvider } from '../providers/locations-provider';
 // custom pages:
 import { LoginPage } from '../pages/login/login';
 import { SignupPage } from '../pages/signup/signup';
@@ -107,7 +109,7 @@ export function getAuthHttp(http) {
     MyQueueSinglePage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
-    UserConfigurationProvider, ValidatorProvider, ConnectivityProvider, {
+    UserConfigurationProvider, ValidatorProvider, ConnectivityProvider, GoogleMapsProvider, LocationsProvider, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]
