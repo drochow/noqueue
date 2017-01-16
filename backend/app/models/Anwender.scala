@@ -188,12 +188,12 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       prev <- if (wsp.isEmpty) throw new WspDoesNotExistException else db.run(dal.getPrevWarteschlangenplaetze(wsp.get._2, wsp.get._1))
       res <- {
         //split wsps that already has begun and wsps that did not
-        val doneAndNotDone = prev.sortWith(_._2 == _._1).partition(!_._3.isEmpty)
+        val doneAndNotDone = prev.sortWith(_._2.get == _._1).partition(!_._3.isEmpty)
         //get the last done wsp
         val lastDone = doneAndNotDone._1.maxBy(_._3.get.getTime())
         //aggregate all the done
         Future.successful(new Timestamp(doneAndNotDone._2.foldLeft(0)(
-          (x: Int, y: (PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)) => x + y._4
+          (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)) => x + y._4
         )))
       }
     } yield (wsp.get._1, wsp.get._3, wsp.get._4, wsp.get._5, wsp.get._6, wsp.get._7, res)
