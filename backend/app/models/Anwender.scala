@@ -187,14 +187,19 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       //previous wsps
       prev <- if (wsp.isEmpty) throw new WspDoesNotExistException else db.run(dal.getPrevWarteschlangenplaetze(wsp.get._2, wsp.get._1))
       res <- {
+
         //split wsps that already has begun and wsps that did not
-        val doneAndNotDone = prev.sortWith(_._2 == _._1).partition(!_._3.isEmpty)
-        //get the last done wsp
-        val lastDone = doneAndNotDone._1.maxBy(_._3.get.getTime())
+        val doneAndNotDone = prev.sortWith(_._1 == _._2.getOrElse(PK[WarteschlangenPlatzEntity](0L))).partition(!_._3.isEmpty)
+
+        if (doneAndNotDone._1.isEmpty && doneAndNotDone._2.isEmpty)
+          Future.successful(new Timestamp(System.currentTimeMillis / 1000))
+
+        val lastTime = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._3.get.getTime())._3.get.getTime() else System.currentTimeMillis / 1000;
+
         //aggregate all the done
         Future.successful(new Timestamp(doneAndNotDone._2.foldLeft(0)(
-          (x: Int, y: (PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)) => x + y._4
-        )))
+          (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)) => x + y._4
+        ) + lastTime))
       }
     } yield (wsp.get._1, wsp.get._3, wsp.get._4, wsp.get._5, wsp.get._6, wsp.get._7, res)
     // wspId,  mitarbeiterName, BetriebName, dlId, dldauer, dlname, schaetzZeitpunkt

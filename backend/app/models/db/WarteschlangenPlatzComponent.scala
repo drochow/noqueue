@@ -3,7 +3,7 @@ package models.db
 import java.sql.Timestamp
 
 import slick.profile.SqlProfile.ColumnOption.SqlType
-import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException }
+import utils.{ AnwenderAlreadyLinedUpException, DLInvalidException, MitarbeiterNotAnwesendException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,7 +15,7 @@ trait WarteschlangenPlatzComponent {
 
   class WarteSchlangenPlatzTable(tag: Tag) extends Table[WarteschlangenPlatzEntity](tag, "WARTESCHLANGENPLATZ") {
     def id = column[PK[WarteschlangenPlatzEntity]]("DL_ID", O.PrimaryKey, O.AutoInc)
-    def folgePlatzId = column[PK[WarteschlangenPlatzEntity]]("NEXT_ID");
+    def folgePlatzId = column[Option[PK[WarteschlangenPlatzEntity]]]("NEXT_ID");
     def dienstleistungsId = column[PK[DienstleistungEntity]]("DLT_ID")
     def mitarbeiterId = column[PK[MitarbeiterEntity]]("MIT_ID")
     def anwenderId = column[PK[AnwenderEntity]]("ANW_ID")
@@ -29,7 +29,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -74,6 +74,11 @@ trait WarteschlangenPlatzComponent {
 
   def insert(wsp: WarteschlangenPlatzEntity) = {
     (for {
+      isValidDL <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
+        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on (
+          (mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId
+        )).exists.result
+      checkIsValidDL <- if (!isValidDL) throw new DLInvalidException else DBIO.successful()
       anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
       anwenderHasWspCheck <- {
         System.out.println("Anwender has wsp? " + anwenderHasWsp)
@@ -89,9 +94,9 @@ trait WarteschlangenPlatzComponent {
       prevWsp <- warteschlangenplaetze
         .filterNot(_.id === persistedWsp.id)
         .filter(_.mitarbeiterId === wsp.mitarbeiterId)
-        .filter(_.folgePlatzId.?.isEmpty)
+        .filter(_.folgePlatzId.isEmpty)
         .map(_.folgePlatzId)
-        .update(persistedWsp.id.get)
+        .update(persistedWsp.id)
     } yield persistedWsp).transactionally
   }
 
@@ -115,7 +120,7 @@ trait WarteschlangenPlatzComponent {
    * @param mitarbeiterId
    * @return (Wsp_ID, BeginnZeitpunkt, Folge_Wsp_ID, Anwender, Dauer, DienstleistungsName)
    */
-  def getWarteschlangenPlaetzeOfMitarbeiter(mitarbeiterId: PK[MitarbeiterEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], PK[WarteschlangenPlatzEntity], AnwenderEntity, Int, String, PK[DienstleistungEntity])]] =
+  def getWarteschlangenPlaetzeOfMitarbeiter(mitarbeiterId: PK[MitarbeiterEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])]] =
     (for {
       wsps <- warteschlangenplaetze join anwenders on {
         case (wsp: WarteSchlangenPlatzTable, anw: AnwenderTable) => wsp.anwenderId === anw.id
@@ -169,14 +174,14 @@ trait WarteschlangenPlatzComponent {
       res._2.name //name of dlt
     )).result.headOption
 
-  def getPrevWarteschlangenplaetze(mitarbeiterId: PK[MitarbeiterEntity], wspId: PK[WarteschlangenPlatzEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], PK[WarteschlangenPlatzEntity], Option[Timestamp], Int)]] = {
+  def getPrevWarteschlangenplaetze(mitarbeiterId: PK[MitarbeiterEntity], wspId: PK[WarteschlangenPlatzEntity]): DBIO[Seq[(PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)]] = {
     (for {
       res <- warteschlangenplaetze join mitarbeiters on {
         case (wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable) => wsp.mitarbeiterId === mt.id
       } join dienstleistungen on {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.dienstleistungsId === dl.id
       } filter {
-        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId < mitarbeiterId
+        case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.mitarbeiterId === mitarbeiterId
       } filter {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
       }

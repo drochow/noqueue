@@ -12,7 +12,7 @@ import play.api.i18n.MessagesApi
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException, WspDoesNotExistException }
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -35,6 +35,7 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
         } recover {
           case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("Mitarbeiter is not anwesend")
           case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("Anwender already lined up somewhere")
+          case dlie: DLInvalidException => ApiError.errorBadRequest("This DL is not provided by this Mitarbeiter")
           case nfe: NoSuchElementException => ApiError.errorMethodForbidden
           case e: Exception => {
             e.printStackTrace()
@@ -49,7 +50,11 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
       request.mitarbeiter.warteSchlangeAnzeigen() flatMap {
         warteschlange => ok(warteschlange)
       } recover {
-        case nse: NoSuchElementException => ApiError.errorUnauthorized
+        case uae: UnauthorizedException => ApiError.errorUnauthorized
+        case nse: NoSuchElementException => {
+          nse.printStackTrace()
+          ApiError.errorNotFound
+        }
         case e: Exception => {
           e.printStackTrace()
           ApiError.errorBadRequest("Invalid data..")
