@@ -49,26 +49,21 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
 
-  val wspVerlassenReads = ((__ \ "warteschlangenplatzId").read[Long])
-
-  def verlassen = SecuredApiActionWithBody { implicit request =>
-    readFromRequest[Long] {
-      case wspId =>
-        request.anwender.wsVerlassen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
-          del =>
-            if (del < 1) {
-              ApiError.errorItemNotFound
-            } else {
-              noContent()
-            }
-        } recover {
-          case nfe: NoSuchElementException => ApiError.errorMethodForbidden
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-          }
+  def verlassen = SecuredApiAction { implicit request =>
+    request.anwender.wsVerlassen() flatMap {
+      del =>
+        if (del < 1) {
+          ApiError.errorItemNotFound
+        } else {
+          noContent()
         }
-    }(request, wspVerlassenReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
+    } recover {
+      case nfe: NoSuchElementException => ApiError.errorMethodForbidden
+      case e: Exception => {
+        e.printStackTrace()
+        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
+      }
+    }
   }
 
   def getWarteSchlangeOfMitarbeiter(betriebId: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) {

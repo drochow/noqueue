@@ -112,10 +112,10 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     throw new NotImplementedError("Not implemented yet, may implement it")
   }
 
-  def wsVerlassen(wsp: PK[WarteschlangenPlatzEntity]) = {
+  def wsVerlassen() = {
     for {
       anw <- anwender
-      del <- db.run(dal.delete(wsp, anw.id.get))
+      del <- db.run(dal.delete(anw.id.get))
     } yield del
   }
 

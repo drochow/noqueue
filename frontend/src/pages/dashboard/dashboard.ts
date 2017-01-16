@@ -124,14 +124,14 @@ export class DashboardPage {
           }
         );
       //@TODO - use getMyShops() instead
-      this.queues.getMyQueues()
-        .subscribe(
-          (queues) => {
-            console.log("my queues: ", queues);
-            this.myQueues = queues;
-            this.hasQueues = true;
-          }
-    );
+      // this.queues.getMyQueues()
+      //   .subscribe(
+      //     (queues) => {
+      //       console.log("my queues: ", queues);
+      //       this.myQueues = queues;
+      //       this.hasQueues = true;
+      //     }
+      // );
       this.queues.getMyQueuePosition()
         .subscribe(
           (queuePosition) => {

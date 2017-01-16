@@ -19,7 +19,7 @@ export class ValidatorProvider {
 
   // 8 to 30 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number) and
   // 1 special character
-  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,30}$/.test(string);
+  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(string);
 
   passwordMatching = (string1, string2) => string1 === string2;
 
@@ -29,7 +29,7 @@ export class ValidatorProvider {
   // 1 to 50 characters
   searchTerm = string => /.{1,50}/.test(string);
 
-  // 1 to 30 characters 
+  // 1 to 30 characters
   searchName = string => /^[a-zA-Z\d\.\-\_]{1,30}$/.test(string);
 
   // 2-50 alphanumeric + german symbols

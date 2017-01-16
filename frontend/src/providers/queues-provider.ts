@@ -19,13 +19,13 @@ export class QueuesProvider {
   }
 
   // @TODO - use getMyShops() instead and check if the user is 'isAnwesend'
-  getMyQueues() : Observable<any>{
-    let route = this.httpProvider.ROUTES.users + "/" + this.auth.getUserId() + "/queues";
+  getMyQueues(shopId) : Observable<any>{
+    let route = this.httpProvider.ROUTES.shops + "/" + shopId + "/ws";
     return this.httpProvider.get(route);
   }
 
   getMyQueuePosition() : Observable<any>{
-    let route = this.httpProvider.ROUTES.users + "/queueposition";
+    let route = this.httpProvider.ROUTES.users + "/wsp";
     return this.httpProvider.get(route);
   }
 
@@ -44,28 +44,23 @@ export class QueuesProvider {
     // ...
   }
 
-  lineup(shopID, serviceID, employeeID) : Observable<any>{
-    console.log(shopID, serviceID, employeeID);
-    let body = this.mapToExpectedJson(shopID, serviceID, employeeID);
-    console.log("body: ", body);
-    return this.httpProvider.post(this.httpProvider.ROUTES.queues, body);
+  lineup(serviceID: number, employeeID: number) : Observable<any>{
+    console.log(serviceID, employeeID);
+    return this.httpProvider.post(this.httpProvider.ROUTES.users + "/wsp", this.mapToExpectedJson(serviceID, employeeID));
   }
 
-  leave(queuePositionID) : Observable<any>{
-    return this.httpProvider.delete(this.httpProvider.ROUTES.queues + "/" + queuePositionID);
+  leave() : Observable<any>{
+    return this.httpProvider.delete(this.httpProvider.ROUTES.users + "/wsp");
   }
 
 
   // @TODO remove the default userid  value; it's only used for testing purposes
   // as the token from the fake server doesn't contain userID
-  private mapToExpectedJson(shopID, serviceID, employeeName){
-    let body = {
-      nutzerId: this.auth.getUserId() || 1,
-      betriebId: shopID,
-      dlId: serviceID,
-      mitarbeiterName: employeeName
+  private mapToExpectedJson(serviceID: number, employeeID: number){
+    return {
+      dienstleistung: Number(serviceID),
+      mitarbeiter: Number(employeeID)
     };
-    return body;
   }
 
 }

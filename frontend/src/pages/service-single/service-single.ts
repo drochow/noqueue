@@ -20,10 +20,10 @@ import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 export class ServiceSinglePage {
 
   employees = [];
-  selectedEmployee = "any";
+  selectedEmployee: number = 0;
   service = {};
   shopID: any;
-  serviceID: any;
+  serviceID: number;
   error = false;
   errorMessage = "";
   queueActive = false;
@@ -72,11 +72,10 @@ export class ServiceSinglePage {
     //     (error) => console.log(error)
     //   );
 
-    this.shopsProvider.getEmployees(this.shopID)
+    this.shopsProvider.getNextAvailableSlots(this.shopID)
       .subscribe(
         (employees) => {
-          let activeEmployees = employees.filter(e => e.anwesend);
-          this.employees = activeEmployees;
+          this.employees = employees;
           this.queueActive = this.employees.length > 0;
         }
       );
@@ -84,12 +83,13 @@ export class ServiceSinglePage {
 
   // @TODO
   employeeSelection(){
+    console.log(this.selectedEmployee);
     // get the next available time slot for this employee
   }
 
   lineUp(){
     console.log("data at this point: ", this.shopID, this.serviceID, this.selectedEmployee);
-    this.queuesProvider.lineup(this.shopID, this.serviceID, this.selectedEmployee)
+    this.queuesProvider.lineup(this.serviceID, this.selectedEmployee)
       .subscribe(
         () => {
           console.log('lined up');

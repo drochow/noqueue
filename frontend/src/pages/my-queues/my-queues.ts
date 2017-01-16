@@ -34,14 +34,14 @@ export class MyQueuesPage {
     this.errorMessage = "";
 
     // @TODO - use getMyShops() instead and make extra request for the name of the shop
-    this.queuesProvider.getMyQueues()
-      .subscribe(
-        (queues) => this.queues = queues,
-        (error) => {
-          this.error = true;
-          this.errorMessage = error.message || "Couldn't retrieve queues from server";
-        }
-      );
+    // this.queuesProvider.getMyQueues()
+    //   .subscribe(
+    //     (queues) => this.queues = queues,
+    //     (error) => {
+    //       this.error = true;
+    //       this.errorMessage = error.message || "Couldn't retrieve queues from server";
+    //     }
+    //   );
   }
 
   showQueue(id, shopName){

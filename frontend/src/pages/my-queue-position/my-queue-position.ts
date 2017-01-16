@@ -19,13 +19,11 @@ export class MyQueuePositionPage {
   shop = {};
   queuePosition = {
     id: 0,
-    uhrzeit: "",
     mitarbeiter: "",
-    adresse: "",
-    distanz: "",
-    platzNummer: "",
-    tel: "",
-    betriebName: ""
+    betrieb: "",
+    dlId: 0,
+    dlName: "",
+    schaetzZeitpunkt: 0,
   };
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider) {}
@@ -61,7 +59,7 @@ export class MyQueuePositionPage {
   }
 
   leave(){
-    this.queuesProvider.leave(this.queuePosition.id)
+    this.queuesProvider.leave()
       .subscribe(
         () => this.navCtrl.popToRoot(),
         (error) => console.log(error)

@@ -25,9 +25,15 @@
     <ion-item>{{service.description}}</ion-item>
     <ion-label>Employee</ion-label>
     <ion-item>
-      <ion-select (ionChange)="employeeSelection()" [(ngModel)]="selectedEmployee">
-        <ion-option *ngFor="let employee of employees">{{employee.anwenderId}}</ion-option>
-      </ion-select>
+      <ion-list radio-group *ngFor="let employee of employees" [(ngModel)]="selectedEmployee" (ionChange)="employeeSelection()">
+        <ion-item>
+          <ion-label>{{employee.mitarbeiter}} - available at: {{employee.schaetzZeitpunkt*1000 | date : ' M/d/y HH:mm:ss'}}</ion-label>
+          <ion-radio checked="false" value={{employee.id}}></ion-radio>
+        </ion-item>
+      </ion-list>
+      <!--<ion-select (ionChange)="employeeSelection()" [(ngModel)]="selectedEmployee">-->
+        <!--<ion-option >Name: {{employee.mitarbeiter}} Verfügbar ab:{{employee.schaetzZeitpunkt | date : 'HH:mm:ss'}}</ion-option>-->
+      <!--</ion-select>-->
     </ion-item>
   </ion-list>
   <button ion-button full (click)="lineUp()">Line up</button>

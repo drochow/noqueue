@@ -80,7 +80,7 @@ export class ShopSinglePage {
             }
       );
 
-    this.shopsProvider.getEmployees(this.shopID)
+    this.shopsProvider.getNextAvailableSlots(this.shopID)
       .subscribe(
         (employees) => {
           let activeEmployees = employees.filter(e => e.anwesend);

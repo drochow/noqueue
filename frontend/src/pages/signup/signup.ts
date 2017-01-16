@@ -40,7 +40,7 @@ export class SignupPage {
       this.registerError("Email not valid");
     }
     if(!this.validator.password(this.password)){
-      this.registerError("Password not valid");
+      this.registerError("Password does not match requirements: min 8 chars , must contain 1, 1 upper, 1 digit and 1 special character");
     }
     if(!this.validator.passwordMatching(this.password, this.confirmPassword)){
       this.registerError("Password not matching");

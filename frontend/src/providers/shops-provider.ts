@@ -83,6 +83,11 @@ export class ShopsProvider {
     return this.httpProvider.get(route);
   }
 
+  getNextAvailableSlots(shopID) : Observable<any>{
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/mitarbeiter";
+    return this.httpProvider.get(route);
+  }
+
   getManagers(shopID) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter";
     return this.httpProvider.get(route);
