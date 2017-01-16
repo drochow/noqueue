@@ -13,12 +13,12 @@
 
 <ion-content padding>
   <p *ngIf="error">{{errorMessage}}</p>
-  <p>...Insert MapView here...</p>
+  <div #map id="map"></div>
 
   <ion-item-group>
     <ion-item-divider color="light">Info</ion-item-divider>
     <ion-item>{{shop.name}}</ion-item>
-    <ion-item>{{shop.address}}</ion-item>
+    <ion-item>{{shop.addressString}}</ion-item>
     <ion-item>{{shop.phone}}</ion-item>
     <ion-item>{{shop.openingHours}}</ion-item>
     <ion-item>{{shop.email}}</ion-item>
