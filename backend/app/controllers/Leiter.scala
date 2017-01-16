@@ -6,13 +6,14 @@ import api.JsonCombinators._
 import models.db.{ BetriebEntity, DienstleistungsTypEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.inject.ApplicationLifecycle
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by anwender on 25.12.2016.
  */
-class Leiter @Inject() (val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Leiter @Inject() (val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   //  def dienstleistungAnbieten(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
   //    readFromRequest[(PK[DienstleistungsTypEntity], String, Int, String)] {

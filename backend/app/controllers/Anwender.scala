@@ -15,6 +15,7 @@ import org.postgresql.util.PSQLException
 import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.inject.ApplicationLifecycle
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -25,12 +26,12 @@ import scala.concurrent.Future
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwender @Inject() (val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
       case anw: AnwenderEntity => {
-        val uAnwender = new UnregistrierterAnwender()
+        val uAnwender = new UnregistrierterAnwender(applicationLifecycle)
         uAnwender.registrieren(anw) flatMap {
           //success
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
@@ -58,7 +59,7 @@ class Anwender @Inject() (val as: AdressService, val messagesApi: MessagesApi, v
   def auth = ApiActionWithBody { implicit request =>
     readFromRequest[Credentials] {
       case credentials: Credentials => {
-        val uAnwender = new UnregistrierterAnwender
+        val uAnwender = new UnregistrierterAnwender(applicationLifecycle)
         uAnwender.anmelden(credentials.nutzerName, credentials.password) flatMap {
           case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))))
         } recover {

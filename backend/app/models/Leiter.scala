@@ -4,6 +4,7 @@ import java.sql.Timestamp
 import java.util.NoSuchElementException
 
 import models.db._
+import play.api.inject.ApplicationLifecycle
 import slick.dbio.{ DBIO, DBIOAction }
 import utils.UnauthorizedException
 
@@ -13,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by David on 29.11.16.
  */
-class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)]) extends Base {
+class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)], applicationLifecycle: ApplicationLifecycle) extends Base(applicationLifecycle) {
 
   lazy val betrieb: Future[BetriebEntity] = leiterComposition map (_._1)
 

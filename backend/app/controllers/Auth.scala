@@ -20,8 +20,9 @@ import models.{ Anwender, UnregistrierterAnwender }
 import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.inject.ApplicationLifecycle
 
-class Auth @Inject() (val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
+class Auth @Inject() (val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, system: ActorSystem, val config: Configuration) extends api.ApiController {
   /*
   implicit val loginInfoReads: Reads[Tuple2[String, String]] = (
     (__ \ "nutzerName").read[String] and

@@ -17,6 +17,7 @@ import play.api.i18n.{ I18nSupport, MessagesApi }
 
 import scala.util.{ Failure, Success, Try }
 import play.api.libs.json._
+import play.api.inject.ApplicationLifecycle
 
 //@todo think about separating commonerApiC and inheriting SecuredApiC
 
@@ -26,6 +27,7 @@ import play.api.libs.json._
 trait ApiController extends Controller with I18nSupport {
   //  val db = PostgresDB.db;
   //  val dal = PostgresDB.dal;
+  val applicationLifecycle: ApplicationLifecycle
   val config: Configuration;
   val messagesApi: MessagesApi
   implicit protected val SECRET: JwtSecret = JwtSecret(config.getString("jwt.token.secret").get);
@@ -164,7 +166,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender()
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
           action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
         }
       }
@@ -185,7 +187,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender()
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
           action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
         }
       }
@@ -206,7 +208,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender()
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
           action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
         }
       }
