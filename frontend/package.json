@@ -62,7 +62,9 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-network-information"
   ],
   "cordovaPlatforms": [
     "ios",

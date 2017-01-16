@@ -17,6 +17,7 @@ import { QueuesProvider } from '../providers/queues-provider';
 import { UsersProvider } from '../providers/users-provider';
 import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { ValidatorProvider } from '../providers/validator-provider';
+import { ConnectivityProvider } from '../providers/connectivity-provider';
 // custom pages:
 import { LoginPage } from '../pages/login/login';
 import { SignupPage } from '../pages/signup/signup';
@@ -106,7 +107,7 @@ export function getAuthHttp(http) {
     MyQueueSinglePage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
-    UserConfigurationProvider, ValidatorProvider, {
+    UserConfigurationProvider, ValidatorProvider, ConnectivityProvider, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]
