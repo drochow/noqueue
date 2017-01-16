@@ -92,14 +92,22 @@ export class MyShopSinglePage {
       )
   }
 
-  // @TODO
   demoteManager(slidingItem, userID){
     slidingItem.close();
+    this.shopsProvider.demoteManager(userID, this.shopID)
+    .subscribe(
+        () => this.reloadData(),
+        (error) => this.registerError("Couldn't demote manager")
+    )
   }
 
-  // @TODO
   promoteEmployee(slidingItem, userID){
     slidingItem.close();
+    this.shopsProvider.promoteEmployee(userID, this.shopID)
+    .subscribe(
+        () => this.reloadData(),
+        (error) => this.registerError("Couldn't promote employee")
+    )
   }
 
   fireManager(slidingItem, userID){
