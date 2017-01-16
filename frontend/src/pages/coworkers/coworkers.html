@@ -26,8 +26,8 @@
         <ion-badge *ngIf="user.employee" color="primary" item-right>Employee</ion-badge>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="secondary" (click)="hireManager(item, user.userID)"><ion-icon name="arrow-round-up"></ion-icon>Manager</button>
-        <button ion-button color="primary" (click)="hireEmployee(item, user.userID)"><ion-icon name="arrow-round-up"></ion-icon>Employee</button>
+        <button ion-button color="secondary" (click)="hireManager(item, user.id)"><ion-icon name="arrow-round-up"></ion-icon>Manager</button>
+        <button ion-button color="primary" (click)="hireEmployee(item, user.id)"><ion-icon name="arrow-round-up"></ion-icon>Employee</button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

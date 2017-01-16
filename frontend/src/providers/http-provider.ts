@@ -16,13 +16,13 @@ export class HttpProvider {
   // Server configuration
   private localServer = "http://localhost:9000";
   private fakeServer = "http://localhost:3000";
-  public workingServer = this.fakeServer;
+  public workingServer = this.localServer;
 
   public ROUTES = {
     authentication: "/auth",
     users: "/anwender",
     shops: "/betrieb",
-    services: "/dlts",
+    services: "/dlt",
     queues: "/queues"
   };
 

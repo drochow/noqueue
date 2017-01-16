@@ -382,7 +382,7 @@ dltsRouter.get('/', function(req,res,next){
 dltsRouter.post('/', function(req,res,next){
     res.status(200).json(servicesTypes);
 });
-app.use('/dlts', dltsRouter);
+app.use('/dlt', dltsRouter);
 
 
 var queuesRouter = express.Router();

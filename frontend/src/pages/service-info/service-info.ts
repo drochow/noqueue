@@ -102,7 +102,11 @@ export class ServiceInfoPage {
     this.servicesProvider.editService(this.shopID, this.serviceID, this.service)
       .subscribe(
         () => this.navCtrl.pop(),
-        (error) => this.registerError(error.message || "Error while saving service")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while editing service: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       );
   }
 
@@ -123,7 +127,11 @@ export class ServiceInfoPage {
            this.navCtrl.pop();
           }
         },
-        (error) => this.registerError(error.message || "Couldn't save the service")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while creating new service: ", jsonError);
+          this.registerError(jsonError.message);
+        }
       );
   }
 
