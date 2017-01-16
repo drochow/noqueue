@@ -95,19 +95,19 @@ export class MyShopSinglePage {
   demoteManager(slidingItem, userID){
     slidingItem.close();
     this.shopsProvider.demoteManager(userID, this.shopID)
-    .subscribe(
-        () => this.reloadData(),
-        (error) => this.registerError("Couldn't demote manager")
-    )
+      .then(
+        () => {},
+        (error) => this.registerError(error || "Couldn't promote employee")
+      );
   }
 
   promoteEmployee(slidingItem, userID){
     slidingItem.close();
     this.shopsProvider.promoteEmployee(userID, this.shopID)
-    .subscribe(
-        () => this.reloadData(),
-        (error) => this.registerError("Couldn't promote employee")
-    )
+      .then(
+        () => {},
+        (error) => this.registerError(error || "Couldn't promote employee")
+      );
   }
 
   fireManager(slidingItem, userID){
