@@ -36,26 +36,26 @@ trait WarteschlangenPlatzComponent {
 
   val warteschlangenplaetzeAutoInc = warteschlangenplaetze returning warteschlangenplaetze.map(_.id)
 
-    def insert(wsp: WarteschlangenPlatzEntity) = {
-      for {
-        mitarbeiterAndDl <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
-          join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on ((mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId)
-          join warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
-            case ((dl, mitarbeiter), wspOfMitarbeiter) => wspOfMitarbeiter.folgePlatzId.isEmpty
-          }.result.head.nonFusedEquivalentAction
-        //.head fails if empty
-        anwesend <- Future.successful(mitarbeiterAndDl match {
-          case ((mitarbeiter: MitarbeiterEntity, dl: DienstleistungEntity), wspOfMitarbeiter: WarteschlangenPlatzEntity) => wspOfMitarbeiter.folgeNummer.isEmpty
-          //case _ => False
-        })
-        persistedWsp <- if (anwesend) (warteschlangenplaetzeAutoInc += wsp).map(id => {
-          warteschlangenplaetze.filter(_.id === mitarbeiterAndDl._2.id.get).map(_.folgePlatzId).update(Some(id))
-          // sets FolgePlatzId of earlier WarteschlangenPlatzEntity to persistedWsp.id
-          wsp.copy(id = Some(id))
-        })
-        else DBIO.failed(new Throwable("anwesend: " + anwesend))
-      } yield persistedWsp
-    }
+  def insert(wsp: WarteschlangenPlatzEntity) = {
+    for {
+      mitarbeiterAndDl <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
+        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on ((mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId)
+        join warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
+          case ((dl, mitarbeiter), wspOfMitarbeiter) => wspOfMitarbeiter.folgePlatzId.isEmpty
+        }.result.head.nonFusedEquivalentAction
+      //.head fails if empty
+      anwesend <- Future.successful(mitarbeiterAndDl match {
+        case ((mitarbeiter: MitarbeiterEntity, dl: DienstleistungEntity), wspOfMitarbeiter: WarteschlangenPlatzEntity) => wspOfMitarbeiter.folgeNummer.isEmpty
+        //case _ => False
+      })
+      persistedWsp <- if (anwesend) (warteschlangenplaetzeAutoInc += wsp).map(id => {
+        warteschlangenplaetze.filter(_.id === mitarbeiterAndDl._2.id.get).map(_.folgePlatzId).update(Some(id))
+        // sets FolgePlatzId of earlier WarteschlangenPlatzEntity to persistedWsp.id
+        wsp.copy(id = Some(id))
+      })
+      else DBIO.failed(new Throwable("anwesend: " + anwesend))
+    } yield persistedWsp
+  }
 
   def wspsOfMitarbeiter = 1
   /*

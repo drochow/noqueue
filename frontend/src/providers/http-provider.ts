@@ -62,36 +62,36 @@ export class HttpProvider {
     console.log("GET to " + this.workingServer + route);
 
     return this.http.get(this.workingServer + route, options)
-      .map(response => responseToJson(response));
+      .map(response => this.responseToJson(response));
   }
 
   post(route: string, body: any): Observable<any>{
     let jsonBody = JSON.stringify(body);
     console.log("Sending POST request to " + route + " with body: ", body);
     return this.http.post(this.workingServer + route, jsonBody, this.requestOptions())
-      .map(response => responseToJson(response));
+      .map(response => this.responseToJson(response));
   }
 
   patch(route: string, body: any): Observable<any>{
     console.log("Sending PATCH request to " + route + " with body: ", body);
     return this.http.patch(this.workingServer + route, JSON.stringify(body), this.requestOptions())
-      .map(response => responseToJson(response));
+      .map(response => this.responseToJson(response));
   }
 
   put(route: string, body: any): Observable<any>{
     console.log("Sending PUT request to " + route + " with body: ", body);
     return this.http.put(this.workingServer + route, JSON.stringify(body), this.requestOptions())
-      .map(response => responseToJson(response));
+      .map(response => this.responseToJson(response));
   }
 
   delete(route: string): Observable<any>{
     console.log("Sending DELETE request to " + route);
     return this.http.delete(this.workingServer + route, this.requestOptions())
-      .map(response => responseToJson(response));
+      .map(response => this.responseToJson(response));
   }
 
 
-  responseToJson(response): void {
+  responseToJson(response) {
     try {
       return response.json();
     } catch(err) {
