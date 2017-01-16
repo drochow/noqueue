@@ -3,6 +3,7 @@ package models.db
 import java.sql.Timestamp
 
 import slick.profile.SqlProfile.ColumnOption.SqlType
+import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,7 +29,7 @@ trait WarteschlangenPlatzComponent {
      * Default Projection Mapping to case Class
      * @return
      */
-    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
+    def * = (beginnZeitpunkt, anwenderId, mitarbeiterId, dienstleistungsId, folgePlatzId.?, id.?) <> (WarteschlangenPlatzEntity.tupled, WarteschlangenPlatzEntity.unapply)
 
   }
 
@@ -36,11 +37,16 @@ trait WarteschlangenPlatzComponent {
 
   val warteschlangenplaetzeAutoInc = warteschlangenplaetze returning warteschlangenplaetze.map(_.id)
 
-  def insert(wsp: WarteschlangenPlatzEntity) = {
+  def insertMe(wsp: WarteschlangenPlatzEntity) = {
     for {
       mitarbeiterAndDl <- (mitarbeiters.filter(_.id === wsp.mitarbeiterId)
-        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on ((mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId)
-        joinLeft warteschlangenplaetze on { case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) => mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId }).filter {
+        join dienstleistungen.filter(_.id === wsp.dienstLeistungId) on (
+          (mitarbeiter, dl) => mitarbeiter.betriebId === dl.betriebId
+        ) joinLeft warteschlangenplaetze on {
+            case ((mitarbeiter: MitarbeiterTable, dl: DienstleistungTable), wspOfMitarbeiter: WarteSchlangenPlatzTable) =>
+              mitarbeiter.id === wspOfMitarbeiter.mitarbeiterId
+          })
+        .filter {
           case ((mitarbeiter, dl), wspOfMitarbeiter) => {
             System.out.print(wspOfMitarbeiter.isEmpty)
             wspOfMitarbeiter.map(_.folgePlatzId).isEmpty
@@ -66,7 +72,30 @@ trait WarteschlangenPlatzComponent {
     } yield persistedWsp
   }
 
-  def wspsOfMitarbeiter = 1
+  def insert(wsp: WarteschlangenPlatzEntity) = {
+    (for {
+      anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
+      anwenderHasWspCheck <- {
+        System.out.println("Anwender has wsp? " + anwenderHasWsp)
+        if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
+      }
+      mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
+      mitarbeiterIsAnwesendCheck <- {
+        System.out.println("Mitarbeiter is Anwesend? " + mitarbeiterIsAnwesend)
+        if (!mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
+      }
+      persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
+
+      prevWsp <- warteschlangenplaetze
+        .filterNot(_.id === persistedWsp.id)
+        .filter(_.mitarbeiterId === wsp.mitarbeiterId)
+        .filter(_.folgePlatzId.?.isEmpty)
+        .map(_.folgePlatzId)
+        .update(persistedWsp.id.get)
+    } yield persistedWsp).transactionally
+  }
+
+  //  def wspsOfMitarbeiter = 1
   /*
     //@todo do not ignore the newest wsp if beginnzeitpunkt is not wsp.dl.dauer ago
     val wspAndMitarbeiterAndDl = (
@@ -100,7 +129,7 @@ trait WarteschlangenPlatzComponent {
       }
     } yield (
       wsps._1._1._1.id, //wsp id
-      wsps._1._1._1.beginnZeitpunkt.?, //wsp beginn
+      wsps._1._1._1.beginnZeitpunkt, //wsp beginn
       wsps._1._1._1.folgePlatzId, //wsp next
       wsps._1._1._2, //anwender entity
       wsps._1._2.dauer, //dl dauer
@@ -151,6 +180,6 @@ trait WarteschlangenPlatzComponent {
       } filter {
         case ((wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable), dl: DienstleistungTable) => wsp.id < wspId
       }
-    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt.?, res._2.dauer)).result.nonFusedEquivalentAction
+    } yield (res._1._1.id, res._1._1.folgePlatzId, res._1._1.beginnZeitpunkt, res._2.dauer)).result.nonFusedEquivalentAction
   }
 }

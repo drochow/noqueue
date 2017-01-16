@@ -4,6 +4,7 @@ import java.sql.Timestamp
 
 import models.db._
 import slick.dbio.DBIO
+import utils.UnauthorizedException
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,7 +65,9 @@ class Mitarbeiter(mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, Mitarb
 
   def mitarbeiterAnwesenheitVeraendern(anwesend: Boolean) = {
     for {
-      m <- mitarbeiter
+      m <- mitarbeiter.recover {
+        case nse: NoSuchElementException => throw new UnauthorizedException
+      }
       entriesChanged <- db.run(dal.mitarbeiterAnwesenheitVeraendern(m.id.get, anwesend))
     } yield entriesChanged == 1
   }

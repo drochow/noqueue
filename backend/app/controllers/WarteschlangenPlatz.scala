@@ -6,13 +6,13 @@ import javax.security.auth.login.CredentialException
 import api.ApiError
 import api.JsonCombinators._
 import api.auth.Credentials
-import models.db.{ BetriebEntity, MitarbeiterEntity, PK }
+import models.db.{ BetriebEntity, MitarbeiterEntity, PK, WarteschlangenPlatzEntity }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import utils.WspDoesNotExistException
+import utils.{ AnwenderAlreadyLinedUpException, MitarbeiterNotAnwesendException, WspDoesNotExistException }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -28,18 +28,20 @@ class WarteschlangenPlatz @Inject() (val messagesApi: MessagesApi, val config: C
   )((dlId, mitarbeiterId) => (dlId, mitarbeiterId))
 
   def create = SecuredApiActionWithBody { implicit request =>
-    readFromRequest[(Long, Long)] {
-      case (dlId, mitarbeiterId) =>
-        request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(dlId, mitarbeiterId) flatMap {
+    readFromRequest[WarteschlangenPlatzEntity] {
+      case wsp =>
+        request.anwender.wsFuerBestimmtenMitarbeiterBeitreten(wsp.dienstLeistungId.value, wsp.mitarbeiterId.value) flatMap {
           wsp => ok(wsp)
         } recover {
+          case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("Mitarbeiter is not anwesend")
+          case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("Anwender already lined up somewhere")
           case nfe: NoSuchElementException => ApiError.errorMethodForbidden
           case e: Exception => {
             e.printStackTrace()
             ApiError.errorInternal("Unknown Exception..." + e.getMessage)
           }
         }
-    }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
+    }
   }
 
   def getWarteSchlangeOfMitarbeiter(betriebId: Long) = SecuredMitarbeiterApiAction(PK[BetriebEntity](betriebId)) {
