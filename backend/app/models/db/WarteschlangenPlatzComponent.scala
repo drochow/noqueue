@@ -91,7 +91,7 @@ trait WarteschlangenPlatzComponent {
   def delete(wspId: PK[WarteschlangenPlatzEntity], anwID: PK[AnwenderEntity]) =
     for {
       wsp <- warteschlangenplaetze.filter(_.id === wspId).result.head
-      prevWsp <- warteschlangenplaetze.filter(_.folgePlatzId === wsp.id).map(_.folgePlatzId).update(wsp.folgeNummer)
+      prevWsp <- warteschlangenplaetze.filter(_.folgePlatzId === wsp.id).map(_.folgePlatzId).update(wsp.folgeNummer.get)
       del <- warteschlangenplaetze.filter(_.id === wspId).filter(_.anwenderId === anwID).delete
     } yield del
 
