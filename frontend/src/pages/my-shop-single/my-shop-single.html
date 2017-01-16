@@ -49,8 +49,8 @@
       Add New Service
     </ion-item>
     <ion-item-sliding *ngFor="let service of services" #item>
-      <ion-item (click)="showService(service.serviceID)">
-        {{service.typ}}
+      <ion-item (click)="showService(service.id)">
+        {{service.name}}
       </ion-item>
       <ion-item-options side="right">
         <button ion-button color="danger" (click)="deleteService(service.serviceID)"><ion-icon name="trash"></ion-icon>Delete</button>

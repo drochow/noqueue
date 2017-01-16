@@ -32,6 +32,12 @@ export class ServiceSinglePage {
   public servicesProvider: ServicesProvider) {
     this.shopID = this.navParams.get('shopID');
     this.serviceID = this.navParams.get('serviceID');
+    let navService = this.navParams.get('service');
+    this.service = {
+      type: navService.name,
+      duration: navService.dauer,
+      description: navService.kommentar
+    };
   }
 
   ionViewDidLoad() {
@@ -53,18 +59,18 @@ export class ServiceSinglePage {
 
     console.log("from service page > shopID : serviceID = " + this.shopID + " : " + this.serviceID);
 
-    this.servicesProvider.getService(this.serviceID, this.shopID)
-      .subscribe(
-        (service) => {
-          console.log("service from server: ", service);
-          this.service = {
-            type: service.typ,
-            duration: service.dauer,
-            description: service.kommentar
-          }
-        },
-        (error) => console.log(error)
-      );
+    // this.servicesProvider.getService(this.serviceID, this.shopID)
+    //   .subscribe(
+    //     (service) => {
+    //       console.log("service from server: ", service);
+    //       this.service = {
+    //         type: service.name,
+    //         duration: service.dauer,
+    //         description: service.kommentar
+    //       }
+    //     },
+    //     (error) => console.log(error)
+    //   );
 
     this.shopsProvider.getEmployees(this.shopID)
       .subscribe(

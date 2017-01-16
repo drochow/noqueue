@@ -42,7 +42,13 @@ export class ServiceInfoPage {
     this.shopID = navParams.get('shopID');
 
     if(!this.newService){
-     this.serviceID = navParams.get('serviceID');
+      this.serviceID = navParams.get('serviceID');
+      let navService = navParams.get('service');
+      this.service = {
+        type: navService.name,
+        duration: navService.dauer,
+        description: navService.kommentar
+      };
       this.reloadData();
     }
   }
@@ -53,7 +59,14 @@ export class ServiceInfoPage {
   ionViewWillEnter(){
     this.servicesProvider.getAllServiceTypes()
       .subscribe(
-        (data) => this.types = data
+        (data) => {
+          console.log("Get all service types: ", data);
+          this.types = [];
+          var self = this;
+          data.forEach(function(type){
+            self.types.push(type.name);
+          });
+        }
       )
   }
 
@@ -69,17 +82,17 @@ export class ServiceInfoPage {
 
   // only if editing existing service
   reloadData(){
-    this.servicesProvider.getService(this.serviceID, this.shopID)
-      .subscribe(
-        (service) => {
-          this.service = {
-            duration: service.dauer,
-            type: service.typ,
-            description: service.kommentar
-          }
-        },
-        (error) => this.registerError(error.message || "Couldn't retrieve service from server")
-      );
+    // this.servicesProvider.getService(this.serviceID, this.shopID)
+    //   .subscribe(
+    //     (service) => {
+    //       this.service = {
+    //         duration: service.dauer,
+    //         type: service.name,
+    //         description: service.kommentar
+    //       }
+    //     },
+    //     (error) => this.registerError(error.message || "Couldn't retrieve service from server")
+    //   );
   }
 
   checkInput(){
@@ -97,8 +110,28 @@ export class ServiceInfoPage {
     this.resetError();
     this.checkInput();
     if(this.error) return;
+    console.log("trying to edit service");
 
+    if(this.newService){
+      this.createService();
+    } else {
+      this.editService();
+    }
+  }
 
+  proceed(){
+    this.service.type = this.selectedType;
+
+    this.resetError();
+    this.checkInput();
+    if(this.error) return;
+
+    console.log("trying to save service");
+
+    this.createService();
+  }
+
+  editService(){
     this.servicesProvider.editService(this.shopID, this.serviceID, this.service)
       .subscribe(
         () => this.navCtrl.pop(),
@@ -110,21 +143,15 @@ export class ServiceInfoPage {
       );
   }
 
-  proceed(){
-    this.service.type = this.selectedType;
-
-    this.resetError();
-    this.checkInput();
-    if(this.error) return;
-
+  createService(){
     this.servicesProvider.createService(this.shopID, this.service)
       .subscribe(
         (id) => {
           console.log("Creating service with ID: ", id);
           if(this.newShop){
-           this.navCtrl.push(CoworkersPage, {newShop: true, shopID: this.shopID});
+            this.navCtrl.push(CoworkersPage, {newShop: true, shopID: this.shopID});
           } else {
-           this.navCtrl.pop();
+            this.navCtrl.pop();
           }
         },
         (error) => {

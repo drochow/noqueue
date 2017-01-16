@@ -147,7 +147,8 @@ export class MyShopSinglePage {
 
   showService(serviceID){
     console.log("will show: " + serviceID);
-    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID});
+    let service = this.services.filter(s => s.id == serviceID)[0];
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
   deleteService(serviceID){

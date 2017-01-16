@@ -21,11 +21,12 @@ export class ServicesProvider {
     return this.httpProvider.get(route);
   }
 
+  // @TODO obsolete method
   getService(serviceID, shopID) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     return this.httpProvider.get(route);
   }
-  
+
   // @TODO
   getNextTimeSlots(serviceID, shopID){
     // ...
@@ -50,7 +51,7 @@ export class ServicesProvider {
   private mapToExpectedJson(service){
     return {
       dauer: service.duration,
-      typ: service.type,
+      name: service.type,
       kommentar: service.description
     }
   }

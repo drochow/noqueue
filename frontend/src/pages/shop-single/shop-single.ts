@@ -95,7 +95,8 @@ export class ShopSinglePage {
 
   showService(id){
     console.log("From shop-single - service id = " + id);
-    this.navCtrl.push(ServiceSinglePage, {shopID: this.shopID, serviceID: id});
+    let service = this.services.filter(s => s.id == id)[0];
+    this.navCtrl.push(ServiceSinglePage, {shopID: this.shopID, serviceID: id, service: service});
   }
 
   // employeeSelection(event, serviceID, employeeName){

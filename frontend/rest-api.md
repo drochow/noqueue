@@ -27,8 +27,7 @@ Name          	| Route            | Request                    | Response | Call
 
 Name          	| Route            | Request                    | Response | Calling Files 
 -----------------|------------------|-------------------------|----------|---
-Get Shops | GET /betrieb<br>?size=5<br>&page=1<br>&q=filter<br>&radius=2<br>**&lat=(double)<br>&long=(double)** | size<br>page<br>q<br>radius <br>**lat<br>long**| [ **{id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse},<br>distanz}** ] | dashboard.ts<br>shops.ts
-**~~Get Shops Nearby~~** | | | 
+✔︎ Get Shops | GET /betrieb<br>?size=5<br>&page=1<br>&q=filter<br>&radius=2<br>**&lat=(double)<br>&long=(double)** | size<br>page<br>q<br>radius <br>**lat<br>long**| [ **{id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse},<br>distanz}** ] | dashboard.ts<br>shops.ts
 ✔︎ Get My Shops | GET /anwender/betrieb | | [betrieb: {id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}}<br>isLeiter (bool)<br>isAnwesend (bool)] | dashboard.ts<br>my-shops.ts
 ✔︎ Get Shop | GET /betrieb/:id | | id<br>name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse}<br>distanz | my-shop-single.ts<br>shop-info.ts<br>shop-single.ts
 ✔︎ Create Shop | POST /betrieb | name<br>kontaktEmail<br>tel<br>oeffnungszeiten<br>{adresse} | | shop-info.ts
@@ -46,12 +45,11 @@ Get Shops | GET /betrieb<br>?size=5<br>&page=1<br>&q=filter<br>&radius=2<br>**&l
 
 Name          	| Route            | Request                    | Response | Calling Files
 -----------------|------------------|-------------------------|----------|---
-Get Services For | GET /betrieb/:id/dienstleistung | | [ serviceID<br>typ] | my-shop-single.ts<br>shop-single.ts
-Get Service | GET /betrieb/:id/dienstleistung/:serviceID | | serviceID<br>betriebID<br>typ<br>dauer<br>kommentar | service-info.ts<br>service-single.ts
+✔︎ Get Services For | GET /betrieb/:id/dienstleistung | | [ serviceID<br>typ] | my-shop-single.ts<br>shop-single.ts
 **Get Next Time Slots** | **GET /betrieb/:id/dienstleistung/mitarbeiter** | | **[<br>{<br>id<br>mitarbeiter<br>schaetzZeitpunkt<br>}<br>]** | **service-single.ts**
-Get All Service Types | **GET /dlt?q=(string)<br>&page=(int)<br>&size=(int)**  | **q <br> page <br> size** | **[ {id: (long), name: (string)} ]** | service-info.ts
-Create Service | POST /betrieb/:id/dienstleistung | dauer<br>typ<br>kommentar | | service-info.ts
-Edit Service | PUT /betrieb/:id/dienstleistung/:serviceID | dauer<br>typ<br>kommentar | | service-info.ts
+✔︎ Get All Service Types | **GET /dlt?q=(string)<br>&page=(int)<br>&size=(int)**  | **q <br> page <br> size** | **[ {id: (long), name: (string)} ]** | service-info.ts
+✔︎ Create Service | POST /betrieb/:id/dienstleistung | dauer<br>typ<br>kommentar | | service-info.ts
+✔︎ Edit Service | PUT /betrieb/:id/dienstleistung/:serviceID | dauer<br>typ<br>kommentar | | service-info.ts
 
 
 

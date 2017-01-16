@@ -43,7 +43,7 @@
       <p (click)="showShopsPage()">Shops Nearby</p>
     </ion-item-divider>
     <ion-item *ngFor="let shop of shopsNearby">
-      <p (click)="showShopSinglePage(shop.betrieb.id)">{{shop.betrieb.name}}</p>
+      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
     </ion-item>
   </ion-list>
 
