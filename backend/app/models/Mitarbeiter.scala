@@ -39,9 +39,14 @@ class Mitarbeiter(
     } yield success
   }
 
-  def wspBearbeitungBeenden(wspPrimaryKey: PK[WarteschlangenPlatzEntity]) = {
-    //@todo maybe implement me
-    throw new NotImplementedError("Not implemented yet, may implement it")
+  def wspBearbeitungBeenden(wspId: PK[WarteschlangenPlatzEntity]) = {
+    for {
+      m <- mitarbeiter recover {
+        case nse: NoSuchElementException => throw new UnauthorizedException
+      }
+      rows <- db.run(dal.finishWorkOn(wspId, m.id.get))
+      success <- if (rows > 0) Future.successful(true) else Future.failed(throw new NoSuchElementException)
+    } yield success
   }
 
   def warteSchlangeAnzeigen(): Future[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] = {
