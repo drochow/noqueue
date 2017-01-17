@@ -165,7 +165,8 @@ export class MyShopSinglePage {
   }
 
   editShopInfo(){
-    this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
+    if(this.isLeiter)
+      this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
   }
 
   showService(serviceID){
