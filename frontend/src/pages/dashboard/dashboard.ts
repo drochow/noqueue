@@ -72,10 +72,10 @@ export class DashboardPage {
 
   refresh(refresher){
     this.reloadData();
-
-    setTimeout(() => {
-      refresher.complete();
-    }, 1000);
+    if(refresher)
+      setTimeout(() => {
+        refresher.complete();
+      }, 1000);
   }
 
   resetData(){
@@ -190,6 +190,15 @@ export class DashboardPage {
 
   showCreateShopPage(){
     this.navCtrl.push(ShopInfoPage, {newShop: true});
+  }
+
+
+  leave(){
+    this.queues.leave()
+      .subscribe(
+        () => this.refresh(undefined),
+        (error) => console.log(error)
+      )
   }
 
 }

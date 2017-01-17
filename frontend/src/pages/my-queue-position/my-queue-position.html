@@ -20,7 +20,7 @@
     <ion-item><ion-icon name="basket" item-left></ion-icon>{{queuePosition.betrieb}}</ion-item>
     <ion-item><ion-icon name="body" item-left></ion-icon>{{queuePosition.mitarbeiter}}</ion-item>
     <ion-item><ion-icon name="hand" item-left></ion-icon>{{queuePosition.dlName}}</ion-item>
-    <ion-item><ion-icon name="time" item-left></ion-icon>{{queuePosition.schaetzZeitpunkt*1000 | date: 'M/d/y HH:mm:ss':'UTC'}}</ion-item>
+    <ion-item><ion-icon name="time" item-left></ion-icon>{{queuePosition.schaetzZeitpunkt*1000 | date: 'M/d/y HH:mm:ss'}}</ion-item>
   </ion-list>
 
   <button ion-button full (click)="leave()">Leave</button>
