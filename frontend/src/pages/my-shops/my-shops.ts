@@ -54,8 +54,8 @@ export class MyShopsPage {
       )
   }
 
-  showShopSinglePage(id, isLeiter, isAnwesend){
-    this.navCtrl.push(MyShopSinglePage, {shopID: id, isLeiter: isLeiter, isAnwesend: isAnwesend});
+  showMyShopSinglePage(shopID, isLeiter, isAnwesend){
+    this.navCtrl.push(MyShopSinglePage, {shopID: shopID, isLeiter: isLeiter, isAnwesend: isAnwesend});
   }
 
   createNewShop(){

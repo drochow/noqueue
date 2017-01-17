@@ -34,6 +34,8 @@ export class DashboardPage {
 
   // variables for data-binding with the template
   isLoggedIn = false;
+  managerCount = 0;
+  employeeCount = 0;
   myQueuePosition = {};
   isInQueue = false;
   shopsNearby = [];
@@ -127,6 +129,8 @@ export class DashboardPage {
           (shops) => {
             console.log("my shops: ", shops);
             this.myShops = shops;
+            this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length
+            this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length
             this.hasShops = true;
           }
         );
@@ -180,10 +184,6 @@ export class DashboardPage {
 
   showMyShopsPage(){
     this.navCtrl.push(MyShopsPage);
-  }
-
-  showMyShopSinglePage(shopID, isLeiter, isAnwesend){
-    this.navCtrl.push(MyShopSinglePage, {shopID: shopID, isLeiter: isLeiter, isAnwesend: isAnwesend});
   }
 
   showMyQueuesPage(){
