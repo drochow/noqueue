@@ -27,7 +27,7 @@ export class ValidatorProvider {
       .test(string);
 
   // 1 to 50 characters
-  searchTerm = string => /.{1,50}/.test(string);
+  searchTerm = string => /.{0,50}/.test(string);
 
   // 1 to 30 characters
   searchName = string => /^[a-zA-Z\d\.\-\_]{1,30}$/.test(string);

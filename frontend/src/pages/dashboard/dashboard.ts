@@ -44,6 +44,8 @@ export class DashboardPage {
   hasShops = false;
   myQueues = [];
   hasQueues = false;
+  searchTerm = "";
+  radius = 0;
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
   public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
@@ -150,6 +152,10 @@ export class DashboardPage {
           }
         );
     }
+  }
+
+  searchShops(){
+    this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
 
   showMyQueuePositionPage(){

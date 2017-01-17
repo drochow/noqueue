@@ -17,7 +17,7 @@
   <ion-item>
     <ion-label>Radius</ion-label>
     <ion-select [(ngModel)]="radius">
-      <ion-option value="0" selected="true">Not specified</ion-option>
+      <ion-option value="0" selected="true">None</ion-option>
       <ion-option value="1000">1 km</ion-option>
       <ion-option value="2000">2 km</ion-option>
       <ion-option value="5000">5 km</ion-option>
@@ -28,13 +28,15 @@
 
   <p *ngIf="error" color="danger">{{errorMessage}}</p>
 
+  <h3>Results:</h3>
+  <p class="info" *ngIf="noShops">No shops found.</p>
   <ion-list *ngIf="shouldShowShops" [virtualScroll]="shops">
-    <ion-list-header>
-      <p>Results:</p>
-    </ion-list-header>
+    <!--<ion-list-header>-->
+      <!--<p>Results:</p>-->
+    <!--</ion-list-header>-->
     <ion-item *virtualItem="let shop">
-      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.name}}</p>
-      <p (click)="showShopSinglePage(shop.betriebID)">{{shop.tel}}</p>
+      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
+      <p (click)="showShopSinglePage(shop.id)">{{shop.tel}}</p>
     </ion-item>
   </ion-list>
 
