@@ -16,6 +16,11 @@ export class ServicesProvider {
   constructor(public http: Http, private httpProvider: HttpProvider) {
   }
 
+  getQueueFor(shopID): Observable<any>{
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/ws";
+    return this.httpProvider.get(route);
+  }
+
   getServicesFor(shopID) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
     return this.httpProvider.get(route);

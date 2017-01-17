@@ -25,7 +25,7 @@
   <p *ngIf="hasShops === false">You have currently no shops.</p>
   <ion-list *ngIf="hasShops">
     <ion-item *ngFor="let shop of myShops">
-      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
+      <p (click)="showShopSinglePage(shop.id, shop.isLeiter)">{{shop.name}}</p><ion-badge *ngIf="shop.isLeiter" item-right>Manager</ion-badge><ion-badge *ngIf="!shop.isLeiter" item-right>Employee</ion-badge>
     </ion-item>
   </ion-list>
 

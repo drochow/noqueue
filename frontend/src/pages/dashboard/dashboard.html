@@ -52,7 +52,7 @@
       <p (click)="showMyShopsPage()">My Shops</p>
     </ion-item-divider>
     <ion-item *ngFor="let shop of myShops">
-      <p (click)="showMyShopSinglePage(shop.betrieb.id)">{{shop.betrieb.name}}</p>
+      <p (click)="showMyShopSinglePage(shop.betrieb.id)">{{shop.betrieb.name}}</p><ion-badge *ngIf="shop.isLeiter"  item-right>Manager</ion-badge><ion-badge *ngIf="!shop.isLeiter" color="{{shop.isAnwesend ? 'secondary' : 'danger'}}" item-right>Employee</ion-badge>
     </ion-item>
   </ion-list>
 

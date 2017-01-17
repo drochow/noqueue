@@ -21,7 +21,7 @@
   </ion-item-group>
 
 
-  <ion-list>
+  <ion-list *ngIf="isLeiter">
     <ion-item-divider color="light" (click)="addCoworkers()">Co-Workers</ion-item-divider>
     <ion-item-sliding *ngFor="let manager of managers" #item>
       <ion-item>
@@ -43,7 +43,7 @@
     </ion-item-sliding>
   </ion-list>
 
-  <ion-list>
+  <ion-list *ngIf="isLeiter">
     <ion-item-divider color="light">Services</ion-item-divider>
     <ion-item (click)="createService()">
       Add New Service
@@ -57,6 +57,14 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+
+  <ion-list *ngIf="isLeiter">
+    <ion-item-divider color="light">Queue</ion-item-divider>
+    <ion-item *ngFor="let q of queue">
+      Heyyy
+    </ion-item>
+  </ion-list>
+
 </ion-content>
 
 

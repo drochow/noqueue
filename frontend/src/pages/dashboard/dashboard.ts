@@ -53,17 +53,21 @@ export class DashboardPage {
     });
 
     loading.present();
-
-    this.auth.asyncSetup().then(
-      () => {
-        this.reloadData();
-        loading.dismiss();
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    this.reloadData();
+    if(!this.auth.getToken()) {
+      this.auth.asyncSetup().then(
+        () => {
+          console.log("Auth AsynSetup...")
+          this.reloadData();
+          loading.dismiss();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } else {
+      this.reloadData();
+      loading.dismiss()
+    }
   }
 
   refresh(refresher){
@@ -95,6 +99,7 @@ export class DashboardPage {
     this.locations.getUserLocation()
       .then(
         (location) => {
+          console.log("Got User Location:", location)
           let lat = location.latitude;
           let long = location.longitude;
           this.shops.getShops(3,0,"",100000000,lat,long)

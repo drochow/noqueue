@@ -22,6 +22,7 @@ import { CoworkersPage } from '../coworkers/coworkers';
 export class MyShopSinglePage {
 
   shopID: number;
+  isLeiter = false;
   shop = {};
   managers = [];
   employees = [];
@@ -30,6 +31,7 @@ export class MyShopSinglePage {
   services = [];
   error = false;
   errorMessage = "";
+  queue = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
   public auth: AuthenticationProvider) {
@@ -71,30 +73,40 @@ export class MyShopSinglePage {
         (error) => this.registerError(error.message || "Coulnd't get this shop from the server")
       );
 
-    this.shopsProvider.getEmployees(this.shopID)
-      .subscribe(
-        (employees) => {
-          console.log("GET Employees: ", employees);
-          this.employees = employees;
-        },
-        (error) => this.registerError(error.message || "Something went wrong")
-      );
+    if(this.isLeiter) {
+      this.shopsProvider.getEmployees(this.shopID)
+        .subscribe(
+          (employees) => {
+            console.log("GET Employees: ", employees);
+            this.employees = employees;
+          },
+          (error) => this.registerError(error.message || "Something went wrong")
+        );
 
-    this.shopsProvider.getManagers(this.shopID)
-      .subscribe(
-        (managers) => {
-          console.log("GET Managers: ", managers);
-          this.managers = managers;
-          this.currentManagerWorking = this.managers.filter(m => m.anwenderId && m.anwenderId === this.auth.getUserId())[0].anwesend;
-        },
-        (error) => this.registerError(error.message || "Something went wrong")
-      );
+      this.shopsProvider.getManagers(this.shopID)
+        .subscribe(
+          (managers) => {
+            console.log("GET Managers: ", managers);
+            this.managers = managers;
+            this.currentManagerWorking = this.managers.filter(m => m.anwenderId && m.anwenderId === this.auth.getUserId())[0].anwesend;
+          },
+          (error) => this.registerError(error.message || "Something went wrong")
+        );
 
-    this.servicesProvider.getServicesFor(this.shopID)
-      .subscribe(
-        (services) => this.services = services,
-        (error) => this.registerError(error.message || "Something went wrong")
-      )
+      this.servicesProvider.getServicesFor(this.shopID)
+        .subscribe(
+          (services) => this.services = services,
+          (error) => this.registerError(error.message || "Something went wrong")
+        )
+    } else {
+      this.servicesProvider.getQueueFor(this.shopID)
+        .subscribe(
+          (queue) => this.queue = queue,
+          (error) => this.registerError(error.message || "Something went wrong")
+        )
+    }
+
+
   }
 
   demoteManager(slidingItem, userID){

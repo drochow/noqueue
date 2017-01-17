@@ -66,7 +66,7 @@ export class ShopsPage {
     let self = this;
     return new Promise(function(resolve, reject){
 
-      self.shopsProvider.getShops(size, parseInt("" + (self.shops.length/size)+1), self.searchTerm, self.radius * 100, self.location.latitude, self.location.longitude)
+      self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius * 100, self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
               console.log("GET Shops in shops.ts :", shops);

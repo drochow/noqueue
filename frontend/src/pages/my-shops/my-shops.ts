@@ -54,8 +54,8 @@ export class MyShopsPage {
       )
   }
 
-  showShopSinglePage(id){
-    this.navCtrl.push(MyShopSinglePage, {shopID: id});
+  showShopSinglePage(id, isLeiter){
+    this.navCtrl.push(MyShopSinglePage, {shopID: id, isLeiter: isLeiter});
   }
 
   createNewShop(){
