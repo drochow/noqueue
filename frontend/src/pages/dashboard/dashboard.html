@@ -16,31 +16,31 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
   <ion-refresher (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true">
-  </ion-searchbar>
-  <div class="search">
-    <div class="radius">
-      <ion-item>
-        <ion-label>Radius</ion-label>
-        <ion-select [(ngModel)]="radius">
-          <ion-option value="0" selected="true">None</ion-option>
-          <ion-option value="1000">1 km</ion-option>
-          <ion-option value="2000">2 km</ion-option>
-          <ion-option value="5000">5 km</ion-option>
-          <ion-option value="10000">10 km</ion-option>
-          <ion-option value="20000">20 km</ion-option>
-        </ion-select>
-      </ion-item>
-    </div>
-    <button ion-button (click)="searchShops()">Search</button>
-  </div>
 
-  <p *ngIf="isLoggedIn === false"> You are not signed in. Please
+  <div class="search">
+    <div class="searchbar">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
+      <button ion-button icon-only color="light" (click)="searchShops()"><ion-icon name="search"></ion-icon></button>
+    </div>
+  </div>
+  <ion-item class="radiusSelect">
+    <ion-label>Radius</ion-label>
+    <ion-select [(ngModel)]="radius">
+      <ion-option value="0" selected="true">None</ion-option>
+      <ion-option value="1000">1 km</ion-option>
+      <ion-option value="2000">2 km</ion-option>
+      <ion-option value="5000">5 km</ion-option>
+      <ion-option value="10000">10 km</ion-option>
+      <ion-option value="20000">20 km</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <p class="info" *ngIf="isLoggedIn === false"> You are not signed in. Please
     <span (click)="showLoginPage()" color="secondary">Log in</span> or
     <span (click)="showSignupPage()" color="secondary">Sign up</span> to explore all features of NoQueue!
   </p>
@@ -71,14 +71,14 @@
     </ion-row>
   </ion-card>
 
-  <ion-list *ngIf="hasShopsNearby">
-    <ion-item-divider>
-      <p (click)="showShopsPage()">Shops Nearby</p>
-    </ion-item-divider>
-    <ion-item *ngFor="let shop of shopsNearby">
-      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
-    </ion-item>
-  </ion-list>
+  <!--<ion-list *ngIf="hasShopsNearby">-->
+    <!--<ion-item-divider>-->
+      <!--<p (click)="showShopsPage()">Shops Nearby</p>-->
+    <!--</ion-item-divider>-->
+    <!--<ion-item *ngFor="let shop of shopsNearby">-->
+      <!--<p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>-->
+    <!--</ion-item>-->
+  <!--</ion-list>-->
 
   <ion-card *ngIf="isLoggedIn">
     <div style="background-image: url('assets/img/shops.jpg'); background-size: 175px; background-repeat:repeat-x; float:left; width: 100%; height: 100px;max-height:100px"></div>

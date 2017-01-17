@@ -51,6 +51,7 @@ export class ShopSinglePage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
+          console.log("Fetched shop for shop-single.ts: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
