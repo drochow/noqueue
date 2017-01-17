@@ -32,9 +32,11 @@
       <ion-card-title>
         {{myQueuePosition.dlName}}
       </ion-card-title>
-      <p>{{myQueuePosition.betrieb}}</p>
-      <p>{{myQueuePosition.schaetzZeitpunkt*1000 | date: 'd.M.y HH:mm:ss'}}</p>
-      <p>{{myQueuePosition.mitarbeiter}}</p>
+      <ion-item>
+        {{myQueuePosition.betrieb}}
+      </ion-item>
+      <ion-item>{{myQueuePosition.schaetzZeitpunkt*1000 | date: 'd.M.y HH:mm:ss'}}</ion-item>
+      <ion-item>{{myQueuePosition.mitarbeiter}}</ion-item>
     </ion-card-content>
     <ion-row no-padding>
       <ion-col>
@@ -59,24 +61,52 @@
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="hasShops">
-    <ion-item-divider>
-      <p (click)="showMyShopsPage()">My Shops</p>
-    </ion-item-divider>
-    <ion-item *ngFor="let shop of myShops">
-      <p (click)="showMyShopSinglePage(shop.betrieb.id, shop.isLeiter, shop.isAnwesend)">{{shop.betrieb.name}}</p><ion-badge *ngIf="shop.isLeiter"  item-right>Manager</ion-badge><ion-badge *ngIf="!shop.isLeiter" color="{{shop.isAnwesend ? 'secondary' : 'danger'}}" item-right>Employee</ion-badge>
-    </ion-item>
-  </ion-list>
+  <ion-card *ngIf="isLoggedIn">
+    <div style="background-image: url('assets/img/shops.jpg'); background-size: 175px; background-repeat:repeat-x; float:left; width: 100%; height: 100px;max-height:100px"></div>
+    <ion-card-content>
+      <ion-card-title>
+        My Shop overview
+      </ion-card-title>
+      <ion-item>
+        <ion-badge item-left>{{managerCount}}</ion-badge>
+        shops you manage
+      </ion-item>
+      <ion-item>
+        <ion-badge item-left>{{employeeCount}}</ion-badge>
+        shops you work for
+      </ion-item>
+    </ion-card-content>
+    <ion-row no-padding>
+      <ion-col>
+        <button (click)="showCreateShopPage()" ion-button clear small color="secondary" icon-left>
+          <ion-icon name='add'></ion-icon>
+          Register new Shop
+        </button>
+        <button *ngIf="hasShops" (click)="showMyShopsPage()" ion-button clear small icon-left>
+          <ion-icon name='information-circle'></ion-icon>
+          Show my shops
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+  <!--<ion-list *ngIf="hasShops">-->
+    <!--<ion-item-divider>-->
+      <!--<p (click)="showMyShopsPage()">My Shops</p>-->
+    <!--</ion-item-divider>-->
+    <!--<ion-item *ngFor="let shop of myShops">-->
+      <!--<p (click)="showMyShopSinglePage(shop.betrieb.id, shop.isLeiter, shop.isAnwesend)">{{shop.betrieb.name}}</p><ion-badge *ngIf="shop.isLeiter"  item-right>Manager</ion-badge><ion-badge *ngIf="!shop.isLeiter" color="{{shop.isAnwesend ? 'secondary' : 'danger'}}" item-right>Employee</ion-badge>-->
+    <!--</ion-item>-->
+  <!--</ion-list>-->
 
-  <ion-list *ngIf="hasQueues">
-    <ion-item-divider>
-      <p (click)="showMyQueuesPage()">My Queues</p>
-    </ion-item-divider>
-    <ion-item *ngFor="let queue of myQueues">
-      <p (click)="showMyQueueSinglePage(queue.queueID, queue.name)">{{queue.name}}</p>
-    </ion-item>
-  </ion-list>
+  <!--<ion-list *ngIf="hasQueues">-->
+    <!--<ion-item-divider>-->
+      <!--<p (click)="showMyQueuesPage()">My Queues</p>-->
+    <!--</ion-item-divider>-->
+    <!--<ion-item *ngFor="let queue of myQueues">-->
+      <!--<p (click)="showMyQueueSinglePage(queue.queueID, queue.name)">{{queue.name}}</p>-->
+    <!--</ion-item>-->
+  <!--</ion-list>-->
 
-  <button *ngIf="isLoggedIn" ion-button clear color="secondary" (click)="showCreateShopPage()">Register a new shop</button>
+  <!--<button *ngIf="isLoggedIn" ion-button clear color="secondary" (click)="showCreateShopPage()">Register a new shop</button>-->
 
 </ion-content>
