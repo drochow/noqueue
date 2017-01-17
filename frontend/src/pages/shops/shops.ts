@@ -66,7 +66,7 @@ export class ShopsPage {
     let self = this;
     return new Promise(function(resolve, reject){
 
-      self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius * 100, self.location.latitude, self.location.longitude)
+      self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius * 100 : "", self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
               console.log("GET Shops in shops.ts :", shops);
@@ -74,14 +74,16 @@ export class ShopsPage {
                 self.allShopsFetched = true;
               }
               for(var item of shops){
-                if(self.shops)
+                if(self.shops){
                   self.shops.push(item);
+                }
               }
               if (self.shops.length === 0) {
                 self.error = true;
                 self.errorMessage = "No shops found";
                 self.shouldShowShops = false;
               }
+              console.log("Should show shops 2: " + this.shouldShowShops);
               resolve();
             },
               (error) => {

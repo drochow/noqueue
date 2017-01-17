@@ -47,8 +47,9 @@ export class ShopsProvider {
   //   });
   // }
 
-  getShops(limit: number, page: number, filter: string, radius: number, lat: number, long: number): Observable<any>{
+  getShops(limit: number, page: number, filter: string, radius: any, lat: number, long: number): Observable<any>{
     let searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
+    if(!radius) delete searchOptions.radius;
     console.log("SEARCH OPTIONS: ", searchOptions);
     return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
   }
