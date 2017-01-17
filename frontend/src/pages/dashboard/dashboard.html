@@ -21,6 +21,25 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true">
+  </ion-searchbar>
+  <div class="search">
+    <div class="radius">
+      <ion-item>
+        <ion-label>Radius</ion-label>
+        <ion-select [(ngModel)]="radius">
+          <ion-option value="0" selected="true">None</ion-option>
+          <ion-option value="1000">1 km</ion-option>
+          <ion-option value="2000">2 km</ion-option>
+          <ion-option value="5000">5 km</ion-option>
+          <ion-option value="10000">10 km</ion-option>
+          <ion-option value="20000">20 km</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <button ion-button (click)="searchShops()">Search</button>
+  </div>
+
   <p *ngIf="isLoggedIn === false"> You are not signed in. Please
     <span (click)="showLoginPage()" color="secondary">Log in</span> or
     <span (click)="showSignupPage()" color="secondary">Sign up</span> to explore all features of NoQueue!

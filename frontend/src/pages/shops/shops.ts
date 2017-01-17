@@ -27,24 +27,31 @@ export class ShopsPage {
   error = false;
   errorMessage = "";
   allShopsFetched = false;
+  noShops = false;
   location: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
-  public locations: LocationsProvider) {}
+  public locations: LocationsProvider) {
+    if(this.navParams.get('preparedSearch')){
+      this.searchTerm = this.navParams.get('searchTerm');
+      this.radius = this.navParams.get('radius');
+    }
+  }
 
   ionViewWillEnter() {
     this.locations.getUserLocation()
       .then(
-        (location) => this.location = location
+        (location) => {
+          this.location = location;
+          if(this.searchTerm.length > 0) this.search();
+        }
       )
   }
 
   search(){
     this.error = false;
     this.errorMessage = "";
-    this.shouldShowShops = true;
 
-    console.log("searching for: " + this.searchTerm + " with radius: " + this.radius);
 
     if(!this.validator.searchTerm(this.searchTerm)){
       this.error = true;
@@ -53,15 +60,22 @@ export class ShopsPage {
       return;
     }
 
+    console.log("searching for: " + this.searchTerm + " with radius: " + this.radius);
+
     this.shops = [];
     this.loadShops()
       .then(
         () => console.log("shops loaded"),
-        () => console.log("error while fetching shops")
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while fetching shops: ", jsonError);
+        }
       )
   }
 
   loadShops(){
+    this.shouldShowShops = true;
+    this.noShops = false;
     let size = 10;
     let self = this;
     return new Promise(function(resolve, reject){
@@ -79,18 +93,18 @@ export class ShopsPage {
                 }
               }
               if (self.shops.length === 0) {
-                self.error = true;
-                self.errorMessage = "No shops found";
-                self.shouldShowShops = false;
+                self.noShops = true;
+                // self.shouldShowShops = false;
               }
               console.log("Should show shops 2: " + this.shouldShowShops);
               resolve();
             },
               (error) => {
-                self.shouldShowShops = false;
+                // self.shouldShowShops = false;
                 self.error = true;
                 self.errorMessage = error.message || "Something went wrong";
-                reject();
+                console.log("error: ", JSON.parse(error._body));
+                reject(error);
               }
         );
     });
