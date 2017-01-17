@@ -13,11 +13,16 @@
 <ion-content padding>
   <ion-item-group>
     <ion-item-divider color="light" (click)="editShopInfo()">Info</ion-item-divider>
-    <ion-item>{{shop.name}}</ion-item>
-    <ion-item>{{shop.address}}</ion-item>
-    <ion-item>{{shop.phone}}</ion-item>
-    <ion-item>{{shop.openingHours}}</ion-item>
-    <ion-item>{{shop.email}}</ion-item>
+    <ion-item><ion-icon name="home" item-left></ion-icon>{{shop.name}}</ion-item>
+    <ion-item><ion-icon name="map" item-left></ion-icon>{{shop.address}}</ion-item>
+    <ion-item><ion-icon name="call" item-left></ion-icon>{{shop.phone}}</ion-item>
+    <ion-item><ion-icon name="time" item-left></ion-icon>{{shop.openingHours}}</ion-item>
+    <ion-item><ion-icon name="mail" item-left></ion-icon>{{shop.email}}</ion-item>
+    <ion-item *ngIf="!isLeiter">
+      <!--<ion-icon name="checkmark" item-left></ion-icon>-->
+      <ion-label>marked as currently{{isAnwesend ? ' ' : ' not '}}working</ion-label>
+      <ion-toggle (click)="switchAttendance()" [checked]="isAnwesend" color="secondary" item-left></ion-toggle>
+    </ion-item>
   </ion-item-group>
 
 
@@ -58,7 +63,7 @@
     </ion-item-sliding>
   </ion-list>
 
-  <ion-list *ngIf="isLeiter">
+  <ion-list *ngIf="!isLeiter">
     <ion-item-divider color="light">Queue</ion-item-divider>
     <ion-item *ngFor="let q of queue">
       Heyyy

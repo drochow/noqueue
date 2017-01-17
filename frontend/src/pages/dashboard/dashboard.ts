@@ -176,8 +176,8 @@ export class DashboardPage {
     this.navCtrl.push(MyShopsPage);
   }
 
-  showMyShopSinglePage(shopID){
-    this.navCtrl.push(MyShopSinglePage, {shopID: shopID});
+  showMyShopSinglePage(shopID, isLeiter, isAnwesend){
+    this.navCtrl.push(MyShopSinglePage, {shopID: shopID, isLeiter: isLeiter, isAnwesend: isAnwesend});
   }
 
   showMyQueuesPage(){

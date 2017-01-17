@@ -34,18 +34,11 @@ export class QueuesProvider {
     return this.httpProvider.get(route);
   }
 
-  // @TODO
-  changeAttendance(shopID, userID, isThere: boolean){
-    // ...
-  }
-
-  // @TODO
-  closeQueue(shopID, userID){
-    // ...
+  changeAttendance(shopID: number, isThere: boolean) {
+    return this.httpProvider.put(this.httpProvider.ROUTES.shops + "/" + shopID +"/mitarbeiter", { anwesend: isThere});
   }
 
   lineup(serviceID: number, employeeID: number) : Observable<any>{
-    console.log(serviceID, employeeID);
     return this.httpProvider.post(this.httpProvider.ROUTES.users + "/wsp", this.mapToExpectedJson(serviceID, employeeID));
   }
 

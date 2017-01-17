@@ -6,6 +6,7 @@ import { AuthenticationProvider } from '../../providers/authentication-provider'
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { CoworkersPage } from '../coworkers/coworkers';
+import {QueuesProvider} from "../../providers/queues-provider";
 
 /*
   Generated class for the MyShopSingle page.
@@ -16,11 +17,12 @@ import { CoworkersPage } from '../coworkers/coworkers';
 @Component({
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
-  providers: [ShopsProvider, ServicesProvider],
+  providers: [ShopsProvider, ServicesProvider, QueuesProvider],
   entryComponents: [ ShopInfoPage, ServiceInfoPage, CoworkersPage ]
 })
 export class MyShopSinglePage {
 
+  isAnwesend = false;
   shopID: number;
   isLeiter = false;
   shop = {};
@@ -34,8 +36,10 @@ export class MyShopSinglePage {
   queue = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
-  public auth: AuthenticationProvider) {
+  public auth: AuthenticationProvider, public queuesProvider: QueuesProvider) {
     this.shopID = this.navParams.get('shopID');
+    this.isLeiter = this.navParams.get('isLeiter');
+    this.isAnwesend = this.navParams.get('isAnwesend');
   }
 
   ionViewDidLoad() {
@@ -107,6 +111,13 @@ export class MyShopSinglePage {
     }
 
 
+  }
+
+  switchAttendance() {
+    this.queuesProvider.changeAttendance(this.shopID, !this.isAnwesend).subscribe(
+      () => { this.isAnwesend = !this.isAnwesend},
+      (error) => this.registerError(error || "Couldn't change attendance!")
+    )
   }
 
   demoteManager(slidingItem, userID){
