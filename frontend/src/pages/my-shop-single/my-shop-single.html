@@ -33,7 +33,6 @@
         {{manager.anwender.nutzerName}} <ion-badge item-right>Manager</ion-badge>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="primary" (click)="demoteManager(item, manager.leiter.id)"><ion-icon name="arrow-round-down"></ion-icon>Demote</button>
         <button ion-button color="danger" (click)="fireManager(item, manager.leiter.id)"><ion-icon name="remove"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
@@ -42,7 +41,6 @@
         {{employee.anwender.nutzerName}}
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="secondary" (click)="promoteEmployee(item, employee.mitarbeiter.id)"><ion-icon name="arrow-round-up"></ion-icon>Promote</button>
         <button ion-button color="danger" (click)="fireEmployee(item, employee.mitarbeiter.id)"><ion-icon name="remove"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
