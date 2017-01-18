@@ -33,7 +33,6 @@ export class CoworkersPage {
   }
 
   ionViewDidLoad() {
-    this.reloadCoworkers();
   }
 
   resetError(){
