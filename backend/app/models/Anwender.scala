@@ -142,10 +142,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     } yield (leiter ++ mitarbeiter)
   }
 
-  def betriebAnzeigen(id: PK[BetriebEntity]) = {
-    db.run(dal.getBetriebWithAdresseById(id))
-  }
-
   /**
    *
    * @param betriebEntity
@@ -206,20 +202,24 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     } yield dls
 
   def getNextTimeSlotsForBetrieb(betriebId: Long): Future[Seq[(PK[MitarbeiterEntity], String, Long)]] = {
+    //@todo may optimize to one query with hand written left join query
     for {
       wsps <- db.run(dal.getWspsOfBetrieb(PK[BetriebEntity](betriebId)))
-      res <- Future.successful(wsps.map(m => (m._1, m._6)).distinct.map {
+      allAvailables <- db.run(dal.getAvailableEmployees(PK[BetriebEntity](betriebId)))
+      res <- Future.successful(allAvailables.map(m => (m._1, m._2)).distinct.map {
         m =>
           {
             val doneAndNotDone = wsps.filter(_._1 == m._1).sortWith(_._2 == _._3.getOrElse(PK[WarteschlangenPlatzEntity](0L))).partition(!_._4.isEmpty)
 
             if (doneAndNotDone._1.isEmpty && doneAndNotDone._2.isEmpty)
               (m._1, m._2, System.currentTimeMillis / 1000) //return mitarbeiterId, mitarbeiterName, schaetzZeit
+
             else {
               val lastTime = if (!doneAndNotDone._1.isEmpty)
                 doneAndNotDone._1.maxBy(_._4.get.getTime())._4.get.getTime()
               else
                 System.currentTimeMillis / 1000;
+
               val lastDuration = if (!doneAndNotDone._1.isEmpty) doneAndNotDone._1.maxBy(_._4.get.getTime())._5 else 0;
               val time = doneAndNotDone._2.foldLeft(0)(
                 (x: Int, y: (PK[MitarbeiterEntity], PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int, String)) => x + y._5

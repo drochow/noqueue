@@ -46,6 +46,14 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.users + "/wsp");
   }
 
+  startWorkOn(shopId, wspId) {
+    return this.httpProvider.put(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId, {})
+  }
+
+  finishWorkOn(shopId, wspId) {
+    return this.httpProvider.delete(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId)
+  }
+
 
   // @TODO remove the default userid  value; it's only used for testing purposes
   // as the token from the fake server doesn't contain userID

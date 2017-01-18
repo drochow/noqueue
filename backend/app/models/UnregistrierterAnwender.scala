@@ -66,6 +66,10 @@ class UnregistrierterAnwender(applicationLifecycle: ApplicationLifecycle) extend
     }
   }
 
+  def betriebAnzeigen(id: PK[BetriebEntity]) = {
+    db.run(dal.getBetriebWithAdresseById(id))
+  }
+
   //@todo DELET This
   def testDltinserts = {
     db.run(dal.insert(DienstleistungsTypEntity("haareschneiden")) andThen (dal.insert(DienstleistungsTypEntity("Fönen"))))
