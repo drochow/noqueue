@@ -23,6 +23,8 @@ export class CoworkersPage {
   users = [];
   newShop = false;
   shopID = 0;
+  managers = [];
+  employees = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public usersProvider: UsersProvider,
   public validator: ValidatorProvider) {
@@ -31,6 +33,7 @@ export class CoworkersPage {
   }
 
   ionViewDidLoad() {
+    this.reloadCoworkers();
   }
 
   resetError(){
@@ -56,6 +59,32 @@ export class CoworkersPage {
           this.users = users;
         },
         (error) => this.registerError(error.message || "Couldn't get users from server")
+      )
+  }
+
+  reloadCoworkers(){
+    this.shopsProvider.getEmployees(this.shopID)
+      .subscribe(
+        (employees) => {
+          console.log("Employees for this shop: ", employees);
+          this.employees = employees;
+        },
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while hiring employee: ", jsonError);
+        }
+      );
+
+    this.shopsProvider.getManagers(this.shopID)
+      .subscribe(
+        (managers) => {
+          console.log("Managers for this shop: ", managers);
+          this.managers = managers;
+        },
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while hiring employee: ", jsonError);
+        }
       )
   }
 
@@ -91,6 +120,44 @@ export class CoworkersPage {
         },
         (error) => this.registerError(error.message || "Couldn't hire manager")
       )
+  }
+
+  fireEmployee(slidingItem, id){
+    slidingItem.close();
+    this.shopsProvider.fireEmployee(id, this.shopID)
+      .subscribe(
+        () => {
+          this.users.forEach(u => {
+            if(u.id === id){
+              u.employee = false;
+            }
+          })
+        },
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing employee: ", jsonError);
+          this.registerError(jsonError.message);
+        }
+      );
+  }
+
+  fireManager(slidingItem, id){
+    slidingItem.close();
+    this.shopsProvider.fireManager(id, this.shopID)
+      .subscribe(
+        () => {
+          this.users.forEach(u => {
+            if(u.id === id){
+              u.manager = false;
+            }
+          })
+        },
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing manager: ", jsonError);
+          this.registerError(jsonError.message);
+        }
+      );
   }
 
   save(){
