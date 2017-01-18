@@ -63,8 +63,10 @@
 
   <ion-list *ngIf="!isLeiter">
     <ion-item-divider color="light">Queue</ion-item-divider>
-    <ion-item *ngFor="let q of queue">
-      Heyyy
+    <ion-item *ngFor="let client of clients">
+      {{client.anwender.nutzerName}}
+      <ion-badge *ngIf="client.anwender.nutzerName === firstClient && firstStarted === false" color="secondary" item-right (click)="start()">Start</ion-badge>
+      <ion-badge *ngIf="client.anwender.nutzerName === firstClient && firstStarted" color="danger" item-right (click)="end()">End</ion-badge>
     </ion-item>
   </ion-list>
 

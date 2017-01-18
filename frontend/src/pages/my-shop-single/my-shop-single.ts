@@ -34,6 +34,9 @@ export class MyShopSinglePage {
   error = false;
   errorMessage = "";
   queue = [];
+  clients = [];
+  firstClient = "";
+  firstStarted = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
   public auth: AuthenticationProvider, public queuesProvider: QueuesProvider) {
@@ -105,12 +108,26 @@ export class MyShopSinglePage {
     } else {
       this.servicesProvider.getQueueFor(this.shopID)
         .subscribe(
-          (queue) => this.queue = queue,
-          (error) => this.registerError(error.message || "Something went wrong")
+          (queue) => {
+            console.log("queue: ", queue);
+            this.queue = queue;
+            this.clients = queue.wsps;
+            if(this.clients.length > 0){
+              this.firstClient = this.clients[0].anwender.nutzerName;
+            }
+          },
+            (error) => this.registerError(error.message || "Something went wrong")
         )
     }
+  }
 
+  start(){
+    this.firstStarted = true;
+  }
 
+  end(){
+    this.firstStarted = false;
+    this.reloadData();
   }
 
   switchAttendance() {

@@ -72,13 +72,27 @@ export class ServiceSinglePage {
     //     (error) => console.log(error)
     //   );
 
-    this.shopsProvider.getNextAvailableSlots(this.shopID)
+    this.shopsProvider.getEmployees(this.shopID)
       .subscribe(
         (employees) => {
+          console.log("Employees: ", employees);
           this.employees = employees;
           this.queueActive = this.employees.length > 0;
+        },
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error ", jsonError);
         }
       );
+
+    // this.shopsProvider.getNextAvailableSlots(this.shopID)
+    //   .subscribe(
+    //     (employees) => {
+    //       console.log("Employees: ", employees);
+    //       this.employees = employees;
+    //       this.queueActive = this.employees.length > 0;
+    //     }
+    //   );
   }
 
   // @TODO

@@ -27,8 +27,10 @@
     <ion-item>
       <ion-list radio-group *ngFor="let employee of employees" [(ngModel)]="selectedEmployee" (ionChange)="employeeSelection()">
         <ion-item>
-          <ion-label>{{employee.mitarbeiter}} - available at: {{employee.schaetzZeitpunkt*1000 | date : ' M/d/y HH:mm:ss'}}</ion-label>
-          <ion-radio checked="false" value={{employee.id}}></ion-radio>
+          <!--Use next line when GET Time Slots is working fine again-->
+          <!--<ion-label>{{employee.mitarbeiter}} - available at: {{employee.schaetzZeitpunkt*1000 | date : ' M/d/y HH:mm:ss'}}</ion-label>-->
+          <ion-label>{{employee.anwender.nutzerName}}</ion-label>
+          <ion-radio checked="false" value={{employee.mitarbeiter.id}}></ion-radio>
         </ion-item>
       </ion-list>
       <!--<ion-select (ionChange)="employeeSelection()" [(ngModel)]="selectedEmployee">-->
