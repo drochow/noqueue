@@ -95,7 +95,6 @@ export class MyShopSinglePage {
           (managers) => {
             console.log("GET Managers: ", managers);
             this.managers = managers;
-            this.currentManagerWorking = this.managers.filter(m => m.anwenderId && m.anwenderId === this.auth.getUserId())[0].anwesend;
           },
           (error) => this.registerError(error.message || "Something went wrong")
         );
