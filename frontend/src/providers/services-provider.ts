@@ -43,6 +43,7 @@ export class ServicesProvider {
 
   createService(shopID, service) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
+    service.dauer = service.dauer*60; //backend is saving in seconds
     let body = this.mapToExpectedJson(service);
     return this.httpProvider.post(route, body);
   }
@@ -50,6 +51,7 @@ export class ServicesProvider {
   editService(shopID, serviceID, service) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
     let body = this.mapToExpectedJson(service);
+    service.dauer = service/60; //backend is saving in seconds
     return this.httpProvider.put(route, body);
   }
 

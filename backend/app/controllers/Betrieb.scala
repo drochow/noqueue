@@ -82,8 +82,9 @@ class Betrieb @Inject() (val applicationLifecycle: ApplicationLifecycle, val as:
     }
   }
 
-  def show(id: Long) = SecuredApiAction { implicit request =>
-    request.anwender.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
+  def show(id: Long) = ApiAction { implicit request =>
+    val ua = new UnregistrierterAnwender(applicationLifecycle)
+    ua.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
       btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
     } recover {
       case e: Exception => {

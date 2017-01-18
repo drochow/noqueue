@@ -216,6 +216,14 @@ trait WarteschlangenPlatzComponent {
     )).result.nonFusedEquivalentAction
   }
 
+  def getAvailableEmployees(betriebId: PK[BetriebEntity]): DBIO[Seq[(PK[MitarbeiterEntity], String)]] =
+    (for {
+      res <- mitarbeiters.filter(_.betriebId === betriebId).filter(_.anwesend === true) join anwenders on (_.anwenderId === _.id)
+    } yield (
+      res._1.id, //mitarbeiter ID
+      res._2.nutzerName //mitarbeiter Name
+    )).result
+
   def startWorkOn(id: PK[WarteschlangenPlatzEntity], mid: PK[MitarbeiterEntity]): DBIO[Int] = {
     for {
       isAnyInBearbeitung <- warteschlangenplaetze.filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result

@@ -121,14 +121,14 @@ export class MyShopSinglePage {
     }
   }
 
-  start(){
-    this.firstStarted = true;
-  }
-
-  end(){
-    this.firstStarted = false;
-    this.reloadData();
-  }
+  // start(){
+  //   this.firstStarted = true;
+  // }
+  //
+  // end(){
+  //   this.firstStarted = false;
+  //   this.reloadData();
+  // }
 
   switchAttendance() {
     this.queuesProvider.changeAttendance(this.shopID, !this.isAnwesend).subscribe(
@@ -181,6 +181,30 @@ export class MyShopSinglePage {
       )
   }
 
+  startWorkOn(wspId) {
+    this.queuesProvider.startWorkOn(this.shopID, wspId)
+      .subscribe(
+        () => this.reloadData(),
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing employee: ", jsonError);
+          this.registerError(jsonError.message);
+        }
+      )
+  }
+
+  finishWorkOn(wspId) {
+    this.queuesProvider.finishWorkOn(this.shopID, wspId)
+      .subscribe(
+        () => this.reloadData(),
+        (error) => {
+          let jsonError = JSON.parse(error._body);
+          console.log("Error while firing employee: ", jsonError);
+          this.registerError(jsonError.message);
+        }
+      )
+  }
+
   editShopInfo(){
     if(this.isLeiter)
       this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
@@ -204,5 +228,6 @@ export class MyShopSinglePage {
   addCoworkers(){
     this.navCtrl.push(CoworkersPage, {newShop: false, shopID: this.shopID});
   }
+
 
 }
