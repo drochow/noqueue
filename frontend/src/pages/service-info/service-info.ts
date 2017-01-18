@@ -82,17 +82,17 @@ export class ServiceInfoPage {
 
   // only if editing existing service
   reloadData(){
-    // this.servicesProvider.getService(this.serviceID, this.shopID)
-    //   .subscribe(
-    //     (service) => {
-    //       this.service = {
-    //         duration: service.dauer,
-    //         type: service.name,
-    //         description: service.kommentar
-    //       }
-    //     },
-    //     (error) => this.registerError(error.message || "Couldn't retrieve service from server")
-    //   );
+     this.servicesProvider.getService(this.serviceID, this.shopID)
+       .subscribe(
+         (service) => {
+           this.service = {
+             duration: service.dauer,
+             type: service.name,
+             description: service.kommentar
+           }
+         },
+         (error) => this.registerError(error.message || "Couldn't retrieve service from server")
+       );
   }
 
   checkInput(){
