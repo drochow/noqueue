@@ -135,9 +135,9 @@ export class ShopInfoPage {
 
     this.shopsProvider.createShop(this.shop)
       .subscribe(
-        (id) => {
-          console.log("will push to service info page with new shop ID: ", id);
-          this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: id, newService: true});
+        (shop) => {
+          console.log("will push to service info page with new shop ID: ", shop.id);
+          this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: shop.id, newService: true});
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
