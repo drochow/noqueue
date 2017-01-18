@@ -29,6 +29,10 @@ export class MyShopsPage {
     this.reloadData();
   }
 
+  ionViewWillEnter(){
+    this.reloadData();
+  }
+
   refresh(refresher){
     this.reloadData();
 

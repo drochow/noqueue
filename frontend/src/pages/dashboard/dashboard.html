@@ -23,8 +23,8 @@
 
 
   <div class="search">
-    <div class="searchbar">
-      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
+    <div>
+      <ion-searchbar class="searchbar" [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
       <button ion-button icon-only color="light" (click)="searchShops()"><ion-icon name="search"></ion-icon></button>
     </div>
   </div>

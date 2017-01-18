@@ -6,14 +6,21 @@
       width: 100%;
     }
 
-    .search{
-      ion-searchbar{
-        box-sizing: border-box;
-        width: 80%;
-        float: left;
-        height: 32px;
-      }
+    ion-searchbar{
+      box-sizing: border-box;
+      width: 80%;
+      float: left;
+      height: 32px;
+    }
 
+    .searchbar{
+      box-sizing: border-box;
+      width: 80%;
+      float: left;
+      height: 32px;
+    }
+
+    .search{
       button{
         box-sizing: border-box;
         height: 32px;
