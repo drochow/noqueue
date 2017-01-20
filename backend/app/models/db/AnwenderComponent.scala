@@ -83,7 +83,14 @@ trait AnwenderComponent {
     adresseOpt: Option[Option[PK[AdresseEntity]]]
   ): DBIO[Int] = {
     //@todo DRY, Reusable Code for other partialUpdates, Make more Readable
-    sqlu"UPDATE ANWENDER SET NUTZERNAME = (CASE WHEN ${!nutzerNameOpt.isEmpty} THEN ${nutzerNameOpt.getOrElse("Whoops")} ELSE NUTZERNAME END), NUTZEREMAIL = (CASE WHEN ${!nutzerEmailOpt.isEmpty} THEN ${nutzerEmailOpt.getOrElse("Whoops")} ELSE NUTZEREMAIL END), ADRESSE_ID = (CASE WHEN ${!adresseOpt.isEmpty} THEN ${adresseOpt.getOrElse(Some(PK[AdresseEntity](9001))).get} ELSE ADRESSE_ID END) WHERE ID = $id"
+    sqlu"""UPDATE ANWENDER
+            SET NUTZERNAME = (CASE WHEN ${!nutzerNameOpt.isEmpty}
+              THEN ${nutzerNameOpt.getOrElse("Whoops")} ELSE NUTZERNAME END),
+                NUTZEREMAIL = (CASE WHEN ${!nutzerEmailOpt.isEmpty}
+                 THEN ${nutzerEmailOpt.getOrElse("Whoops")} ELSE NUTZEREMAIL END),
+                ADRESSE_ID = (CASE WHEN ${!adresseOpt.isEmpty}
+                  THEN ${adresseOpt.getOrElse(Some(PK[AdresseEntity](9001))).get} ELSE ADRESSE_ID END)
+            WHERE ID = $id"""
   }
 
   def passwordVeraendern(id: PK[AnwenderEntity], newPassword: String): DBIO[Int] =
