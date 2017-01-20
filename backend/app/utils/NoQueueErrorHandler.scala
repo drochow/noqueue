@@ -12,7 +12,7 @@ import play.api.mvc.Results._
 import play.api.routing.Router
 
 import scala.concurrent._
-import api.{ ApiError, ApiRequestHeaderImpl, ApiResult }
+import api.{ ApiError, ApiLog, ApiRequestHeaderImpl, ApiResult }
 import api.ApiError._
 import osm.{ AdressNotFoundException, InvalidGeoCoordsException }
 
@@ -87,7 +87,12 @@ class NoQueueErrorHandler @Inject() (
       case olre: OneLeiterRequiredException => jsError(errorBadRequest("Atleast 1 Leiter is required.")(request2Messages(request)), request)
       case ua: UnauthorizedException => jsError(errorUnauthorized(request2Messages(request)), request)
       case nse: NoSuchElementException => jsError(errorItemNotFound(request2Messages(request)), request)
-      case e: Exception => jsError(errorInternalServer(exception.getMessage)(request2Messages(request)), request)
+
+      //Unexpected/Unhandled Exception
+      case e: Exception => {
+        ApiLog.error(exception) // log the exception
+        jsError(errorInternalServer("Sorry, an internal error occured.")(request2Messages(request)), request) //show unexposed message to client
+      }
     }
   }
 
