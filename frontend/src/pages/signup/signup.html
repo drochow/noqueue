@@ -17,19 +17,33 @@
   <p *ngIf="error" color="danger">{{errorMessage}}</p>
 
   <div class="form">
-    <p>Username:</p>
-    <ion-input type="text" placeholder="Username" [(ngModel)]="username"></ion-input>
+    <div class="item">
+      <p class="label">Enter your username:</p>
+      <ion-input type="text" placeholder="Username" [ngClass]="{'valid': isValid.username && username}" [(ngModel)]="username" (input)="checkUsername()"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.username === false">{{validationRules.username}}</p>
+    </div>
 
-    <p>Email:</p>
-    <ion-input type="email" placeholder="Email" [(ngModel)]="email"></ion-input>
+    <div class="item">
+      <p class="label">Enter your email:</p>
+      <ion-input type="email" placeholder="Email" [ngClass]="{'valid': isValid.email && email}" [(ngModel)]="email" (input)="checkEmail()"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.email === false">{{validationRules.email}}</p>
+    </div>
 
-    <p>Password:</p>
-    <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
+    <div class="item">
+      <p class="label">Enter your password:</p>
+      <ion-input type="password" placeholder="Password" [ngClass]="{'valid': isValid.password && password}" [(ngModel)]="password" (input)="checkPassword()" (blur)="checkPassword()"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.password === false">{{validationRules.password}}</p>
+    </div>
 
-    <p>Confirm Password:</p>
-    <ion-input type="password" placeholder="Confirm password" [(ngModel)]="confirmPassword"></ion-input>
+    <div class="item">
+      <p class="label">Confirm your password:</p>
+      <ion-input type="password" placeholder="Password" [ngClass]="{'valid': isValid.confirmPassword && isValid.passwordsMatching && confirmPassword}" [(ngModel)]="confirmPassword" (input)="checkConfirmPassword()"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.passwordsMatching === false">{{validationRules.passwordsMatching}}</p>
+    </div>
 
-    <button ion-button class="button" full (click)="signup()">SEND</button>
+    <button ion-button class="button" full (click)="signup()" [disabled]="allFieldsValid == false">Sign Up</button>
+
+    <p class="info" color="danger" *ngIf="error">{{errorMessage}}</p>
   </div>
 
 </ion-content>

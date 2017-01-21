@@ -45,13 +45,13 @@ export class EditPasswordPage {
 
   changePassword(){
     this.resetError();
-    if(!this.validator.passwordMatching(this.confirmPassword, this.newPassword)){
+    if(!this.validator.passwordsMatching(this.confirmPassword, this.newPassword)){
       this.registerError("New password and confirm password not matching");
     }
     if(!this.validator.password(this.newPassword)){
       this.registerError("New Password not valid");
     }
-    if(this.validator.passwordMatching(this.oldPassword, this.newPassword)){
+    if(this.validator.passwordsMatching(this.oldPassword, this.newPassword)){
       this.registerError("New password matches old password!")
     }
     if(this.error) return;

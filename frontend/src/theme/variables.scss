@@ -20,6 +20,15 @@ $searchbar-md-input-height: 24px;
 $searchbar-wp-input-height: 24px;
 
 
+$font-sizes: (
+  title: 21px,
+  title-2: 19px,
+  body: 16px,
+  subhead: 14px,
+  footnote: 12px,
+  caption: 11px
+);
+
 // Named Color Variables
 // --------------------------------------------------
 // Named colors makes it easy to reuse colors on various components.
@@ -32,7 +41,11 @@ $colors: (
   primary: #3202a8,
   success:  #3202a8,
   danger: #f54263,
-  light: #ffffff
+  light: #ffffff,
+  dark: #000,
+  dark-grey: #383838,
+  light-grey: #d9d9d9,
+  lighter-text: #454545
 );
 
 

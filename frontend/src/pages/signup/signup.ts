@@ -23,29 +23,80 @@ export class SignupPage {
   confirmPassword: string;
   error = false;
   errorMessage = "";
+  validationRules: any;
+  isValid = {
+    username: true,
+    email: true,
+    password: true,
+    confirmPassword: true,
+    passwordsMatching: true
+  };
+  allFieldsValid = false;
 
-  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {}
+  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
+    // later - read these from the validator:
+    this.validationRules = {
+      username: "Must be 6 to 30 letters, numbers or . - _",
+      email: "Must be a valid email.",
+      password: "Must be at least 8 characters.",
+      passwordsMatching: "Passwords have to match."
+    }
+  }
 
   ionViewDidLoad() {
+  }
+
+  checkUsername(){
+    this.isValid.username = this.validator.username(this.username);
+    this.checkAllFields();
+  }
+
+  checkEmail(){
+    this.isValid.email = this.validator.email(this.email);
+    this.checkAllFields();
+  }
+
+  checkPassword(){
+    this.isValid.password = this.validator.password(this.password);
+    this.checkPasswordsMatching();
+  }
+
+  checkConfirmPassword(){
+    this.isValid.confirmPassword = this.validator.password(this.confirmPassword);
+    this.checkPasswordsMatching();
+  }
+
+  checkPasswordsMatching(){
+    this.isValid.passwordsMatching = this.validator.passwordsMatching(this.password, this.confirmPassword);
+    this.checkAllFields();
+  }
+
+  checkAllFields(){
+    var valid = true;
+    if(this.validator.empty(this.username, this.email, this.password, this.confirmPassword)){
+      valid = false;
+    } else {
+      for(let attr in this.isValid){
+        if(this.isValid[attr] == false) valid = false;
+      }
+    }
+    this.allFieldsValid = valid;
+  }
+
+  checkInput(){
+    this.checkUsername();
+    this.checkEmail();
+    this.checkPassword();
+    this.checkConfirmPassword();
+    this.checkPasswordsMatching();
   }
 
   signup(){
     this.error = false;
     this.errorMessage = "";
 
-    if(!this.validator.username(this.username)){
-      this.registerError("Username not valid");
-    }
-    if(!this.validator.email(this.email)){
-      this.registerError("Email not valid");
-    }
-    if(!this.validator.password(this.password)){
-      this.registerError("Password does not match requirements: min 8 chars , must contain 1, 1 upper, 1 digit and 1 special character");
-    }
-    if(!this.validator.passwordMatching(this.password, this.confirmPassword)){
-      this.registerError("Password not matching");
-    }
-    if(this.error) return;
+    this.checkInput();
+    if(!this.allFieldsValid) return;
 
     this.auth.signup(this.username, this.email, this.password)
       .then(
@@ -54,14 +105,9 @@ export class SignupPage {
         },
             (error) => {
               this.error = true;
-              this.errorMessage = error.message || "Something went wrong";
+              this.errorMessage = "Couldn't sign up. Please try again later."
             }
       );
-  }
-
-  registerError(message){
-    this.error = true;
-    this.errorMessage = message;
   }
 
 }

@@ -21,7 +21,7 @@ export class ValidatorProvider {
   // 1 special character
   password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(string);
 
-  passwordMatching = (string1, string2) => string1 === string2;
+  passwordsMatching = (string1, string2) => string1 === string2;
 
   email = string => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       .test(string);
