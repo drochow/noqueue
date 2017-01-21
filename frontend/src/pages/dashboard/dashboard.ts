@@ -171,6 +171,7 @@ export class DashboardPage {
   }
 
   showSignupPage(){
+    console.log("Why are you not working...");
     this.navCtrl.push(SignupPage);
   }
 

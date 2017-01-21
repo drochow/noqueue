@@ -1,3 +1,44 @@
-page-signup {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-signup {
+
+    ion-header{
+      border-bottom: 5px solid white;
+      background-color: map-get($colors, light);
+      margin-bottom: 40px;
+    }
+
+    ion-navbar{
+      background-color: map-get($colors, light);
+    }
+
+    ion-content{
+
+      .form{
+        width: 75%;
+        margin: 50px auto;
+
+        ion-input{
+          padding-left: 10px;
+          border: 1px solid #9f9f9f;
+          height: 40px;
+        }
+
+        .button{
+          height: 40px;
+          margin-top: 40px;
+          background-color: white;
+          border: 2px solid map-get($colors, primary);
+          color: map-get($colors, primary);
+          font-weight: bold;
+        }
+      }
+
+
+    }
+
+  }
 }
+
+
