@@ -36,15 +36,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
             request.anwender.wspAnzeigen() flatMap {
               fin => ok(fin)
             }
-        } recover {
-          case mnae: MitarbeiterNotAnwesendException => ApiError.errorBadRequest("This Mitarbeiter is not anwesend")
-          case alue: AnwenderAlreadyLinedUpException => ApiError.errorBadRequest("This Anwender already lined up somewhere")
-          case dlie: DLInvalidException => ApiError.errorBadRequest("This DL is not provided by this Mitarbeiter")
-          case nfe: NoSuchElementException => ApiError.errorMethodForbidden
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-          }
         }
     }(request, dlUndMitarbeiterReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
@@ -57,12 +48,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
         } else {
           noContent()
         }
-    } recover {
-      case nfe: NoSuchElementException => ApiError.errorMethodForbidden
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-      }
     }
   }
 
@@ -70,16 +55,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     implicit request =>
       request.mitarbeiter.warteSchlangeAnzeigen() flatMap {
         warteschlange => ok(warteschlange)
-      } recover {
-        case uae: UnauthorizedException => ApiError.errorUnauthorized
-        case nse: NoSuchElementException => {
-          nse.printStackTrace()
-          ApiError.errorNotFound
-        }
-        case e: Exception => {
-          e.printStackTrace()
-          ApiError.errorBadRequest("Invalid data..")
-        }
       }
   }
 
@@ -87,13 +62,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     implicit request =>
       request.anwender.wspAnzeigen() flatMap {
         platz => ok(platz)
-      } recover {
-        case nse: WspDoesNotExistException => ApiError.errorItemNotFound("User does not have any WarteschlangenPlatz")
-        case nse: NoSuchElementException => ApiError.errorUnauthorized
-        case e: Exception => {
-          e.printStackTrace()
-          ApiError.errorBadRequest("Invalid data..")
-        }
       }
   }
 
@@ -101,11 +69,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     implicit request =>
       request.anwender.getNextTimeSlotsForBetrieb(betriebId) flatMap {
         list => ok(list)
-      } recover {
-        case e: Exception => {
-          e.printStackTrace()
-          ApiError.errorBadRequest("Invalid data..")
-        }
       }
   }
 
@@ -113,15 +76,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     implicit request =>
       request.mitarbeiter.wspBearbeitungBeginnen(PK[WarteschlangenPlatzEntity](wspId)) flatMap {
         _ => accepted()
-      } recover {
-        case aibe: AlreadWorkingOnAWspException => ApiError.errorBadRequest("You need to finish all WSPs first.")
-        case nfwspe: NotFirstWspException => ApiError.errorBadRequest("You have to start with the first WSP.")
-        case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
-        case uae: UnauthorizedException => ApiError.errorUnauthorized
-        case e: Exception => {
-          e.printStackTrace()
-          ApiError.errorBadRequest("Invalid data..")
-        }
       }
   }
 
@@ -132,14 +86,6 @@ class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecy
     //case wspId =>
     request.mitarbeiter.wspBearbeitungBeenden(PK[WarteschlangenPlatzEntity](wid)) flatMap {
       _ => accepted()
-    } recover {
-      case aibe: NotWorkingOnAWSPEXception => ApiError.errorBadRequest("You need to start working on this WSP first.")
-      case nse: NoSuchElementException => ApiError.errorItemNotFound("No such WSP found.")
-      case uae: UnauthorizedException => ApiError.errorUnauthorized
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorBadRequest("Invalid data..")
-      }
     }
     //}(request, wspBearbeitungBeendenReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
 

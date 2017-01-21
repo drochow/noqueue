@@ -134,7 +134,7 @@ trait ApiController extends Controller with I18nSupport {
 
     futureApiResult.map {
       case error: ApiError => error.saveLog.toResult
-      case response: ApiResponse => response.toResult
+      case response: ApiResponse => response.saveLog.toResult
     }
 
   }

@@ -35,22 +35,6 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
         uAnwender.registrieren(anw) flatMap {
           //success
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
-        } recover {
-          //failure
-
-          case psqlE: PSQLException => {
-            if (psqlE.getMessage.contains("emailUnique")) {
-              ApiError.errorBadRequest("Diese Email wird bereits verwendet bereits!")
-            }
-            if (psqlE.getMessage.contains("nameUnique")) {
-              ApiError.errorBadRequest("Dieser nutzerName existiert bereits!")
-            } else
-              ApiError.errorBadRequest(psqlE.getMessage)
-          }
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorBadRequest("Invalid data..")
-          }
         }
       }
     }
@@ -62,23 +46,14 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
         val uAnwender = new UnregistrierterAnwender(applicationLifecycle)
         uAnwender.anmelden(credentials.nutzerName, credentials.password) flatMap {
           case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))))
-        } recover {
-          case e: CredentialException => ApiError.errorBadRequest("Invalid Credentials.")
-          case ex: SQLException => ApiError.errorInternal("Databse not reachable...")
         }
       }
     }
-
   }
 
   def profil = SecuredApiAction { implicit request =>
     request.anwender.profilAnzeigen() flatMap {
       case anwender: (AnwenderEntity, Option[AdresseEntity]) => ok(anwender)
-    } recover {
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Something went wrong!")
-      }
     }
   }
 
@@ -96,12 +71,9 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
             if (bool) {
               accepted("Your Input was Accepted")
             } else {
+              //@todo B Schurian check if necessary ?! should break before since user is not found
               ApiError.errorInternal("Unable to save provided Data...")
             }
-
-        } recover {
-          case igce: InvalidGeoCoordsException => ApiError.errorBadRequest(igce.getMessage)
-          case anfe: AdressNotFoundException => ApiError.errorItemNotFound("The provided adress does not exist.")
         }
       }
     }
@@ -115,14 +87,11 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
             if (updated) {
               accepted("Your Input was Accepted")
             } else {
+              //@todo B Schurian check if necessary ?! should break before since user is not found
               ApiError.errorInternal("Could not Update with given parameters")
             }
-        } recover {
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-          }
         }
+      //@todo B Schurian check if necessary ?!
       case _ => throw new Exception("no case matched in profilbearbeiten")
     }
   }
@@ -138,14 +107,11 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
             if (updated) {
               accepted("Your password was changed")
             } else {
+              //@todo B Schurian check if necessary ?! should break before since user is not found
               ApiError.errorInternal("Could not Change Password with given parameters")
             }
-        } recover {
-          case e: Exception => {
-            e.printStackTrace()
-            ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-          }
         }
+      //@todo B Schurian check if necessary ?!
       case _ => throw new Exception("no case matched in profilbearbeiten")
     }(request, oldPwAndNewPwReads, request.request) //request and req.req are the vals that would have also been taken if they hadn't been declared
   }
@@ -153,35 +119,18 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
   def search(q: Option[String], page: Int, size: Int) = SecuredApiAction { implicit request =>
     request.anwender.anwenderSuchen(q, page, size) flatMap {
       listOfAnwender => ok(listOfAnwender)
-    } recover {
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-      }
     }
   }
 
   def show(id: Long) = SecuredApiAction { implicit request =>
     request.anwender.anwenderAnzeigen(PK[AnwenderEntity](id)) flatMap {
       anwender => ok(anwender)
-    } recover {
-      case nfe: NoSuchElementException => ApiError.errorAnwenderNotFound
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-      }
     }
   }
 
   def myBetriebe = SecuredApiAction { implicit request =>
     request.anwender.meineBetriebe() flatMap {
       betriebe => ok(betriebe)
-    } recover {
-      case nfe: NoSuchElementException => ApiError.errorAnwenderNotFound
-      case e: Exception => {
-        e.printStackTrace()
-        ApiError.errorInternal("Unknown Exception..." + e.getMessage)
-      }
     }
   }
 }

@@ -46,6 +46,38 @@ trait AdressService {
   def getCoordsOfAdress(adresseEntity: AdresseEntity): Future[GeoCoords]
 }
 
+class GoolgeAdressService @Inject() (ws: WSClient) extends AdressService {
+  val baseURL = "https://nominatim.openstreetmap.org/search"
+  override def getCoordsOfAdress(adresseEntity: AdresseEntity): Future[GeoCoords] = {
+    val req: WSRequest = ws.url(s"$baseURL")
+      .withQueryString(
+        "format" -> "json",
+        "countrycode" -> "de",
+        "city" -> adresseEntity.stadt,
+        "street" -> (adresseEntity.hausNummer + " " + adresseEntity.strasse),
+        "postalcode" -> adresseEntity.plz
+      )
+    System.out.println(req.uri.toString)
+    req.get() map {
+      response =>
+
+        response.json.validate[Seq[GeoCoords]] match {
+          case geoCoords: JsSuccess[Seq[GeoCoords]] =>
+            //@todo throw explicit error wich indicates multiple matching GeoCoordinates for the provided adress and allow user to choose the correct address
+            if (geoCoords.value.length >= 1)
+              geoCoords.value(0)
+            else
+              throw new AdressNotFoundException("No matching GeoCoords found")
+
+          case e: JsError => {
+            System.out.println(JsError.toJson(e).toString())
+            throw new InvalidGeoCoordsException(JsError.toJson(e).toString())
+          }
+        }
+    }
+  }
+}
+
 /**
  * Adress Service to verify provided adresses and return its Coordinates
  * @param ws

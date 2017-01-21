@@ -21,7 +21,7 @@ trait ApiResult {
 	* Saves into DB an ApiLog for this ApiResponse
 	*/
   def saveLog[R <: RequestHeader](implicit request: ApiRequestHeader[R]): ApiResult = {
-    //ApiLog.insert(request, status, json)
+    ApiLog.log(request, status, json)
     this
   }
 
