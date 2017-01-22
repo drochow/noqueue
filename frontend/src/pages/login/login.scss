@@ -2,21 +2,7 @@
 
 .ios, .md, .wp{
   page-login {
-    ion-header{
-      background-color: map-get($colors, light);
-      margin-bottom: 20px;
-    }
-
-    ion-navbar{
-      background-color: map-get($colors, light);
-
-      ion-title{
-        text-transform: uppercase;
-      }
-    }
-
     ion-content{
-
       .greeting{
         width: 75%;
         margin: 50px auto 20px auto;
@@ -24,61 +10,6 @@
           text-align: center;
         }
       }
-
-      .form{
-        width: 75%;
-        margin: 20px auto;
-
-        .item{
-          margin-bottom: 16px;
-        }
-
-        .label{
-          margin-bottom: 8px;
-          font-size: map-get($font-sizes, subhead);
-          text-transform: uppercase;
-          font-weight: bold;
-          color: map-get($colors, lighter-text);
-        }
-
-        .info{
-          font-size: map-get($font-sizes, footnote);
-          margin-bottom: 0;
-        }
-
-        ion-input{
-          padding-left: 10px;
-          border: 1px solid map-get($colors, light-grey);
-          color: map-get($colors, lighter-text);
-          height: 40px;
-        }
-
-        .valid{
-          border-right: 3px solid map-get($colors, primary);
-        }
-
-        .button{
-          height: 40px;
-          margin-top: 40px;
-          background-color: map-get($colors, primary);
-          border: 2px solid map-get($colors, primary);
-          color: white;
-          font-weight: bold;
-          text-transform: uppercase;
-        }
-
-        .button:disabled{
-          background-color: white;
-          border: 2px solid map-get($colors, dark);
-          color: map-get($colors, dark);
-        }
-
-        .error{
-          margin-bottom: 10px;
-        }
-      }
-
-
     }
   }
 }
