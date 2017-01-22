@@ -44,7 +44,7 @@
       <p class="info" color="danger" *ngIf="isValid.city === false">{{validationRules.city}}</p>
     </div>
 
-    <button ion-button class="button" full (click)="changeData()" [disabled]="allFieldsValid == false">Update Info</button>
+    <button ion-button class="button" full (click)="changeData()" [disabled]="allFieldsValid == false">Edit Profile</button>
     <p color="danger" *ngIf="error">{{errorMessage}}</p>
   </div>
 </ion-content>

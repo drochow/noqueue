@@ -23,8 +23,24 @@ export class EditPasswordPage {
   errorMessage = "";
   email = "";
   username = "";
+  validationRules: any;
+  isValid = {
+    oldPassword: true,
+    newPassword: true,
+    confirmPassword: true,
+    passwordsMatching: true,
+    differentPasswords: true
+  };
+  allFieldsValid = false;
 
-  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {}
+  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
+    this.validationRules = {
+      emptyPassword: "Please fill in this field.",
+      newPassword: "Must be at least 8 characters.",
+      samePassword: "New password equals old password.",
+      passwordsMatching: "Passwords have to match."
+    }
+  }
 
   ionViewDidLoad() {
     this.resetError();
@@ -43,26 +59,68 @@ export class EditPasswordPage {
       )
   }
 
+  ionViewWillEnter(){
+  }
+
+  checkOldPassword(){
+    this.isValid.oldPassword = !this.validator.empty(this.oldPassword);
+    this.checkDifferentPasswords();
+    this.checkAllFields();
+  }
+
+  checkNewPassword(){
+    this.isValid.newPassword = this.validator.password(this.newPassword);
+    this.checkDifferentPasswords();
+    this.checkPasswordsMatching();
+  }
+
+  checkConfirmPassword(){
+    this.isValid.confirmPassword = this.validator.password(this.confirmPassword);
+    this.checkPasswordsMatching();
+  }
+
+  checkPasswordsMatching(){
+    this.isValid.passwordsMatching = this.validator.passwordsMatching(this.newPassword, this.confirmPassword);
+    this.checkAllFields();
+  }
+
+  checkDifferentPasswords(){
+    this.isValid.differentPasswords = !this.validator.passwordsMatching(this.oldPassword, this.newPassword);
+  }
+
+  checkAllFields(){
+    var valid = true;
+    if(this.validator.empty(this.oldPassword, this.newPassword, this.confirmPassword)){
+      valid = false;
+    } else {
+      for(let attr in this.isValid){
+        if(this.isValid[attr] == false) valid = false;
+      }
+    }
+    this.allFieldsValid = valid;
+  }
+
+  checkInput(){
+    this.checkOldPassword();
+    this.checkNewPassword();
+    this.checkConfirmPassword();
+  }
+
   changePassword(){
     this.resetError();
-    if(!this.validator.passwordsMatching(this.confirmPassword, this.newPassword)){
-      this.registerError("New password and confirm password not matching");
-    }
-    if(!this.validator.password(this.newPassword)){
-      this.registerError("New Password not valid");
-    }
-    if(this.validator.passwordsMatching(this.oldPassword, this.newPassword)){
-      this.registerError("New password matches old password!")
-    }
-    if(this.error) return;
+    this.checkInput();
+    if(!this.allFieldsValid) return;
 
     this.users.changePassword({username: this.username, email: this.email, oldPassword: this.oldPassword, newPassword: this.newPassword})
       .subscribe(
         () => this.navCtrl.pop(),
         (error) => {
           let jsonError = JSON.parse(error._body);
-          console.log("Error ", jsonError);
-          this.registerError(jsonError.message);
+          if(jsonError.code == 500){
+            this.registerError("False old password.");
+          } else {
+            this.registerError("Couldn't change the server. Please try again later.")
+          }
         }
       );
     //..
