@@ -14,8 +14,6 @@
 
 
 <ion-content color="light">
-  <p *ngIf="error" color="danger">{{errorMessage}}</p>
-
   <div class="form">
     <div class="item">
       <p class="label">Enter your username:</p>
@@ -43,7 +41,7 @@
 
     <button ion-button class="button" full (click)="signup()" [disabled]="allFieldsValid == false">Sign Up</button>
 
-    <p class="info" color="danger" *ngIf="error">{{errorMessage}}</p>
+    <p color="danger" *ngIf="error">{{errorMessage}}</p>
   </div>
 
 </ion-content>

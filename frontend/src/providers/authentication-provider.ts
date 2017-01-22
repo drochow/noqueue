@@ -60,7 +60,7 @@ export class AuthenticationProvider {
             auth.httpProvider.setToken(token);
             resolve("Logged In");
           },
-          (error) => reject(error.message)
+          (error) => reject(error)
         )
     });
   }

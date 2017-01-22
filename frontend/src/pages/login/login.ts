@@ -21,8 +21,8 @@ import { SignupPage } from '../../pages/signup/signup';
 export class LoginPage {
 
   // variables for data binding with the template
-  username: string;
-  password: string;
+  username = "";
+  password = "";
   error = false;
   errorMessage = "";
 
@@ -36,18 +36,20 @@ export class LoginPage {
     this.error = false;
     this.errorMessage = "";
 
-    if(this.validator.empty(this.username, this.password)){
-      this.error = true;
-      this.errorMessage = "Please fill in all required values.";
-      return;
-    }
+    if(this.validator.empty(this.username, this.password)) return;
 
     this.auth.login(this.username, this.password)
       .then(
         () => this.navCtrl.pop(),
         (error) => {
           this.error = true;
-          this.errorMessage = error.message || "Wrong data";
+          console.log("Error: ", error);
+          let jsonError = JSON.parse(error._body);
+          if(jsonError.code != 400){
+            this.errorMessage = "Couldn't log in. Please try again later."
+          } else {
+            this.errorMessage = "Wrong username or password.";
+          }
         }
       )
   }
