@@ -122,5 +122,13 @@
         }
       }
 
+      .sectionName{
+        margin-bottom: 8px;
+        font-size: map-get($font-sizes, subhead);
+        text-transform: uppercase;
+        font-weight: bold;
+        color: map-get($colors, lighter-text);
+      }
+
     }
 }
