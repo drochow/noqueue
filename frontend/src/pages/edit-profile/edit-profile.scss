@@ -1,3 +1,15 @@
-page-edit-profile {
+.ios, .md, .wp{
+  page-edit-profile {
+    ion-header{
+      margin-bottom: 0;
+    }
 
+    ion-content{
+      .form{
+        margin-top: 0;
+      }
+    }
+  }
 }
+
+

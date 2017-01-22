@@ -19,21 +19,105 @@ export class EditProfilePage {
 
   error = false;
   errorMessage = "";
-  username = "";
-  email = "";
-  street = "";
-  streetNr = "";
-  zip = "";
-  city = "";
+  username: string;
+  email: string;
+  street: string;
+  streetNr: string;
+  zip: string;
+  city: string;
+  validationRules: any;
+  isValid = {
+    username: true,
+    email: true,
+    street: true,
+    streetNr: true,
+    zip: true,
+    city: true,
+    address: true
+  };
+  allFieldsValid = false;
 
 
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
   private validator: ValidatorProvider) {
+    this.validationRules = {
+      username: "Must be 6 to 30 letters, numbers or . - _",
+      email: "Must be a valid email.",
+      street: "Must be 2-50 letters.",
+      streetNr: "Must be 1-5 numbers, followed by an optional letter.",
+      zip: "Must be 5 numbers.",
+      city: "Must be 2-40 letters"
+    };
     this.fetchData();
   }
 
   ionViewWillEnter() {
     this.fetchData();
+  }
+
+  checkUsername(){
+    this.isValid.username = this.validator.username(this.username);
+    this.checkAllFields();
+  }
+
+  checkEmail(){
+    this.isValid.email = this.validator.email(this.email);
+    this.checkAllFields();
+  }
+
+  checkStreet(){
+    this.isValid.street = this.validator.street(this.street);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkStreetNr(){
+    this.isValid.streetNr = this.validator.streetNumber(this.streetNr);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkZip(){
+    this.isValid.zip = this.validator.zip(this.zip);
+    console.log("Testing the validator - zip 12345a, 123456: " + this.validator.zip("12345a") + " " + this.validator.zip("123456"));
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkCity(){
+    this.isValid.city = this.validator.city(this.city);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkAddress(){
+    var allEmpty = this.validator.allEmpty(this.street, this.streetNr, this.zip, this.city);
+    if(allEmpty){
+      this.isValid.address = true;
+      this.isValid.street = true;
+      this.isValid.streetNr = true;
+      this.isValid.zip = true;
+      this.isValid.city = true;
+      return;
+    }
+    this.isValid.address = this.isValid.street && this.isValid.streetNr && this.isValid.zip && this.isValid.city;
+  }
+
+  checkAllFields(){
+    var valid = true;
+    for(let attr in this.isValid){
+      if(this.isValid[attr] == false) valid = false;
+    }
+    this.allFieldsValid = valid;
+  }
+
+  checkInput(){
+    this.checkUsername();
+    this.checkEmail();
+    this.checkStreet();
+    this.checkStreetNr();
+    this.checkZip();
+    this.checkCity();
   }
 
   fetchData(){
@@ -42,15 +126,16 @@ export class EditProfilePage {
     this.users.getMe()
       .subscribe(
         (me) => {
-            this.username = me.nutzerName || "",
-            this.email = me.nutzerEmail || "",
-            this.street = me.adresse.straße || "",
-            this.streetNr = me.adresse.hausNummer || "",
-            this.zip = me.adresse.plz || "",
-            this.city = me.adresse.stadt || ""
+            this.username = me.nutzerName || "";
+            this.email = me.nutzerEmail || "";
+            this.street = me.adresse.straße || "";
+            this.streetNr = me.adresse.hausNummer || "";
+            this.zip = me.adresse.plz || "";
+            this.city = me.adresse.stadt || "";
+            this.checkInput();
         },
         (error) => {
-          this.registerError(error.message || "Couldn't get data from server")
+          this.registerError("Couldn't get data from server. Please try again later.")
         }
       )
   }
@@ -59,24 +144,9 @@ export class EditProfilePage {
     this.error = false;
     this.errorMessage = "";
 
-    if(!this.validator.username(this.username)){
-      this.registerError("Username not valid");
-    }
-    if(this.email.length > 0 && !this.validator.email(this.email)){
-      this.registerError("Email not valid");
-    }
-    if(this.street.length > 0 && !this.validator.street(this.street)){
-      this.registerError("Street not valid");
-    }
-    if(this.zip.length > 0 && !this.validator.zip(this.zip)){
-      this.registerError("Street Number not valid");
-    }
-    if(this.city.length > 0 && !this.validator.city(this.city)){
-      this.registerError("Street Number not valid");
-    }
-    if(this.error) return;
+    this.checkInput();
+    if(!this.allFieldsValid) return;
 
-    // @TODO - dont send empty properties?
     let data = {
       username: this.username,
       email: this.email,
@@ -85,7 +155,6 @@ export class EditProfilePage {
       zip: this.zip,
       city: this.city
     };
-    // @TODO - inform the user that the address must be an existing one
     this.users.changeProfileInfo(data)
       .subscribe(
         () => {
@@ -93,10 +162,12 @@ export class EditProfilePage {
           this.navCtrl.pop();
         },
         (error) => {
-          console.log("Error while updating profile info: ", error);
           let jsonError = JSON.parse(error._body);
-          console.log("Error ", jsonError);
-          this.registerError(jsonError.message);
+          if(jsonError.code == 404){
+            this.registerError("This address doesn't exist.")
+          } else {
+            this.registerError("Couldn't update the information. Please try again later.");
+          }
         }
       )
   }

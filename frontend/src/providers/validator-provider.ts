@@ -33,16 +33,16 @@ export class ValidatorProvider {
   searchName = string => /^[a-zA-Z\d\.\-\_]{1,30}$/.test(string);
 
   // 2-50 alphanumeric + german symbols
-  street = string => /[a-zA-ZäöüÄÖÜß\d \.]{2,50}/.test(string);
+  street = string => /^[a-zA-ZäöüÄÖÜß\d \.]{2,50}$/.test(string);
 
   // only german ZIP codes (nnnnn format)
-  zip = string => /[0-9]{5}/.test(string);
+  zip = string => /^[0-9]{5}$/.test(string);
 
   // 1-5 numeric, followed by 0 or 1 letter
-  streetNumber = string => /[0-9]{1,5}[a-zA-Z]?/.test(string);
+  streetNumber = string => /^[0-9]{1,5}[a-zA-Z]?$/.test(string);
 
   // 2-40 letters (including german symbols)
-  city = string => /[a-zA-ZüäöÄÖÜß]{2,40}/.test(string);
+  city = string => /^[a-zA-ZüäöÄÖÜß]{2,40}$/.test(string);
 
   // 2-30 alphanumeric, . - _ space
   shopName = string => /^[a-zA-Z\d\.\-\_\'\"\s]{2,30}$/.test(string);
@@ -67,6 +67,16 @@ export class ValidatorProvider {
       }
     }
     return false;
+  }
+
+  allEmpty = (...strings) => {
+    var empty = true;
+    for(let value of strings){
+      if(value != ""){
+        empty = false;
+      }
+    }
+    return empty;
   }
 
 }
