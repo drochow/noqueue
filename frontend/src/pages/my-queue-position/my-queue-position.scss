@@ -1,3 +1,68 @@
-page-my-queue-position {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp {
+  page-my-queue-position {
+    ion-content{
+      background-color: lightblue;
+    }
+
+    .ticket {
+      width: 279px;
+      height: 400px;
+      margin: 50px auto;
+      background: url("../../assets/img/ticket.png");
+      background-size: 279px 400px;
+    }
+
+    .title{
+
+      padding: 20px 20px 0;
+
+      .serviceName{
+        font-size: 2.2rem;
+        color: #998899;
+        margin-bottom: 10px;
+      }
+
+      .shopName{
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: map-get($colors, dark);
+        margin-bottom: 10px;
+      }
+
+      .shopName:first-letter{
+        color: map-get($colors, light-grey);
+      }
+    }
+
+    .map {
+      width: 279px;
+      height: 200px;
+      background-color: #0d81ff;
+    }
+
+    .informations{
+      width: 279px;
+
+      .key{
+        border-bottom: 1px solid map-get($colors, primary);
+        text-transform: uppercase;
+      }
+
+      .time {
+        float: left;
+        width: 50%;
+        box-sizing: border-box;
+      }
+
+      .employee{
+        float: right;
+        width: 50%;
+        box-sizing: border-box;
+      }
+    }
+  }
 }
+
+

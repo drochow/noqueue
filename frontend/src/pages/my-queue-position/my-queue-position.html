@@ -4,8 +4,8 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border color="light">
+  <ion-navbar color="light">
     <ion-title>Queue Position</ion-title>
   </ion-navbar>
 </ion-header>
@@ -16,12 +16,30 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list>
-    <ion-item><ion-icon name="basket" item-left></ion-icon>{{queuePosition.betrieb}}</ion-item>
-    <ion-item><ion-icon name="body" item-left></ion-icon>{{queuePosition.mitarbeiter}}</ion-item>
-    <ion-item><ion-icon name="hand" item-left></ion-icon>{{queuePosition.dlName}}</ion-item>
-    <ion-item><ion-icon name="time" item-left></ion-icon>{{queuePosition.schaetzZeitpunkt*1000 | date: 'M/d/y HH:mm:ss'}}</ion-item>
-  </ion-list>
+  <div class="ticket">
+    <div class="title">
+      <p class="serviceName">{{queuePosition.dlName}}</p>
+      <p class="shopName">@{{queuePosition.betrieb}}</p>
+    </div>
+    <div id="map" class="map"></div>
+    <div class="informations">
+      <div class="time">
+        <p class="key">Time</p>
+        <p class="value">{{queuePosition.schaetzZeitpunkt*1000 | date: 'HH:mm'}}</p>
+      </div>
+      <div class="employee">
+        <p class="key">Employee</p>
+        <p class="value">{{queuePosition.mitarbeiter}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!--<ion-list>-->
+    <!--<ion-item><ion-icon name="basket" item-left></ion-icon>{{queuePosition.betrieb}}</ion-item>-->
+    <!--<ion-item><ion-icon name="body" item-left></ion-icon>{{queuePosition.mitarbeiter}}</ion-item>-->
+    <!--<ion-item><ion-icon name="hand" item-left></ion-icon>{{queuePosition.dlName}}</ion-item>-->
+    <!--<ion-item><ion-icon name="time" item-left></ion-icon>{{queuePosition.schaetzZeitpunkt*1000 | date: 'M/d/y HH:mm:ss'}}</ion-item>-->
+  <!--</ion-list>-->
 
   <button ion-button full (click)="leave()">Leave</button>
 </ion-content>
