@@ -4,8 +4,8 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header no-border color="light">
-  <ion-navbar color="light">
+<ion-header no-border>
+  <ion-navbar color="light" no-border>
     <ion-title>Queue Position</ion-title>
   </ion-navbar>
 </ion-header>
@@ -21,11 +21,11 @@
       <p class="serviceName">{{queuePosition.dlName}}</p>
       <p class="shopName">@{{queuePosition.betrieb}}</p>
     </div>
-    <div id="map" class="map"></div>
+    <div #map id="map" class="map"></div>
     <div class="informations">
       <div class="time">
-        <p class="key">Time</p>
-        <p class="value">{{queuePosition.schaetzZeitpunkt*1000 | date: 'HH:mm'}}</p>
+        <p class="key">Date & Time</p>
+        <p class="value">{{queuePosition.schaetzZeitpunkt*1000 | date: 'M/d HH:mm'}}</p>
       </div>
       <div class="employee">
         <p class="key">Employee</p>

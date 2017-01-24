@@ -3,63 +3,79 @@
 .ios, .md, .wp {
   page-my-queue-position {
     ion-content{
-      background-color: lightblue;
-    }
 
-    .ticket {
-      width: 279px;
-      height: 400px;
-      margin: 50px auto;
-      background: url("../../assets/img/ticket.png");
-      background-size: 279px 400px;
-    }
+        .ticket {
+          width: 279px;
+          height: 400px;
+          margin: 50px auto;
+          background: url("../../assets/img/ticket2.jpg");
+          background-size: 279px 400px;
+        }
 
-    .title{
+        .title{
+          padding: 22px 20px 0;
 
-      padding: 20px 20px 0;
+          .serviceName{
+            font-size: 1.7rem;
+            text-transform: uppercase;
+            color: map-get($colors, light-grey);
+            margin-top: 0;
+            margin-bottom: 5px;
+            text-align: center;
+          }
 
-      .serviceName{
-        font-size: 2.2rem;
-        color: #998899;
-        margin-bottom: 10px;
+          .shopName{
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: map-get($colors, dark-grey);
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+          }
+
+        }
+
+        #map {
+          width: 268px;
+          margin-left: 5px;
+          height: 210px;
+          margin-bottom: 0;
+        }
+
+        .informations{
+          width: 279px;
+          padding: 5px 20px;
+          margin: 0;
+
+          .key{
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: map-get($colors, dark-grey);
+          }
+
+          .value{
+            text-align: center;
+          }
+
+          .time {
+            float: left;
+            width: 50%;
+            box-sizing: border-box;
+          }
+
+          .employee{
+            float: right;
+            width: 50%;
+            box-sizing: border-box;
+          }
       }
 
-      .shopName{
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: map-get($colors, dark);
-        margin-bottom: 10px;
-      }
-
-      .shopName:first-letter{
-        color: map-get($colors, light-grey);
-      }
-    }
-
-    .map {
-      width: 279px;
-      height: 200px;
-      background-color: #0d81ff;
-    }
-
-    .informations{
-      width: 279px;
-
-      .key{
-        border-bottom: 1px solid map-get($colors, primary);
+      button{
+        width: 276px;
+        margin: auto;
         text-transform: uppercase;
-      }
-
-      .time {
-        float: left;
-        width: 50%;
-        box-sizing: border-box;
-      }
-
-      .employee{
-        float: right;
-        width: 50%;
-        box-sizing: border-box;
+        font-weight: bold;
       }
     }
   }

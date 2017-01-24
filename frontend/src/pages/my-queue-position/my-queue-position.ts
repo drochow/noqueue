@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ElementRef, ViewChild } from '@angular/core';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
+import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 
 /*
   Generated class for the MyQueuePosition page.
@@ -12,9 +14,11 @@ import { ShopsProvider } from '../../providers/shops-provider';
 @Component({
   selector: 'page-my-queue-position',
   templateUrl: 'my-queue-position.html',
-  providers: [QueuesProvider, ShopsProvider]
+  providers: [QueuesProvider, ShopsProvider, GoogleMapsProvider]
 })
 export class MyQueuePositionPage {
+
+  @ViewChild('map') mapElement: ElementRef;
 
   shop = {};
   queuePosition = {
@@ -26,7 +30,8 @@ export class MyQueuePositionPage {
     schaetzZeitpunkt: 0,
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
+  public maps: GoogleMapsProvider) {}
 
   ionViewDidLoad() {
     this.reloadData();
@@ -44,6 +49,7 @@ export class MyQueuePositionPage {
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
         (position) => {
+          console.log(position);
           this.queuePosition = position;
           if(position.shopID){
             this.shopsProvider.getShop(position.shopID)
@@ -51,6 +57,7 @@ export class MyQueuePositionPage {
                 (shop) => this.shop = shop
               );
           }
+          let mapLoaded = this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
         },
         (error) => {
           console.log(error);
