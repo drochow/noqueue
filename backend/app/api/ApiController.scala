@@ -8,7 +8,7 @@ import play.api.Configuration
 import play.api.mvc._
 import javax.inject.Inject
 
-import models.{ PostgresDB, UnregistrierterAnwender }
+import models.{ DB, PostgresDB, UnregistrierterAnwender }
 import models.db.{ BetriebEntity, DAL, PK }
 
 import scala.concurrent.Future
@@ -27,6 +27,7 @@ import play.api.inject.ApplicationLifecycle
 trait ApiController extends Controller with I18nSupport {
   //  val db = PostgresDB.db;
   //  val dal = PostgresDB.dal;
+  val dbD: DB;
   val applicationLifecycle: ApplicationLifecycle
   val config: Configuration;
   val messagesApi: MessagesApi
@@ -148,10 +149,9 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def ApiActionWithParser[A](parser: BodyParser[A])(action: ApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
-    action(apiRequest) //@todo recover common Exceptions and return code=500 and co.
+    action(apiRequest)
   }
 
-  //@todo is it possible to extract common parts of the next three methods
   /**
    * Secured API action that verifies an Anwender
    *
@@ -166,12 +166,14 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
           action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
         }
       }
     }
   }
+
+  //  private def ActionWithPayload[A](action: ApiRequest[A] => Future[ApiResult])
 
   /**
    * Secured API action that verifies a Leiter
@@ -187,7 +189,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
           action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
         }
       }
@@ -208,7 +210,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle)
+          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
           action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
         }
       }

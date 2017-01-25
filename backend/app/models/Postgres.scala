@@ -11,12 +11,14 @@ trait DB {
   val dal: DAL;
 }
 
-object PostgresDB extends DB {
+@Singleton
+class PostgresDB extends DB {
   val db = Database.forConfig("bonecp")
   val dal = new DAL(PostgresDriver)
 }
 
-object H2DB extends DB {
+@Singleton
+class H2DB extends DB {
   val db = Database.forConfig("h2")
   val dal = new DAL(H2Driver)
 }

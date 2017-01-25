@@ -26,12 +26,12 @@ import scala.concurrent.Future
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Anwender @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {
       case anw: AnwenderEntity => {
-        val uAnwender = new UnregistrierterAnwender(applicationLifecycle)
+        val uAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
         uAnwender.registrieren(anw) flatMap {
           //success
           anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
@@ -43,7 +43,7 @@ class Anwender @Inject() (val applicationLifecycle: ApplicationLifecycle, val as
   def auth = ApiActionWithBody { implicit request =>
     readFromRequest[Credentials] {
       case credentials: Credentials => {
-        val uAnwender = new UnregistrierterAnwender(applicationLifecycle)
+        val uAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
         uAnwender.anmelden(credentials.nutzerName, credentials.password) flatMap {
           case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))))
         }

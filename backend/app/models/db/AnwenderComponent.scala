@@ -97,7 +97,7 @@ trait AnwenderComponent {
     //@todo try to do this with only one Query please
     //sqlu"""UPDATE ANWENDER SET "PASSWORD" = (CASE WHEN TRUE THEN ${BCrypt.hashpw(newPassword, BCrypt.gensalt())} ELSE PASSWORD END)  WHERE ID = $id"""
     //anwenders.filter(anw => anw.id === id && LiteralColumn(BCrypt.checkpw(oldPassword, anw.password))).map(_.password).update(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
-    anwenders.filter(anw => anw.id === id).map(_.password).update(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
+    anwenders.filter(_.id === id).map(_.password).update(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
 
   def getAnwenderWithAdress(id: PK[AnwenderEntity]): DBIO[(AnwenderEntity, Option[AdresseEntity])] =
     (anwenders joinLeft adresses on (_.adresseId === _.id)).filter { case (anwender, adresse) => anwender.id === id }.result.head.nonFusedEquivalentAction

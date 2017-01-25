@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
-class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])], applicationLifecycle: ApplicationLifecycle) extends UnregistrierterAnwender(applicationLifecycle) {
+class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])], applicationLifecycle: ApplicationLifecycle, dbD: DB) extends UnregistrierterAnwender(applicationLifecycle, dbD) {
 
   lazy val anwender: Future[AnwenderEntity] = profil map (_._1)
 
@@ -40,7 +40,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
 
   def leitet(betriebId: PK[BetriebEntity]): Future[Leiter] =
-    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get), applicationLifecycle))
+    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get), applicationLifecycle, dbD))
 
   def profilAnzeigen(): Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
 
