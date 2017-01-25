@@ -5,9 +5,7 @@ import javax.inject.Inject
 
 import api.ApiError
 import api.JsonCombinators._
-import models.H2DB
-import models.PostgresDB
-import models.{ Base, UnregistrierterAnwender }
+import models._
 import models.db.{ AdresseEntity, AnwenderEntity, DienstleistungsTypEntity, PK }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -19,10 +17,10 @@ import play.api.inject.ApplicationLifecycle
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Application @Inject() (val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Application @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def setup = ApiAction { implicit request =>
-    val base = new Base(applicationLifecycle)
+    val base = new Base(applicationLifecycle, dbD)
     base.setupDB flatMap {
       case _ => ok("Setup complete...")
     } recover {
@@ -36,14 +34,14 @@ class Application @Inject() (val applicationLifecycle: ApplicationLifecycle, val
   }
 
   def insertTestDlTs = ApiAction { implicit request =>
-    val unregistrierterAnwender = new UnregistrierterAnwender(applicationLifecycle)
+    val unregistrierterAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
     unregistrierterAnwender.testDltinserts
     ok("inserted")
   }
 
   //please put this method where it belongs, but for now i will leave it here
   def getDienstleistungsTypen(page: Int, size: Int) = ApiActionWithBody { implicit request =>
-    okF((new UnregistrierterAnwender(applicationLifecycle)).getDienstleistungsTypen(page, size))
+    okF((new UnregistrierterAnwender(applicationLifecycle, dbD)).getDienstleistungsTypen(page, size))
   }
 
 }

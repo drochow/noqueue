@@ -49,7 +49,9 @@ trait ApiResult {
   }
 
   /**
+   * Returns based on Status_Code the equivalent play result type
    *
+   * @see Result
    * @param envelope
    * @param lang
    * @return

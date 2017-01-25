@@ -1,7 +1,8 @@
 package modules
 
 import com.google.inject.AbstractModule
-import osm.{ AdressService, OSMAdressService, GoolgeAdressService }
+import models.{ DB, H2DB, PostgresDB }
+import osm.{ AdressService, GoolgeAdressService, OSMAdressService }
 import play.api.inject.ApplicationLifecycle
 import play.api.{ Configuration, Environment }
 
@@ -10,7 +11,14 @@ import play.api.{ Configuration, Environment }
  */
 class NoQueueModule(environment: Environment, configuration: Configuration) extends AbstractModule {
   override def configure() = {
+    bind(classOf[AdressService]).to(classOf[OSMAdressService])
+    bind(classOf[DB]).to(classOf[PostgresDB])
+  }
+}
+
+class NoQueueTestModule(environment: Environment, configuration: Configuration) extends AbstractModule {
+  override def configure() = {
     bind(classOf[AdressService]).to(classOf[GoolgeAdressService])
-    //    bind(classOf[ApplicationLifecycle]).to(classOf[Base])
+    bind(classOf[DB]).to(classOf[H2DB])
   }
 }

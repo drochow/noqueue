@@ -6,6 +6,7 @@ import javax.security.auth.login.CredentialException
 import api.ApiError
 import api.JsonCombinators._
 import api.auth.Credentials
+import models.DB
 import models.db.{ BetriebEntity, MitarbeiterEntity, PK, WarteschlangenPlatzEntity }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -21,7 +22,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Created by anwender on 09.01.2017.
  */
 
-class WarteschlangenPlatz @Inject() (val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class WarteschlangenPlatz @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   val dlUndMitarbeiterReads = (
     (__ \ "dienstleistung").read[Long] and

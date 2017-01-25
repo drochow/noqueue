@@ -13,10 +13,10 @@ import scala.concurrent.Future
  * Created by David on 29.11.16.
  */
 //@todo inject config and choose db
-class Base(val applicationLifecycle: ApplicationLifecycle) {
+class Base(val applicationLifecycle: ApplicationLifecycle, val dbD: DB) {
 
-  val db = PostgresDB.db;
-  val dal = PostgresDB.dal;
+  val db = dbD.db;
+  val dal = dbD.dal;
 
   def exec[T](dbio: DBIO[T]): Future[T] = db.run(dbio)
 

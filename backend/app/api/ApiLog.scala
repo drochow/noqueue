@@ -82,9 +82,10 @@ object ApiLog {
    *
    * @param e
    */
+  //@todo transverse stack trace to stirng  with throwable.getstacktrace
   def error(e: Throwable) = {
     val date = dateTimeFormat.print(DateTime.now())
-    this.logger.error(s"[$date] [exceptionMessage: ${e.getMessage}] [exceptionStack: ${e.getStackTrace.toString}]")
+    this.logger.error(s"[$date] [exceptionMessage: ${e.getMessage}] [exceptionStack: ${e.getStackTraceString}]")
   }
 
 }

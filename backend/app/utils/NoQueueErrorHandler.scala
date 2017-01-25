@@ -25,7 +25,13 @@ class NoQueueErrorHandler @Inject() (
     val messagesApi: MessagesApi
 ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) with I18nSupport {
 
-  // 400 - Bad request. Called when a route is found, but it was not possible to bind the request parameters
+  /**
+   * 400 - Bad request. Called when a route is found, but it was not possible to bind the request parameters
+   *
+   * @param request
+   * @param message
+   * @return
+   */
   override def onBadRequest(request: RequestHeader, message: String) =
     jsError(errorBadRequest(message)(request2Messages(request)), request)
 
@@ -46,9 +52,6 @@ class NoQueueErrorHandler @Inject() (
    *
    * here we also catch common uncatched exceptions and handle and map them
    *
-   * //@todo move hardcoded messages to messages and may create seperate ApiError functions for them
-   *
-   *
    * @param request
    * @param exception
    * @return
@@ -65,6 +68,7 @@ class NoQueueErrorHandler @Inject() (
       case e: CredentialException => jsError(errorBadRequest("Invalid Credentials.")(request2Messages(request)), request)
       /**
        * We are handling SQL exceptions here, espacially uniqueness errors are catched on Persitance level
+       * //@todo  create sepeerated exceptions
        */
       case sqlE: SQLException => {
         //@todo create generic handler to catch and transform unique index sql exceptions
