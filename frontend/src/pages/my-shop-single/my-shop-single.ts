@@ -25,7 +25,13 @@ export class MyShopSinglePage {
   isAnwesend = false;
   shopID: number;
   isLeiter = false;
-  shop = {};
+  shop = {
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+    openingHours: ""
+  };
   managers = [];
   employees = [];
   currentManagerWorking = false;

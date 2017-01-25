@@ -43,12 +43,12 @@ export class ShopsPage {
       .then(
         (location) => {
           this.location = location;
-          if(this.searchTerm.length > 0) this.search();
+          if(this.searchTerm.length > 0) this.search(undefined);
         }
       )
   }
 
-  search(){
+  search(event){
     this.error = false;
     this.errorMessage = "";
 

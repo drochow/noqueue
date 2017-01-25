@@ -58,6 +58,7 @@ export class MyQueuePositionPage {
               );
           }
           let mapLoaded = this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
+          console.log(mapLoaded);
         },
         (error) => {
           console.log(error);

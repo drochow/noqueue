@@ -53,7 +53,7 @@
     "node-pre-gyp": "^0.6.31",
     "run-sequence": "1.1.5",
     "tsify": "0.16.0",
-    "typescript": "^2.0.10",
+    "typescript": "^2.0.9",
     "watchify": "^3.7.0"
   },
   "cordovaPlugins": [

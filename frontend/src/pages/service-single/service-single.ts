@@ -21,7 +21,11 @@ export class ServiceSinglePage {
 
   employees = [];
   selectedEmployee: number = 0;
-  service = {};
+  service = {
+    type: "",
+    description: "",
+    duration: 0
+  };
   shopID: any;
   serviceID: number;
   error = false;

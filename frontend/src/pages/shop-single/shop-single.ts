@@ -24,7 +24,13 @@ export class ShopSinglePage {
   @ViewChild('map') mapElement: ElementRef;
 
   employees = [];
-  shop = {};
+  shop = {
+    name: "",
+    addressString : "",
+    phone: "",
+    email: "",
+    openingHours: ""
+  };
   services = [];
   shopID: any;
   error = false;
