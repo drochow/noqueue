@@ -255,17 +255,18 @@ object JsonCombinators {
       }
     }
 
-  implicit val warteSchlangenPlatzOfAnwenderWrites: Writes[(PK[WarteschlangenPlatzEntity], String, String, PK[DienstleistungEntity], Int, String, Timestamp)] =
-    new Writes[(PK[WarteschlangenPlatzEntity], String, String, PK[DienstleistungEntity], Int, String, Timestamp)] {
-      override def writes(v: (PK[WarteschlangenPlatzEntity], String, String, PK[DienstleistungEntity], Int, String, Timestamp)): JsValue = {
+  implicit val warteSchlangenPlatzOfAnwenderWrites: Writes[(PK[WarteschlangenPlatzEntity], String, String, AdresseEntity, PK[DienstleistungEntity], Int, String, Timestamp)] =
+    new Writes[(PK[WarteschlangenPlatzEntity], String, String, AdresseEntity, PK[DienstleistungEntity], Int, String, Timestamp)] {
+      override def writes(v: (PK[WarteschlangenPlatzEntity], String, String, AdresseEntity, PK[DienstleistungEntity], Int, String, Timestamp)): JsValue = {
         Json.obj(
           "id" -> v._1.value,
           "mitarbeiter" -> v._2,
           "betrieb" -> v._3,
-          "dlId" -> v._4.value,
-          "dlDauer" -> v._5,
-          "dlName" -> v._6,
-          "schaetzZeitpunkt" -> v._7.getTime()
+          "betriebAdresse" -> Json.toJson(v._4),
+          "dlId" -> v._5.value,
+          "dlDauer" -> v._6,
+          "dlName" -> v._7,
+          "schaetzZeitpunkt" -> v._8.getTime()
         )
       }
     }

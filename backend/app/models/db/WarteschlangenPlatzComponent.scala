@@ -150,7 +150,7 @@ trait WarteschlangenPlatzComponent {
     ) //dl id
     ).result.nonFusedEquivalentAction
 
-  def getWarteschlangenPlatzOfAnwender(anwenderId: PK[AnwenderEntity]): DBIO[Option[(PK[WarteschlangenPlatzEntity], PK[MitarbeiterEntity], String, String, PK[DienstleistungEntity], Int, String)]] =
+  def getWarteschlangenPlatzOfAnwender(anwenderId: PK[AnwenderEntity]): DBIO[Option[(PK[WarteschlangenPlatzEntity], PK[MitarbeiterEntity], String, String, PK[AdresseEntity], PK[DienstleistungEntity], Int, String)]] =
     (for {
       res <- warteschlangenplaetze join mitarbeiters on {
         case (wsp: WarteSchlangenPlatzTable, mt: MitarbeiterTable) => wsp.mitarbeiterId === mt.id
@@ -176,6 +176,7 @@ trait WarteschlangenPlatzComponent {
       res._1._1._1._1._1.mitarbeiterId, //id of mitarbeiter
       res._1._1._1._2.nutzerName, //name of mitarbeiter
       res._1._1._2.name, //name of betrieb
+      res._1._1._2.adresseId, //adresse of betrieb
       res._1._2.id, //id of dl
       res._1._2.dauer, //dauer of dl
       res._2.name //name of dlt

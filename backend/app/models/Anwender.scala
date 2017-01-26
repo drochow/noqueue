@@ -169,11 +169,12 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     } yield wsp
   }
 
-  def wspAnzeigen(): Future[(PK[WarteschlangenPlatzEntity], String, String, PK[DienstleistungEntity], Int, String, Timestamp)] = {
+  def wspAnzeigen(): Future[(PK[WarteschlangenPlatzEntity], String, String, AdresseEntity, PK[DienstleistungEntity], Int, String, Timestamp)] = {
     for {
       anw <- anwender
       //wsp of anwender
       wsp <- db.run(dal.getWarteschlangenPlatzOfAnwender(anw.id.get))
+      addr <- db.run(dal.getAdresseById(wsp.map(_._5).get))
       //previous wsps
       prev <- if (wsp.isEmpty) throw new WspDoesNotExistException else db.run(dal.getPrevWarteschlangenplaetze(wsp.get._2, wsp.get._1))
       res <- {
@@ -192,8 +193,8 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
           (x: Int, y: (PK[WarteschlangenPlatzEntity], Option[PK[WarteschlangenPlatzEntity]], Option[Timestamp], Int)) => x + y._4
         ) + lastTime + lastDuration))
       }
-    } yield (wsp.get._1, wsp.get._3, wsp.get._4, wsp.get._5, wsp.get._6, wsp.get._7, res)
-    // wspId,  mitarbeiterName, BetriebName, dlId, dldauer, dlname, schaetzZeitpunkt
+    } yield (wsp.get._1, wsp.get._3, wsp.get._4, addr.get, wsp.get._6, wsp.get._7, wsp.get._8, res)
+    // wspId,  mitarbeiterName, BetriebName, Adresse, dlId, dldauer, dlname, schaetzZeitpunkt
   }
 
   def dienstleistungAnzeigen(betriebId: Long, page: Int, size: Int): Future[Seq[(DienstleistungEntity, DienstleistungsTypEntity)]] =
