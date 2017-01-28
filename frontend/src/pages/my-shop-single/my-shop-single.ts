@@ -22,6 +22,8 @@ import {QueuesProvider} from "../../providers/queues-provider";
 })
 export class MyShopSinglePage {
 
+// declare variables used by the HTML template (ViewModel)
+
   isAnwesend = false;
   shopID: number;
   isLeiter = false;
@@ -44,6 +46,8 @@ export class MyShopSinglePage {
   firstClient = "";
   firstStarted = false;
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
   public auth: AuthenticationProvider, public queuesProvider: QueuesProvider) {
     this.shopID = this.navParams.get('shopID');
@@ -61,6 +65,8 @@ export class MyShopSinglePage {
       // this.shopsProvider.managerWorking(userID, shopID, bool)..
     }
   }
+
+// ViewModel logic (working with the data)
 
   registerError(message){
     this.error = true;
@@ -134,6 +140,8 @@ export class MyShopSinglePage {
   //   this.firstStarted = false;
   //   this.reloadData();
   // }
+
+// ViewController logic (reacting to events)
 
   switchAttendance() {
     this.queuesProvider.changeAttendance(this.shopID, !this.isAnwesend).subscribe(

@@ -21,36 +21,42 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 })
 export class ShopSinglePage {
 
+// declare variables used by the HTML template (ViewModel)
+
   @ViewChild('map') mapElement: ElementRef;
 
-  employees = [];
+  employees: any = [];
   shop = {
-    name: "",
-    addressString : "",
-    phone: "",
-    email: "",
-    openingHours: ""
+    name: string = "",
+    addressString: string = "",
+    phone: string = "",
+    email: string = "",
+    openingHours: string = ""
   };
-  services = [];
+  services: any = [];
   shopID: any;
-  error = false;
-  errorMessage = "";
-  shopActive = true;
+  error: boolean = false;
+  errorMessage: string = "";
+  shopActive: boolean = true;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider) {
     this.shopID = this.navParams.get('shopID');
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  refresh(){
+// ViewModel logic (working with the data)
+
+  refresh() : void{
     this.reloadData();
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -100,7 +106,9 @@ export class ShopSinglePage {
       );
   }
 
-  showService(id){
+// ViewController logic (reacting to events)
+
+  showService(id: number) : void{
     console.log("From shop-single - service id = " + id);
     let service = this.services.filter(s => s.id == id)[0];
     this.navCtrl.push(ServiceSinglePage, {shopID: this.shopID, serviceID: id, service: service});

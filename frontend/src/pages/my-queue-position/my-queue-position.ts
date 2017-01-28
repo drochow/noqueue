@@ -18,26 +18,32 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 })
 export class MyQueuePositionPage {
 
+  // declare variables used by the HTML template (ViewModel)
+
   @ViewChild('map') mapElement: ElementRef;
 
-  shop = {};
+  shop: any = {};
   queuePosition = {
-    id: 0,
-    mitarbeiter: "",
-    betrieb: "",
-    dlId: 0,
-    dlName: "",
-    schaetzZeitpunkt: 0,
+    id: number = 0,
+    mitarbeiter: string = "",
+    betrieb: string = "",
+    dlId: number =0,
+    dlName: string ="",
+    schaetzZeitpunkt: number = 0,
   };
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public maps: GoogleMapsProvider) {}
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  refresh(refresher){
+// ViewModel logic (working with the data)
+
+  refresh(refresher: any) : void{
     this.reloadData();
 
     setTimeout(() => {
@@ -45,7 +51,7 @@ export class MyQueuePositionPage {
     }, 1000);
   }
 
-  reloadData(){
+  reloadData() : void{
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
         (position) => {
@@ -66,7 +72,9 @@ export class MyQueuePositionPage {
       );
   }
 
-  leave(){
+// ViewController logic (reacting to events)
+
+  leave() : void{
     this.queuesProvider.leave()
       .subscribe(
         () => this.navCtrl.popToRoot(),

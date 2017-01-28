@@ -18,6 +18,8 @@ import { ServiceInfoPage } from '../service-info/service-info';
 })
 export class ShopInfoPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   error = false;
   errorMessage = "";
   shop = {
@@ -36,6 +38,8 @@ export class ShopInfoPage {
   // when editing an existing shop:
   shopID: number;
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
   public validator: ValidatorProvider) {
     this.newShop = navParams.get('newShop');
@@ -47,6 +51,8 @@ export class ShopInfoPage {
 
   ionViewDidLoad() {
   }
+
+// ViewModel logic (working with the data)
 
   // call only if editing existing shop
   reloadData(){
@@ -109,6 +115,8 @@ export class ShopInfoPage {
       this.registerError("Street not valid");
     }
   }
+
+// ViewController logic (reacting to events)
 
   save(){
     this.resetError();

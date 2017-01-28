@@ -17,14 +17,14 @@ export class MyQueueSinglePage {
 
   users = [];
   queue = {};
-  open = false;
-  preventJoining = false;
+  open: boolean = false;
+  preventJoining: boolean = false;
   queueID: number;
-  shopName = "";
-  firstClient = "";
-  firstStarted = false;
-  error = false;
-  errorMessage = "";
+  shopName: string = "";
+  firstClient: string = "";
+  firstStarted: boolean = false;
+  error: boolean = false;
+  errorMessage: string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public queuesProvider: QueuesProvider) {
     this.queueID = navParams.get('queueID');
@@ -32,10 +32,10 @@ export class MyQueueSinglePage {
     this.reloadData();
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -56,11 +56,11 @@ export class MyQueueSinglePage {
       );
   }
 
-  start(){
+  start() : void{
     this.firstStarted = true;
   }
 
-  end(){
+  end() : void{
     this.firstStarted = false;
     this.reloadData();
   }

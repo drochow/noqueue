@@ -16,22 +16,25 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class SignupPage {
 
-  // variables for data binding with the template
+// declare variables used by the HTML template (ViewModel)
+
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
-  error = false;
-  errorMessage = "";
+  error: boolean = false;
+  errorMessage: string = "";
   validationRules: any;
   isValid = {
-    username: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-    passwordsMatching: true
+    username: boolean = true,
+    email: boolean = true,
+    password: boolean = true,
+    confirmPassword: boolean = true,
+    passwordsMatching: boolean = true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
     // later - read these from the validator:
@@ -43,35 +46,37 @@ export class SignupPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  checkUsername(){
+// ViewModel logic (working with the data)
+
+  checkUsername() : void{
     this.isValid.username = this.validator.username(this.username);
     this.checkAllFields();
   }
 
-  checkEmail(){
+  checkEmail() : void{
     this.isValid.email = this.validator.email(this.email);
     this.checkAllFields();
   }
 
-  checkPassword(){
+  checkPassword() : void{
     this.isValid.password = this.validator.password(this.password);
     this.checkPasswordsMatching();
   }
 
-  checkConfirmPassword(){
+  checkConfirmPassword() : void{
     this.isValid.confirmPassword = this.validator.password(this.confirmPassword);
     this.checkPasswordsMatching();
   }
 
-  checkPasswordsMatching(){
+  checkPasswordsMatching() : void{
     this.isValid.passwordsMatching = this.validator.passwordsMatching(this.password, this.confirmPassword);
     this.checkAllFields();
   }
 
-  checkAllFields(){
+  checkAllFields() : void{
     var valid = true;
     if(this.validator.empty(this.username, this.email, this.password, this.confirmPassword)){
       valid = false;
@@ -83,7 +88,7 @@ export class SignupPage {
     this.allFieldsValid = valid;
   }
 
-  checkInput(){
+  checkInput() : void{
     this.checkUsername();
     this.checkEmail();
     this.checkPassword();
@@ -91,7 +96,9 @@ export class SignupPage {
     this.checkPasswordsMatching();
   }
 
-  signup(){
+// ViewController logic (reacting to events)
+
+  signup() : void{
     this.error = false;
     this.errorMessage = "";
 

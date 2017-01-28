@@ -17,8 +17,10 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class EditProfilePage {
 
-  error = false;
-  errorMessage = "";
+// declare variables used by the HTML template (ViewModel):
+
+  error: boolean = false;
+  errorMessage: string = "";
   username: string;
   email: string;
   street: string;
@@ -27,16 +29,17 @@ export class EditProfilePage {
   city: string;
   validationRules: any;
   isValid = {
-    username: true,
-    email: true,
-    street: true,
-    streetNr: true,
-    zip: true,
-    city: true,
-    address: true
+    username: boolean = true,
+    email: boolean = true,
+    street: boolean = true,
+    streetNr: boolean = true,
+    zip: boolean = true,
+    city: boolean = true,
+    address: boolean = true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
 
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
   private validator: ValidatorProvider) {
@@ -51,46 +54,48 @@ export class EditProfilePage {
     this.fetchData();
   }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() : void{
     this.fetchData();
   }
 
-  checkUsername(){
+// ViewModel logic (working with the data)
+
+  checkUsername() : void{
     this.isValid.username = this.validator.username(this.username);
     this.checkAllFields();
   }
 
-  checkEmail(){
+  checkEmail() : void{
     this.isValid.email = this.validator.email(this.email);
     this.checkAllFields();
   }
 
-  checkStreet(){
+  checkStreet() : void{
     this.isValid.street = this.validator.street(this.street);
     this.checkAddress();
     this.checkAllFields();
   }
 
-  checkStreetNr(){
+  checkStreetNr() : void{
     this.isValid.streetNr = this.validator.streetNumber(this.streetNr);
     this.checkAddress();
     this.checkAllFields();
   }
 
-  checkZip(){
+  checkZip() : void{
     this.isValid.zip = this.validator.zip(this.zip);
     console.log("Testing the validator - zip 12345a, 123456: " + this.validator.zip("12345a") + " " + this.validator.zip("123456"));
     this.checkAddress();
     this.checkAllFields();
   }
 
-  checkCity(){
+  checkCity() : void{
     this.isValid.city = this.validator.city(this.city);
     this.checkAddress();
     this.checkAllFields();
   }
 
-  checkAddress(){
+  checkAddress() : void{
     var allEmpty = this.validator.allEmpty(this.street, this.streetNr, this.zip, this.city);
     if(allEmpty){
       this.isValid.address = true;
@@ -103,7 +108,7 @@ export class EditProfilePage {
     this.isValid.address = this.isValid.street && this.isValid.streetNr && this.isValid.zip && this.isValid.city;
   }
 
-  checkAllFields(){
+  checkAllFields() : void{
     var valid = true;
     for(let attr in this.isValid){
       if(this.isValid[attr] == false) valid = false;
@@ -111,7 +116,7 @@ export class EditProfilePage {
     this.allFieldsValid = valid;
   }
 
-  checkInput(){
+  checkInput() : void{
     this.checkUsername();
     this.checkEmail();
     this.checkStreet();
@@ -120,7 +125,7 @@ export class EditProfilePage {
     this.checkCity();
   }
 
-  fetchData(){
+  fetchData() : void{
     this.error = false;
     this.errorMessage = "";
     this.users.getMe()
@@ -140,7 +145,7 @@ export class EditProfilePage {
       )
   }
 
-  changeData(){
+  changeData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -172,7 +177,7 @@ export class EditProfilePage {
       )
   }
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
