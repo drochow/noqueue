@@ -28,7 +28,6 @@ trait ApiController extends Controller with I18nSupport {
   //  val db = PostgresDB.db;
   //  val dal = PostgresDB.dal;
   val dbD: DB;
-  val applicationLifecycle: ApplicationLifecycle
   val config: Configuration;
   val messagesApi: MessagesApi
   implicit protected val SECRET: JwtSecret = JwtSecret(config.getString("jwt.token.secret").get);

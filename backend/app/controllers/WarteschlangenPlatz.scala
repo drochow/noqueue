@@ -22,7 +22,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Created by anwender on 09.01.2017.
  */
 
-class WarteschlangenPlatz @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class WarteschlangenPlatz @Inject() (val dbD: DB, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   val dlUndMitarbeiterReads = (
     (__ \ "dienstleistung").read[Long] and

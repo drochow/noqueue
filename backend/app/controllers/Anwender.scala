@@ -26,7 +26,7 @@ import scala.concurrent.Future
 /**
  * Created by anwender on 06.11.2016.
  */
-class Anwender @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Anwender @Inject() (val dbD: DB, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = ApiActionWithBody { implicit request =>
     readFromRequest[AnwenderEntity] {

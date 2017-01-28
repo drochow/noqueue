@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by anwender on 06.11.2016.
  */
-class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = SecuredApiActionWithBody { implicit request =>
 

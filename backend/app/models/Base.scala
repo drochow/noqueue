@@ -1,9 +1,7 @@
 package models
 
-import api.ApiError
 import slick.dbio.DBIO
 
-import play.api.inject.ApplicationLifecycle
 import javax.inject.Inject
 
 import scala.concurrent.ExecutionContext.Implicits.global

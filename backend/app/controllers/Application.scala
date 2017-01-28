@@ -17,7 +17,7 @@ import play.api.inject.ApplicationLifecycle
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Application @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Application @Inject() (val dbD: DB, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def setup = ApiAction { implicit request =>
     val base = new Base(dbD)
