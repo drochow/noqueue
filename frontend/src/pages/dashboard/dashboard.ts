@@ -35,13 +35,13 @@ export class DashboardPage {
   isLoggedIn: boolean = false;
   managerCount: number = 0;
   employeeCount: number = 0;
-  myQueuePosition = {};
+  myQueuePosition: any = {};
   isInQueue: boolean = false;
-  shopsNearby = [];
+  shopsNearby: any = [];
   hasShopsNearby: boolean = false;
-  myShops = [];
+  myShops: any = [];
   hasShops: boolean = false;
-  myQueues = [];
+  myQueues: any = [];
   hasQueues: boolean = false;
   searchTerm: string = "";
   radius: number = 0;

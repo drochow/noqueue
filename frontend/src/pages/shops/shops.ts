@@ -23,7 +23,7 @@ export class ShopsPage {
 
   searchTerm: string = "";
   radius: number = 0;
-  shops = [];
+  shops: any = [];
   shouldShowShops: boolean = true;
   error: boolean = false;
   errorMessage: string = "";
@@ -53,7 +53,7 @@ export class ShopsPage {
 
 // ViewController logic (reacting to events)
 
-  search(event) : void{
+  search(event: any) : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -115,7 +115,7 @@ export class ShopsPage {
     });
   }
 
-  infiniteScroll(scroll) : void{
+  infiniteScroll(scroll: any) : void{
     console.log("to infinity and beyond");
     this.loadShops()
       .then(

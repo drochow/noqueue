@@ -25,15 +25,15 @@ export class ShopSinglePage {
 
   @ViewChild('map') mapElement: ElementRef;
 
-  employees = [];
+  employees: any = [];
   shop = {
-    name: "",
-    addressString : "",
-    phone: "",
-    email: "",
-    openingHours: ""
+    name: string = "",
+    addressString: string = "",
+    phone: string = "",
+    email: string = "",
+    openingHours: string = ""
   };
-  services = [];
+  services: any = [];
   shopID: any;
   error: boolean = false;
   errorMessage: string = "";

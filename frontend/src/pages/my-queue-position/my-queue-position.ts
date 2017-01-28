@@ -18,18 +18,18 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 })
 export class MyQueuePositionPage {
 
+  // declare variables used by the HTML template (ViewModel)
+
   @ViewChild('map') mapElement: ElementRef;
 
-// declare variables used by the HTML template (ViewModel)
-
-  shop = {};
+  shop: any = {};
   queuePosition = {
-    id: 0,
-    mitarbeiter: "",
-    betrieb: "",
-    dlId: 0,
-    dlName: "",
-    schaetzZeitpunkt: 0,
+    id: number = 0,
+    mitarbeiter: string = "",
+    betrieb: string = "",
+    dlId: number =0,
+    dlName: string ="",
+    schaetzZeitpunkt: number = 0,
   };
 
 // constructor and lifecycle-events (chronological order)
@@ -43,7 +43,7 @@ export class MyQueuePositionPage {
 
 // ViewModel logic (working with the data)
 
-  refresh(refresher) : void{
+  refresh(refresher: any) : void{
     this.reloadData();
 
     setTimeout(() => {

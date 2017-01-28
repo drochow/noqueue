@@ -44,7 +44,7 @@ export class SettingsPage {
 
 // ViewController logic (reacting to events)
 
-  themeSelection(event) : void{
+  themeSelection(event : any) : void{
     this.userConfig.selectTheme(this.theme);
   }
 

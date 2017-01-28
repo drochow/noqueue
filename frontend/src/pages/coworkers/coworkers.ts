@@ -22,11 +22,11 @@ export class CoworkersPage {
   error: boolean = false;
   errorMessage: string  = "";
   searchName: string = "";
-  users = [];
+  users: any = [];
   newShop: boolean = false;
   shopID: number = 0;
-  managers = [];
-  employees = [];
+  managers: any = [];
+  employees: any = [];
 
 
 // constructor and lifecycle-events
@@ -53,7 +53,7 @@ export class CoworkersPage {
     this.errorMessage = message;
   }
 
-  search(event) : void{
+  search(event: any) : void{
     if(!this.validator.searchName(this.searchName)){
       this.registerError("Search name not valid");
       this.users = [];
@@ -98,7 +98,7 @@ export class CoworkersPage {
 
 // ViewController logic (reacting to events)
 
-  hireEmployee(slidingItem, id: number) : void{
+  hireEmployee(slidingItem: any, id: number) : void{
     slidingItem.close();
     this.shopsProvider.hireEmployee(id, this.shopID, true)
       .subscribe(
@@ -117,7 +117,7 @@ export class CoworkersPage {
       );
   }
 
-  hireManager(slidingItem, id: number) : void{
+  hireManager(slidingItem: any, id: number) : void{
     slidingItem.close();
     this.shopsProvider.hireManager(id, this.shopID, false)
       .subscribe(
@@ -132,7 +132,7 @@ export class CoworkersPage {
       )
   }
 
-  fireEmployee(slidingItem, id: number) : void{
+  fireEmployee(slidingItem: any, id: number) : void{
     slidingItem.close();
     this.shopsProvider.fireEmployee(id, this.shopID)
       .subscribe(
@@ -151,7 +151,7 @@ export class CoworkersPage {
       );
   }
 
-  fireManager(slidingItem, id: number) :void{
+  fireManager(slidingItem: any, id: number) :void{
     slidingItem.close();
     this.shopsProvider.fireManager(id, this.shopID)
       .subscribe(
