@@ -34,7 +34,7 @@ export class QueuesProvider {
     return this.httpProvider.get(route);
   }
 
-  changeAttendance(shopID: number, isThere: boolean) {
+  changeAttendance(shopID: number, isThere: boolean) : Observable<any>{
     return this.httpProvider.put(this.httpProvider.ROUTES.shops + "/" + shopID +"/mitarbeiter", { anwesend: isThere});
   }
 
@@ -46,11 +46,11 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.users + "/wsp");
   }
 
-  startWorkOn(shopId: number, wspId: number) {
+  startWorkOn(shopId: number, wspId: number) : Observable<any>{
     return this.httpProvider.put(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId, {})
   }
 
-  finishWorkOn(shopId: number, wspId: number) {
+  finishWorkOn(shopId: number, wspId: number) : Observable<any>{
     return this.httpProvider.delete(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId)
   }
 

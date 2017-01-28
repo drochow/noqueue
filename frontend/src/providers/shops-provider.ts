@@ -121,7 +121,7 @@ export class ShopsProvider {
     });
   }
 
-  private mapToExpectedJson(shop: any){
+  private mapToExpectedJson(shop: any) {
     return {
       name: shop.name,
       adresse: {
