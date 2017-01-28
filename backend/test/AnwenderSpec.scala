@@ -23,11 +23,11 @@ class AnwenderSpec extends AsyncFlatSpec{
   val uA = new UnregistrierterAnwender(al, db);
   val anwE: AnwenderEntity = AnwenderEntity("bang@example.com", "password1234", "bangNutzer")
   val addrE: AdresseEntity = AdresseEntity("", "", "", "", None, None)
-  val anw: Future[Anwender] = uA.registrieren(anwE)
-
-  "An Anwender" should "return his profile" in {
-    anw.map(_.profilAnzeigen() should === (anwE, None))
-  }
-  an [NoSuchElementException] should be thrownBy {
-  }
+//  val anw: Future[Anwender] = uA.registrieren(anwE)
+//
+//  "An Anwender" should "return his profile" in {
+//    anw.map(_.profilAnzeigen() should === (anwE, None))
+//  }
+//  an [NoSuchElementException] should be thrownBy {
+//  }
 }

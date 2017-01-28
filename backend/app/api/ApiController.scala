@@ -166,7 +166,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
+          val uAnw = new UnregistrierterAnwender(dbD)
           action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
         }
       }
@@ -189,7 +189,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
+          val uAnw = new UnregistrierterAnwender(dbD)
           action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
         }
       }
@@ -210,7 +210,7 @@ trait ApiController extends Controller with I18nSupport {
       case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
         case None => errorTokenUnknown
         case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(applicationLifecycle, dbD)
+          val uAnw = new UnregistrierterAnwender(dbD)
           action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
         }
       }
