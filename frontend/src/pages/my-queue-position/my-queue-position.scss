@@ -1,11 +1,13 @@
 @import "../../theme/variables.scss";
+$ticket-width: 279px;
+
 
 .ios, .md, .wp {
   page-my-queue-position {
     ion-content{
 
         .ticket {
-          width: 279px;
+          width: $ticket-width;
           height: 400px;
           margin: 50px auto;
           background: url("../../assets/img/ticket2.jpg");

@@ -18,6 +18,7 @@ $searchbar-wp-background-color: white;
 $searchbar-ios-input-height: 24px;
 $searchbar-md-input-height: 24px;
 $searchbar-wp-input-height: 24px;
+$badge-font-size: 1.0rem;
 
 
 $font-sizes: (
@@ -39,13 +40,14 @@ $font-sizes: (
 
 $colors: (
   primary: #3202a8,
-  success:  #3202a8,
+  success: #04a84e,
   danger: #f54263,
   light: #ffffff,
   dark: #000,
   dark-grey: #383838,
   light-grey: #a1a1a1,
-  lighter-text: #454545
+  lighter-text: #454545,
+  divider: #dddddd
 );
 
 

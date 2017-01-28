@@ -25,7 +25,7 @@ export class AuthenticationProvider {
     }
   }
 
-  asyncSetup() : void{
+  asyncSetup(): Promise<any>{
     let auth = this;
     return new Promise(function(resolve, reject){
       auth.storage.keys().then(

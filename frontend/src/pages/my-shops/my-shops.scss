@@ -1,3 +1,59 @@
-page-my-shops {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-my-shops {
+    ion-content{
+      ion-list{
+        width: 85%;
+        margin: 20px auto;
+
+        .item{
+          padding: 0 0 5px 0;
+          border-bottom: 1px solid map-get($colors, divider);
+
+          .first-line{
+            margin-top: 0;
+            background-color: #2badad;
+
+            .name{
+              margin: 0 0 5px 0;
+              box-sizing: border-box;
+              width: 75%;
+              float: left;
+              font-size: map-get($font-sizes, title-2);
+            }
+
+            .position{
+              padding: 0;
+              box-sizing: border-box;
+              width: 25%;
+              float: right;
+
+              p{
+                margin-top: 5px;
+                margin-bottom: 0;
+                text-align: right;
+                font-size: map-get($font-sizes, footnote);
+                font-weight: bold;
+                text-transform: uppercase;
+                color: map-get($colors, dark-grey);
+              }
+
+              .employee{
+                color: map-get($colors, success);
+              }
+            }
+          }
+
+          .address, .opening-hours{
+            margin: 5px 0;
+            clear: both;
+            font-size: map-get($font-sizes, subhead);
+          }
+        }
+      }
+    }
+  }
 }
+
+
