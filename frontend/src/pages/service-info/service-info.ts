@@ -20,11 +20,11 @@ import { CoworkersPage } from '../coworkers/coworkers';
 })
 export class ServiceInfoPage {
 
-  error = false;
-  errorMessage = "";
-  newService = false;
+  error: boolean = false;
+  errorMessage: string = "";
+  newService: boolean  = false;
   serviceID: number;
-  newShop = false;
+  newShop: boolean = false;
   shopID: number;
   service = {
     type: "",
@@ -32,8 +32,8 @@ export class ServiceInfoPage {
     description: ""
   };
   types = [];
-  customType = false;
-  selectedType = "";
+  customType: boolean = false;
+  selectedType: string  = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
   public alertCtrl: AlertController) {
@@ -53,10 +53,10 @@ export class ServiceInfoPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() : void{
     this.servicesProvider.getAllServiceTypes()
       .subscribe(
         (data) => {
@@ -70,18 +70,18 @@ export class ServiceInfoPage {
       )
   }
 
-  resetError(){
+  resetError() : void{
     this.error = false;
     this.errorMessage = "";
   }
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
 
   // only if editing existing service
-  reloadData(){
+  reloadData() : void{
      this.servicesProvider.getService(this.serviceID, this.shopID)
        .subscribe(
          (service) => {
@@ -95,7 +95,7 @@ export class ServiceInfoPage {
        );
   }
 
-  checkInput(){
+  checkInput() : void{
     if(!this.validator.serviceDescription(this.service.description)){
       this.registerError("Description not valid");
     }
@@ -104,7 +104,7 @@ export class ServiceInfoPage {
     }
   }
 
-  save(){
+  save() : void{
     this.service.type = this.selectedType;
 
     this.resetError();
@@ -119,7 +119,7 @@ export class ServiceInfoPage {
     }
   }
 
-  proceed(){
+  proceed() : void{
     this.service.type = this.selectedType;
 
     this.resetError();
@@ -131,7 +131,7 @@ export class ServiceInfoPage {
     this.createService();
   }
 
-  editService(){
+  editService() : void{
     this.servicesProvider.editService(this.shopID, this.serviceID, this.service)
       .subscribe(
         () => this.navCtrl.pop(),
@@ -143,7 +143,7 @@ export class ServiceInfoPage {
       );
   }
 
-  createService(){
+  createService() : void{
     this.servicesProvider.createService(this.shopID, this.service)
       .subscribe(
         (id) => {
@@ -162,7 +162,7 @@ export class ServiceInfoPage {
       );
   }
 
-  addCustomType(){
+  addCustomType() : void{
     let confirm = this.alertCtrl.create({
       title: 'Add custom service type',
       message: 'Please type in your custom type:',

@@ -20,14 +20,14 @@ import { LocationsProvider } from '../../providers/locations-provider';
 export class ShopsPage {
 
   // variables used for binding with template
-  searchTerm = "";
-  radius = 0;
+  searchTerm: string = "";
+  radius: number = 0;
   shops = [];
-  shouldShowShops = true;
-  error = false;
-  errorMessage = "";
-  allShopsFetched = false;
-  noShops = false;
+  shouldShowShops: boolean = true;
+  error: boolean = false;
+  errorMessage: string = "";
+  allShopsFetched: boolean = false;
+  noShops: boolean = false;
   location: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
@@ -38,7 +38,7 @@ export class ShopsPage {
     }
   }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() : void{
     this.locations.getUserLocation()
       .then(
         (location) => {
@@ -48,7 +48,7 @@ export class ShopsPage {
       )
   }
 
-  search(event){
+  search(event) : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -73,7 +73,7 @@ export class ShopsPage {
       )
   }
 
-  loadShops(){
+  loadShops() : void{
     this.shouldShowShops = true;
     this.noShops = false;
     let size = 10;
@@ -110,7 +110,7 @@ export class ShopsPage {
     });
   }
 
-  infiniteScroll(scroll){
+  infiniteScroll(scroll) : void{
     console.log("to infinity and beyond");
     this.loadShops()
       .then(
@@ -126,7 +126,7 @@ export class ShopsPage {
       )
   }
 
-  showShopSinglePage(id){
+  showShopSinglePage(id: number) : void{
     console.log("shop id: ", id);
     this.navCtrl.push(ShopSinglePage, {shopID: id});
   }

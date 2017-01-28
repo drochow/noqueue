@@ -33,11 +33,11 @@ export class MyQueuePositionPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public maps: GoogleMapsProvider) {}
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  refresh(refresher){
+  refresh(refresher) : void{
     this.reloadData();
 
     setTimeout(() => {
@@ -45,7 +45,7 @@ export class MyQueuePositionPage {
     }, 1000);
   }
 
-  reloadData(){
+  reloadData() : void{
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
         (position) => {
@@ -66,7 +66,7 @@ export class MyQueuePositionPage {
       );
   }
 
-  leave(){
+  leave() : void{
     this.queuesProvider.leave()
       .subscribe(
         () => this.navCtrl.popToRoot(),

@@ -21,8 +21,8 @@ export class SignupPage {
   email: string;
   password: string;
   confirmPassword: string;
-  error = false;
-  errorMessage = "";
+  error: boolean = false;
+  errorMessage: string = "";
   validationRules: any;
   isValid = {
     username: true,
@@ -31,7 +31,7 @@ export class SignupPage {
     confirmPassword: true,
     passwordsMatching: true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
     // later - read these from the validator:
@@ -43,35 +43,35 @@ export class SignupPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  checkUsername(){
+  checkUsername() : void{
     this.isValid.username = this.validator.username(this.username);
     this.checkAllFields();
   }
 
-  checkEmail(){
+  checkEmail() : void{
     this.isValid.email = this.validator.email(this.email);
     this.checkAllFields();
   }
 
-  checkPassword(){
+  checkPassword() : void{
     this.isValid.password = this.validator.password(this.password);
     this.checkPasswordsMatching();
   }
 
-  checkConfirmPassword(){
+  checkConfirmPassword() : void{
     this.isValid.confirmPassword = this.validator.password(this.confirmPassword);
     this.checkPasswordsMatching();
   }
 
-  checkPasswordsMatching(){
+  checkPasswordsMatching() : void{
     this.isValid.passwordsMatching = this.validator.passwordsMatching(this.password, this.confirmPassword);
     this.checkAllFields();
   }
 
-  checkAllFields(){
+  checkAllFields() : void{
     var valid = true;
     if(this.validator.empty(this.username, this.email, this.password, this.confirmPassword)){
       valid = false;
@@ -83,7 +83,7 @@ export class SignupPage {
     this.allFieldsValid = valid;
   }
 
-  checkInput(){
+  checkInput() : void{
     this.checkUsername();
     this.checkEmail();
     this.checkPassword();
@@ -91,7 +91,7 @@ export class SignupPage {
     this.checkPasswordsMatching();
   }
 
-  signup(){
+  signup() : void{
     this.error = false;
     this.errorMessage = "";
 

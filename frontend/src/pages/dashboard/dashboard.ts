@@ -33,25 +33,25 @@ import { LocationsProvider } from '../../providers/locations-provider';
 export class DashboardPage {
 
   // variables for data-binding with the template
-  isLoggedIn = false;
-  managerCount = 0;
-  employeeCount = 0;
+  isLoggedIn: boolean = false;
+  managerCount: number = 0;
+  employeeCount: number = 0;
   myQueuePosition = {};
-  isInQueue = false;
+  isInQueue: boolean = false;
   shopsNearby = [];
-  hasShopsNearby = false;
+  hasShopsNearby: boolean = false;
   myShops = [];
-  hasShops = false;
+  hasShops: boolean = false;
   myQueues = [];
-  hasQueues = false;
-  searchTerm = "";
-  radius = 0;
+  hasQueues: boolean = false;
+  searchTerm: string = "";
+  radius: number = 0;
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
   public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
   }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() : void{
     let loading = this.loadingCtrl.create({
       content: 'Fetching data ...'
     });
@@ -74,7 +74,7 @@ export class DashboardPage {
     }
   }
 
-  refresh(refresher){
+  refresh(refresher) : void{
     this.reloadData();
     if(refresher)
       setTimeout(() => {
@@ -82,7 +82,7 @@ export class DashboardPage {
       }, 1000);
   }
 
-  resetData(){
+  resetData() : void{
     this.isLoggedIn = false;
     this.myQueuePosition = {};
     this.isInQueue = false;
@@ -94,7 +94,7 @@ export class DashboardPage {
     this.hasQueues = false;
   }
 
-  reloadData(){
+  reloadData() : void{
     console.log("token: ", this.auth.getToken());
     console.log("Internet connection: ", this.connectivity.isOnline());
 
@@ -154,53 +154,53 @@ export class DashboardPage {
     }
   }
 
-  searchShops(){
+  searchShops() : void{
     this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
 
-  showMyQueuePositionPage(){
+  showMyQueuePositionPage() : void{
     this.navCtrl.push(MyQueuePositionPage);
   }
 
-  showSettingsPage(){
+  showSettingsPage() : void{
     this.navCtrl.push(SettingsPage);
   }
 
-  showLoginPage(){
+  showLoginPage() : void{
     this.navCtrl.push(LoginPage);
   }
 
-  showSignupPage(){
+  showSignupPage() : void{
     console.log("Why are you not working...");
     this.navCtrl.push(SignupPage);
   }
 
-  showShopsPage(){
+  showShopsPage() : void{
     this.navCtrl.push(ShopsPage);
   }
 
-  showShopSinglePage(shopID){
+  showShopSinglePage(shopID: number) : void{
     this.navCtrl.push(ShopSinglePage, {shopID: shopID});
   }
 
-  showMyShopsPage(){
+  showMyShopsPage() : void{
     this.navCtrl.push(MyShopsPage);
   }
 
-  showMyQueuesPage(){
+  showMyQueuesPage() : void{
     this.navCtrl.push(MyQueuesPage);
   }
 
-  showMyQueueSinglePage(queueID, shopName){
+  showMyQueueSinglePage(queueID: number, shopName: string) : void{
     this.navCtrl.push(MyQueueSinglePage, {queueID: queueID, shopName: shopName});
   }
 
-  showCreateShopPage(){
+  showCreateShopPage() : void{
     this.navCtrl.push(ShopInfoPage, {newShop: true});
   }
 
 
-  leave(){
+  leave() : void{
     this.queues.leave()
       .subscribe(
         () => this.refresh(undefined),

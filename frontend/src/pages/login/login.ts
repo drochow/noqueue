@@ -21,18 +21,18 @@ import { SignupPage } from '../../pages/signup/signup';
 export class LoginPage {
 
   // variables for data binding with the template
-  username = "";
-  password = "";
-  error = false;
-  errorMessage = "";
+  username: string = "";
+  password: string = "";
+  error: boolean = false;
+  errorMessage: string = "";
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
   private modalCtrl: ModalController, private alertCtrl: AlertController) {}
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  login(){
+  login() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -54,7 +54,7 @@ export class LoginPage {
       )
   }
 
-  skip(){
+  skip() : void{
     let confirm = this.alertCtrl.create({
       title: 'Skip Log In?',
       message: 'Users that are not logged in can not reserve a place in a queue.',
@@ -74,7 +74,7 @@ export class LoginPage {
     confirm.present();
   }
 
-  showSignupPage(){
+  showSignupPage() : void{
     this.navCtrl.push(SignupPage);
   }
 

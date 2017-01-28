@@ -28,9 +28,9 @@ export class ServiceSinglePage {
   };
   shopID: any;
   serviceID: number;
-  error = false;
-  errorMessage = "";
-  queueActive = false;
+  error: boolean = false;
+  errorMessage: string = "";
+  queueActive: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public servicesProvider: ServicesProvider) {
@@ -44,11 +44,11 @@ export class ServiceSinglePage {
     };
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  refresh(refresher){
+  refresh(refresher) : void{
     this.reloadData();
 
     // @TODO - return a promise in reloadData() and complete the refresher when resolved
@@ -57,7 +57,7 @@ export class ServiceSinglePage {
     }, 1000);
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -100,12 +100,12 @@ export class ServiceSinglePage {
   }
 
   // @TODO
-  employeeSelection(){
+  employeeSelection() : void{
     console.log(this.selectedEmployee);
     // get the next available time slot for this employee
   }
 
-  lineUp(){
+  lineUp() : void{
     console.log("data at this point: ", this.shopID, this.serviceID, this.selectedEmployee);
     this.queuesProvider.lineup(this.serviceID, this.selectedEmployee)
       .subscribe(

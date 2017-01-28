@@ -19,17 +19,17 @@ import { MyQueueSinglePage } from '../my-queue-single/my-queue-single';
 export class MyQueuesPage {
 
   queues = [];
-  error = false;
-  errorMessage = "";
+  error: boolean = false;
+  errorMessage: string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public queuesProvider: QueuesProvider) {
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -44,7 +44,7 @@ export class MyQueuesPage {
     //   );
   }
 
-  showQueue(id, shopName){
+  showQueue(id: number, shopName: string) : void{
     this.navCtrl.push(MyQueueSinglePage, {queueID: id, shopName: shopName});
   }
 

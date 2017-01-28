@@ -17,12 +17,12 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class CoworkersPage {
 
-  error = false;
-  errorMessage = "";
-  searchName = "";
+  error: boolean = false;
+  errorMessage: string  = "";
+  searchName: string = "";
   users = [];
-  newShop = false;
-  shopID = 0;
+  newShop: boolean = false;
+  shopID: number = 0;
   managers = [];
   employees = [];
 
@@ -32,20 +32,20 @@ export class CoworkersPage {
     this.newShop = navParams.get('newShop');
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
-  resetError(){
+  resetError() : void{
     this.error = false;
     this.errorMessage = "";
   }
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
 
-  search(event){
+  search(event) {
     if(!this.validator.searchName(this.searchName)){
       this.registerError("Search name not valid");
       this.users = [];
@@ -61,7 +61,7 @@ export class CoworkersPage {
       )
   }
 
-  reloadCoworkers(){
+  reloadCoworkers() : void{
     this.shopsProvider.getEmployees(this.shopID)
       .subscribe(
         (employees) => {
@@ -87,7 +87,7 @@ export class CoworkersPage {
       )
   }
 
-  hireEmployee(slidingItem, id){
+  hireEmployee(slidingItem, id: number) : void{
     slidingItem.close();
     this.shopsProvider.hireEmployee(id, this.shopID, true)
       .subscribe(
@@ -106,7 +106,7 @@ export class CoworkersPage {
       );
   }
 
-  hireManager(slidingItem, id){
+  hireManager(slidingItem, id: number) : void{
     slidingItem.close();
     this.shopsProvider.hireManager(id, this.shopID, false)
       .subscribe(
@@ -121,7 +121,7 @@ export class CoworkersPage {
       )
   }
 
-  fireEmployee(slidingItem, id){
+  fireEmployee(slidingItem, id: number) : void{
     slidingItem.close();
     this.shopsProvider.fireEmployee(id, this.shopID)
       .subscribe(
@@ -140,7 +140,7 @@ export class CoworkersPage {
       );
   }
 
-  fireManager(slidingItem, id){
+  fireManager(slidingItem, id: number) :void{
     slidingItem.close();
     this.shopsProvider.fireManager(id, this.shopID)
       .subscribe(
@@ -159,7 +159,7 @@ export class CoworkersPage {
       );
   }
 
-  save(){
+  save() : void{
     if(!this.newShop){
       this.navCtrl.pop();
     } else {

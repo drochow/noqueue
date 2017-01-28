@@ -19,10 +19,10 @@ export class EditPasswordPage {
   oldPassword: string;
   newPassword: string;
   confirmPassword: string;
-  error = false;
-  errorMessage = "";
-  email = "";
-  username = "";
+  error: boolean = false;
+  errorMessage: string = "";
+  email: string = "";
+  username: string = "";
   validationRules: any;
   isValid = {
     oldPassword: true,
@@ -31,7 +31,7 @@ export class EditPasswordPage {
     passwordsMatching: true,
     differentPasswords: true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
 
   constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
     this.validationRules = {
@@ -42,7 +42,7 @@ export class EditPasswordPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.resetError();
 
     this.users.getMe()
@@ -59,36 +59,36 @@ export class EditPasswordPage {
       )
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() : void{
   }
 
-  checkOldPassword(){
+  checkOldPassword() : void{
     this.isValid.oldPassword = !this.validator.empty(this.oldPassword);
     this.checkDifferentPasswords();
     this.checkAllFields();
   }
 
-  checkNewPassword(){
+  checkNewPassword() : void{
     this.isValid.newPassword = this.validator.password(this.newPassword);
     this.checkDifferentPasswords();
     this.checkPasswordsMatching();
   }
 
-  checkConfirmPassword(){
+  checkConfirmPassword() : void{
     this.isValid.confirmPassword = this.validator.password(this.confirmPassword);
     this.checkPasswordsMatching();
   }
 
-  checkPasswordsMatching(){
+  checkPasswordsMatching() : void{
     this.isValid.passwordsMatching = this.validator.passwordsMatching(this.newPassword, this.confirmPassword);
     this.checkAllFields();
   }
 
-  checkDifferentPasswords(){
+  checkDifferentPasswords() : void{
     this.isValid.differentPasswords = !this.validator.passwordsMatching(this.oldPassword, this.newPassword);
   }
 
-  checkAllFields(){
+  checkAllFields() : void{
     var valid = true;
     if(this.validator.empty(this.oldPassword, this.newPassword, this.confirmPassword)){
       valid = false;
@@ -100,13 +100,13 @@ export class EditPasswordPage {
     this.allFieldsValid = valid;
   }
 
-  checkInput(){
+  checkInput() : void{
     this.checkOldPassword();
     this.checkNewPassword();
     this.checkConfirmPassword();
   }
 
-  changePassword(){
+  changePassword() : void{
     this.resetError();
     this.checkInput();
     if(!this.allFieldsValid) return;
@@ -126,12 +126,12 @@ export class EditPasswordPage {
     //..
   }
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
 
-  resetError(){
+  resetError() : void{
     this.error = false;
     this.errorMessage = "";
   }
