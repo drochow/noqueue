@@ -25,7 +25,7 @@ export class AuthenticationProvider {
     }
   }
 
-  asyncSetup() : void{
+  asyncSetup() : Promise<any>{
     let auth = this;
     return new Promise(function(resolve, reject){
       auth.storage.keys().then(
@@ -105,7 +105,7 @@ export class AuthenticationProvider {
     this.userID = decoded.userId;
   }
 
-  getUserId() : any{
+  getUserId() : number{
     return this.userID;
   }
 
