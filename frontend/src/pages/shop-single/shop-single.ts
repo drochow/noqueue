@@ -21,6 +21,8 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 })
 export class ShopSinglePage {
 
+// declare variables used by the HTML template (ViewModel)
+
   @ViewChild('map') mapElement: ElementRef;
 
   employees = [];
@@ -37,6 +39,8 @@ export class ShopSinglePage {
   errorMessage: string = "";
   shopActive: boolean = true;
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider) {
     this.shopID = this.navParams.get('shopID');
@@ -45,6 +49,8 @@ export class ShopSinglePage {
   ionViewDidLoad() : void{
     this.reloadData();
   }
+
+// ViewModel logic (working with the data)
 
   refresh() : void{
     this.reloadData();
@@ -99,6 +105,8 @@ export class ShopSinglePage {
         }
       );
   }
+
+// ViewController logic (reacting to events)
 
   showService(id: number) : void{
     console.log("From shop-single - service id = " + id);

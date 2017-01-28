@@ -17,6 +17,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class EditProfilePage {
 
+// declare variables used by the HTML template (ViewModel):
+
   error: boolean = false;
   errorMessage: string = "";
   username: string;
@@ -37,6 +39,7 @@ export class EditProfilePage {
   };
   allFieldsValid: boolean = false;
 
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
   private validator: ValidatorProvider) {
@@ -54,6 +57,8 @@ export class EditProfilePage {
   ionViewWillEnter() : void{
     this.fetchData();
   }
+
+// ViewModel logic (working with the data)
 
   checkUsername() : void{
     this.isValid.username = this.validator.username(this.username);

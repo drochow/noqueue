@@ -17,6 +17,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class CoworkersPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   error: boolean = false;
   errorMessage: string  = "";
   searchName: string = "";
@@ -26,6 +28,9 @@ export class CoworkersPage {
   managers = [];
   employees = [];
 
+
+// constructor and lifecycle-events
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public usersProvider: UsersProvider,
   public validator: ValidatorProvider) {
     this.shopID = navParams.get('shopID');
@@ -34,6 +39,9 @@ export class CoworkersPage {
 
   ionViewDidLoad() : void{
   }
+
+
+// ViewModel logic (working with the data)
 
   resetError() : void{
     this.error = false;
@@ -45,7 +53,7 @@ export class CoworkersPage {
     this.errorMessage = message;
   }
 
-  search(event) {
+  search(event) : void{
     if(!this.validator.searchName(this.searchName)){
       this.registerError("Search name not valid");
       this.users = [];
@@ -86,6 +94,9 @@ export class CoworkersPage {
         }
       )
   }
+
+
+// ViewController logic (reacting to events)
 
   hireEmployee(slidingItem, id: number) : void{
     slidingItem.close();

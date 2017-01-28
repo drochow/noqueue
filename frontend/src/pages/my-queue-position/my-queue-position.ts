@@ -20,6 +20,8 @@ export class MyQueuePositionPage {
 
   @ViewChild('map') mapElement: ElementRef;
 
+// declare variables used by the HTML template (ViewModel)
+
   shop = {};
   queuePosition = {
     id: 0,
@@ -30,12 +32,16 @@ export class MyQueuePositionPage {
     schaetzZeitpunkt: 0,
   };
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public maps: GoogleMapsProvider) {}
 
   ionViewDidLoad() : void{
     this.reloadData();
   }
+
+// ViewModel logic (working with the data)
 
   refresh(refresher) : void{
     this.reloadData();
@@ -65,6 +71,8 @@ export class MyQueuePositionPage {
         }
       );
   }
+
+// ViewController logic (reacting to events)
 
   leave() : void{
     this.queuesProvider.leave()

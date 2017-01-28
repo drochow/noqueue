@@ -16,6 +16,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 })
 export class EditPasswordPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   oldPassword: string;
   newPassword: string;
   confirmPassword: string;
@@ -32,6 +34,8 @@ export class EditPasswordPage {
     differentPasswords: true
   };
   allFieldsValid: boolean = false;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
     this.validationRules = {
@@ -61,6 +65,8 @@ export class EditPasswordPage {
 
   ionViewWillEnter() : void{
   }
+
+// ViewModel logic (working with the data)
 
   checkOldPassword() : void{
     this.isValid.oldPassword = !this.validator.empty(this.oldPassword);

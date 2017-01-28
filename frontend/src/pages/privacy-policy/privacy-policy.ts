@@ -13,6 +13,8 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class PrivacyPolicyPage {
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() : void{

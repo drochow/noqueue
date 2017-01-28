@@ -19,6 +19,8 @@ import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 })
 export class ServiceSinglePage {
 
+// declare variables used by the HTML template (ViewModel)
+
   employees = [];
   selectedEmployee: number = 0;
   service = {
@@ -31,6 +33,8 @@ export class ServiceSinglePage {
   error: boolean = false;
   errorMessage: string = "";
   queueActive: boolean = false;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public servicesProvider: ServicesProvider) {
@@ -47,6 +51,8 @@ export class ServiceSinglePage {
   ionViewDidLoad() : void{
     this.reloadData();
   }
+
+// ViewModel logic (working with the data)
 
   refresh(refresher) : void{
     this.reloadData();
@@ -98,6 +104,8 @@ export class ServiceSinglePage {
     //     }
     //   );
   }
+
+// ViewController logic (reacting to events)
 
   // @TODO
   employeeSelection() : void{

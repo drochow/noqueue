@@ -20,11 +20,14 @@ import { SignupPage } from '../../pages/signup/signup';
 })
 export class LoginPage {
 
-  // variables for data binding with the template
+// variables for data binding with the template
+
   username: string = "";
   password: string = "";
   error: boolean = false;
   errorMessage: string = "";
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
   private modalCtrl: ModalController, private alertCtrl: AlertController) {}
@@ -32,7 +35,9 @@ export class LoginPage {
   ionViewDidLoad() : void{
   }
 
-  login() : void{
+// ViewController logic (reacting to events)
+
+    login() : void{
     this.error = false;
     this.errorMessage = "";
 

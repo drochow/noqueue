@@ -20,6 +20,8 @@ import { CoworkersPage } from '../coworkers/coworkers';
 })
 export class ServiceInfoPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   error: boolean = false;
   errorMessage: string = "";
   newService: boolean  = false;
@@ -34,6 +36,8 @@ export class ServiceInfoPage {
   types = [];
   customType: boolean = false;
   selectedType: string  = "";
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
   public alertCtrl: AlertController) {
@@ -70,6 +74,8 @@ export class ServiceInfoPage {
       )
   }
 
+// ViewModel logic (working with the data)
+
   resetError() : void{
     this.error = false;
     this.errorMessage = "";
@@ -103,6 +109,8 @@ export class ServiceInfoPage {
       this.registerError("Service type not valid");
     }
   }
+
+// ViewController logic (reacting to events)
 
   save() : void{
     this.service.type = this.selectedType;

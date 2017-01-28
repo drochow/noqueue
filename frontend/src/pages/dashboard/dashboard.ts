@@ -10,8 +10,6 @@ import { SettingsPage } from '../settings/settings';
 import { ShopsPage } from '../shops/shops';
 import { ShopSinglePage } from '../shop-single/shop-single';
 import { MyShopsPage } from '../my-shops/my-shops';
-import { MyQueuesPage } from '../my-queues/my-queues';
-import { MyQueueSinglePage } from '../my-queue-single/my-queue-single';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
@@ -28,11 +26,12 @@ import { LocationsProvider } from '../../providers/locations-provider';
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
   providers: [ShopsProvider, QueuesProvider, ConnectivityProvider, LocationsProvider],
-  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, MyQueuesPage, MyQueueSinglePage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
+  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
 })
 export class DashboardPage {
 
-  // variables for data-binding with the template
+// variables for data-binding with the template
+
   isLoggedIn: boolean = false;
   managerCount: number = 0;
   employeeCount: number = 0;
@@ -46,6 +45,9 @@ export class DashboardPage {
   hasQueues: boolean = false;
   searchTerm: string = "";
   radius: number = 0;
+
+
+// constructor and lifecycle-events
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
   public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
@@ -73,6 +75,8 @@ export class DashboardPage {
       loading.dismiss()
     }
   }
+
+// ViewModel logic (working with the data)
 
   refresh(refresher) : void{
     this.reloadData();
@@ -154,6 +158,8 @@ export class DashboardPage {
     }
   }
 
+// ViewController logic (reacting to events)
+
   searchShops() : void{
     this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
@@ -185,14 +191,6 @@ export class DashboardPage {
 
   showMyShopsPage() : void{
     this.navCtrl.push(MyShopsPage);
-  }
-
-  showMyQueuesPage() : void{
-    this.navCtrl.push(MyQueuesPage);
-  }
-
-  showMyQueueSinglePage(queueID: number, shopName: string) : void{
-    this.navCtrl.push(MyQueueSinglePage, {queueID: queueID, shopName: shopName});
   }
 
   showCreateShopPage() : void{

@@ -15,8 +15,9 @@ import { ValidatorProvider } from '../../providers/validator-provider';
   providers: [ValidatorProvider]
 })
 export class SignupPage {
+  
+// declare variables used by the HTML template (ViewModel)
 
-  // variables for data binding with the template
   username: string;
   email: string;
   password: string;
@@ -33,6 +34,8 @@ export class SignupPage {
   };
   allFieldsValid: boolean = false;
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
     // later - read these from the validator:
     this.validationRules = {
@@ -45,6 +48,8 @@ export class SignupPage {
 
   ionViewDidLoad() : void{
   }
+
+// ViewModel logic (working with the data)
 
   checkUsername() : void{
     this.isValid.username = this.validator.username(this.username);
@@ -90,6 +95,8 @@ export class SignupPage {
     this.checkConfirmPassword();
     this.checkPasswordsMatching();
   }
+
+// ViewController logic (reacting to events)
 
   signup() : void{
     this.error = false;

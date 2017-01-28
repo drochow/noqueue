@@ -19,7 +19,8 @@ import { LocationsProvider } from '../../providers/locations-provider';
 })
 export class ShopsPage {
 
-  // variables used for binding with template
+// declare variables used by the HTML template (ViewModel)
+
   searchTerm: string = "";
   radius: number = 0;
   shops = [];
@@ -29,6 +30,8 @@ export class ShopsPage {
   allShopsFetched: boolean = false;
   noShops: boolean = false;
   location: any;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
   public locations: LocationsProvider) {
@@ -47,6 +50,8 @@ export class ShopsPage {
         }
       )
   }
+
+// ViewController logic (reacting to events)
 
   search(event) : void{
     this.error = false;

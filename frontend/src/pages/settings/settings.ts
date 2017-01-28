@@ -24,9 +24,13 @@ import { AboutNoQueuePage } from '../../pages/about-no-queue/about-no-queue';
 })
 export class SettingsPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   theme: string;
   notificationSettings: string;
   isLoggedIn: boolean;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, public userConfig: UserConfigurationProvider) {
     this.isLoggedIn = this.auth.isLoggedIn();
@@ -37,6 +41,8 @@ export class SettingsPage {
     this.isLoggedIn = this.auth.isLoggedIn();
     console.log("constructor: ", this.auth.isLoggedIn());
   }
+
+// ViewController logic (reacting to events)
 
   themeSelection(event) : void{
     this.userConfig.selectTheme(this.theme);

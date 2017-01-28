@@ -13,6 +13,8 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class AboutNoQueuePage {
 
+// constructor and lifecycle-events
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() : void{
