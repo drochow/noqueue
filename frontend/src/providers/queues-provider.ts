@@ -19,7 +19,7 @@ export class QueuesProvider {
   }
 
   // @TODO - use getMyShops() instead and check if the user is 'isAnwesend'
-  getMyQueues(shopId) : Observable<any>{
+  getMyQueues(shopId: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopId + "/ws";
     return this.httpProvider.get(route);
   }
@@ -29,7 +29,7 @@ export class QueuesProvider {
     return this.httpProvider.get(route);
   }
 
-  getQueue(queueID) : Observable<any>{
+  getQueue(queueID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/queues/" + queueID;
     return this.httpProvider.get(route);
   }
@@ -46,11 +46,11 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.users + "/wsp");
   }
 
-  startWorkOn(shopId, wspId) {
+  startWorkOn(shopId: number, wspId: number) {
     return this.httpProvider.put(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId, {})
   }
 
-  finishWorkOn(shopId, wspId) {
+  finishWorkOn(shopId: number, wspId: number) {
     return this.httpProvider.delete(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId)
   }
 

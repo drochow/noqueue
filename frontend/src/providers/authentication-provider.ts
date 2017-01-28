@@ -25,7 +25,7 @@ export class AuthenticationProvider {
     }
   }
 
-  asyncSetup(){
+  asyncSetup() : void{
     let auth = this;
     return new Promise(function(resolve, reject){
       auth.storage.keys().then(
@@ -48,7 +48,7 @@ export class AuthenticationProvider {
     });
   }
 
-  login(username: string, password: string): Promise<any>{
+  login(username: string, password: string) : Promise<any>{
     let auth = this;
     let body = {nutzerName: username, password};
     return new Promise(function(resolve, reject){
@@ -65,7 +65,7 @@ export class AuthenticationProvider {
     });
   }
 
-  signup(username: string, email: string, password: string): Promise<any>{
+  signup(username: string, email: string, password: string) : Promise<any>{
     let auth = this;
     let body = {nutzerName: username, nutzerEmail: email, password: password};
     return new Promise(function(resolve, reject){
@@ -82,31 +82,30 @@ export class AuthenticationProvider {
     })
   }
 
-  logout(){
+  logout() : void{
     this.resetToken();
   }
 
-  resetToken(){
+  resetToken() : void{
     this.token = "";
     this.storage.remove('token');
     this.httpProvider.readToken();
   }
 
-  isLoggedIn(): boolean{
+  isLoggedIn() : boolean{
     return this.token !== undefined && this.token !== "";
   }
 
-  getToken(): string{
+  getToken() : string{
     return this.token;
   }
 
-  decodeUserID(){
+  decodeUserID() : void{
     let decoded = this.jwtHelper.decodeToken(this.token);
     this.userID = decoded.userId;
-    console.log("decoded token: ", decoded);
   }
 
-  getUserId(): any{
+  getUserId() : any{
     return this.userID;
   }
 

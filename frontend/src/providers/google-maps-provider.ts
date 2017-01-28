@@ -34,7 +34,7 @@ export class GoogleMapsProvider {
     return this.loadGoogleMaps();
   }
 
-  loadGoogleMaps(): Promise<any>{
+  loadGoogleMaps() : Promise<any>{
     return new Promise((resolve) => {
       if(typeof google == "undefined" || typeof google.maps == "undefined"){
         // google maps SDK must be loaded
@@ -63,7 +63,7 @@ export class GoogleMapsProvider {
     })
   }
 
-  initMap(){
+  initMap() : void{
     this.mapInitialised = true;
     let latLng = new google.maps.LatLng(this.latitude, this.longitude);
     let mapOptions = {
@@ -75,7 +75,7 @@ export class GoogleMapsProvider {
     this.addMarker();
   }
 
-  addMarker(){
+  addMarker() : void{
     let latLng = new google.maps.LatLng(this.latitude, this.longitude);
     let marker = new google.maps.Marker({
       map: this.map,
@@ -85,12 +85,12 @@ export class GoogleMapsProvider {
     this.markers.push(marker);
   }
 
-  disableMap(){
+  disableMap() : void{
     // if needed
     // ... change css to display: none
   }
 
-  enableMap(){
+  enableMap() : void{
     // if needed
     // ... change css to display: block
   }

@@ -15,11 +15,11 @@ export class UserConfigurationProvider {
   constructor(public http: Http, private storage: Storage) {
   }
 
-  selectTheme(theme: string){
+  selectTheme(theme: string) : void{
     this.storage.set('theme', theme);
   }
 
-  selectNotificationSettings(notificationSettings: string){
+  selectNotificationSettings(notificationSettings: string) : void{
     this.storage.set('notificationSettings', notificationSettings);
   }
 

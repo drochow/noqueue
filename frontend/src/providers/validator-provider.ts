@@ -60,7 +60,7 @@ export class ValidatorProvider {
   // 2-40 alphanumeric (including german symbols)
   serviceType = string => /[a-zA-ZüäöÄÖÜß\d\s]{2,40}/.test(string);
 
-  empty = (...strings) => {
+  empty = (...strings) : boolean => {
     for(let value of strings){
       if (!value || value === ""){
         return true;
@@ -69,7 +69,7 @@ export class ValidatorProvider {
     return false;
   }
 
-  allEmpty = (...strings) => {
+  allEmpty = (...strings) : boolean => {
     var empty = true;
     for(let value of strings){
       if(value != ""){
