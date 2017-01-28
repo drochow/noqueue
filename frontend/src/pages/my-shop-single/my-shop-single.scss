@@ -1,3 +1,14 @@
-page-my-shop-single {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-my-shop-single {
+    ion-content{
+      .fa{
+        font-family: "FontAwesome", sans-serif;
+      }
+
+    }
+  }
 }
+
+

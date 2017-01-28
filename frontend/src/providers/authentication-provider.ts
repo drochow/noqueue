@@ -105,7 +105,7 @@ export class AuthenticationProvider {
     this.userID = decoded.userId;
   }
 
-  getUserId() : number{
+  getUserId() : string{
     return this.userID;
   }
 

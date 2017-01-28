@@ -4,13 +4,19 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border>
+  <ion-navbar color="light">
     <ion-title>My Shop</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+  <div class="info-group">
+    <p class="sectionName test">Overview</p>
+    <p class="item">{{shop.name}}</p>
+    <i class="fa fa-map-o abc" aria-hidden="true"></i>
+    <ion-icon class="fa fa-heart"></ion-icon>
+  </div>
   <ion-item-group>
     <ion-item-divider color="light" (click)="editShopInfo()">Info</ion-item-divider>
     <ion-item><ion-icon name="home" item-left></ion-icon>{{shop.name}}</ion-item>
