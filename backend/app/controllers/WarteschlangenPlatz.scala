@@ -44,10 +44,10 @@ class WarteschlangenPlatz @Inject() (val dbD: DB, val applicationLifecycle: Appl
   def verlassen = SecuredApiAction { implicit request =>
     request.anwender.wsVerlassen() flatMap {
       del =>
-        if (del < 1) {
-          ApiError.errorItemNotFound
-        } else {
+        if (del) {
           noContent()
+        } else {
+          ApiError.errorItemNotFound
         }
     }
   }

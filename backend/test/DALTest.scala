@@ -20,14 +20,14 @@ import scala.util.{ Failure, Success }
  */
 
 class AccountSpec extends AsyncWordSpec {
-  val bspAnwenders = List(
+  /*val bspAnwenders = List(
     AnwenderEntity("1@example.com", "Uno", "Nomber1"),
     AnwenderEntity("2@example.com", "Beta", "BetaM"),
     AnwenderEntity("3@example.com", "Three", "Tri"),
     AnwenderEntity("4@example.com", "Quadr", "Quad")
   )
 
-  val h2= new H2DB
+  val h2 = new H2DB
   val db = h2.db
   val dal = h2.dal
 
@@ -102,14 +102,14 @@ class AccountSpec extends AsyncWordSpec {
         //@todo implement this test
       }*/
     }
-  }
+  }*/
 }
 
 class ProfilPatchRequestSpec extends AsyncWordSpec {
 
 }
 
-class H2DB {
+class H2DB { /*
   val db: Database = Database.forConfig("h2")
-  val dal: DAL = new DAL(H2Driver)
+  val dal: DAL = new DAL(H2Driver)*/
 }

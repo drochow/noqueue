@@ -73,8 +73,8 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
   }
 
   def removeMitarbeiter(betriebId: Long, mitarbeiterId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
-    request.leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](mitarbeiterId), PK[BetriebEntity](betriebId)) flatMap {
-      case count: Int => if (count < 1) ApiError.errorItemNotFound else ok("Success")
+    request.leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](mitarbeiterId)) flatMap {
+      case deleted => if (deleted) ok("Success") else ApiError.errorItemNotFound
     }
   }
 
@@ -128,7 +128,7 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
 
   def removeDienstleistung(betriebId: Long, dlId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
     request.leiter.dienstleistungEntfernen(PK[DienstleistungEntity](dlId)) flatMap {
-      count => if (count < 1) ApiError.errorItemNotFound else accepted()
+      count => if (count) accepted() else ApiError.errorItemNotFound
     }
   }
 

@@ -31,7 +31,7 @@ trait MitarbeiterComponent {
 
   def insert(mitarbeiter: MitarbeiterEntity): DBIO[MitarbeiterEntity] = (mitarbeitersAutoInc += mitarbeiter).map(id => mitarbeiter.copy(id = Option(id)))
 
-  def deleteMitarbeiter(id: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): DBIO[Int] = mitarbeiters.filter(_.id === id).filter(_.betriebId === betriebId).delete
+  def deleteMitarbeiter(id: PK[MitarbeiterEntity]): DBIO[Int] = mitarbeiters.filter(_.id === id).delete
 
   def getMitarbeiterOfById(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)] = {
     (for {
