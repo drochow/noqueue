@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by anwender on 06.11.2016.
  */
-class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def create = SecuredApiActionWithBody { implicit request =>
 
@@ -56,7 +56,7 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
   }
 
   def show(id: Long) = ApiAction { implicit request =>
-    val ua = new UnregistrierterAnwender(applicationLifecycle, dbD)
+    val ua = new UnregistrierterAnwender(dbD)
     ua.betriebAnzeigen(PK[BetriebEntity](id)) flatMap {
       btrAndAdr: (BetriebEntity, AdresseEntity) => ok(BetriebAndAdresse(betriebEntity = btrAndAdr._1, adresseEntity = btrAndAdr._2))
     }
@@ -185,7 +185,7 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
   }
 
   def search(q: String, lat: Double, long: Double, radius: Int, page: Int, size: Int) = ApiAction { implicit request =>
-    val ua = new UnregistrierterAnwender(applicationLifecycle, dbD)
+    val ua = new UnregistrierterAnwender(dbD)
     ua.anbieterSuchen(suchBegriff = q, latitude = lat, longitude = long, umkreisM = radius, page = page, size = size) flatMap {
       case (seq: Seq[(BetriebAndAdresse, String)]) => {
         if (seq.length > 0) System.out.println(seq(0)._2)

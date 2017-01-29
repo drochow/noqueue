@@ -24,7 +24,6 @@ export class ConnectivityProvider {
   }
 
   isOnline() : boolean {
-    console.log(Network.downlinkMax);
     if(this.onDevice && Network.type){
       return Network.type.toLowerCase() !== "none";
     } else {

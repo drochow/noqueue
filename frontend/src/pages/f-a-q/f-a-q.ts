@@ -13,9 +13,11 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class FAQPage {
 
+// constructor and lifecycle-events (chronological order)
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
 }

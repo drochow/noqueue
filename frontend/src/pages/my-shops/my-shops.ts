@@ -49,6 +49,7 @@ export class MyShopsPage {
       .subscribe(
         (shops) => {
           this.myShops = shops;
+          this.myShops.sort(shop => shop.isLeiter ? -1 : 0);
           this.hasShops = this.myShops.length > 0;
         },
         (error) => {

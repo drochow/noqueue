@@ -23,8 +23,7 @@ class LeiterTest extends AsyncWordSpec {
     .build
 
   val db: DB = application.injector.instanceOf[DB]
-  val al: ApplicationLifecycle = application.injector.instanceOf[ApplicationLifecycle]
-  val ua = new UnregistrierterAnwender(al, db);
+  val ua = new UnregistrierterAnwender(db);
 
   //  val injector = new GuiceApplicationBuilder()
   //    .load(

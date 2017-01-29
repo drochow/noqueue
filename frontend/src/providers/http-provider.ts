@@ -32,7 +32,7 @@ export class HttpProvider {
     this.readToken();
   }
 
-  readToken(){
+  readToken() : void{
     if(this.storage){
       this.storage.get('token').then(
         (token) => this.token = token
@@ -40,11 +40,11 @@ export class HttpProvider {
     }
   }
 
-  setToken(token){
+  setToken(token) : void{
     this.token = token;
   }
 
-  requestOptions(): RequestOptions{
+  requestOptions() : RequestOptions{
     let headers = new Headers({"Content-Type" : "application/json"});
     if (this.token && this.token != ""){
       headers.append("X-Auth-Token", this.token);
@@ -52,7 +52,7 @@ export class HttpProvider {
     return new RequestOptions({headers});
   }
 
-  get(route: string, searchOptions?: any): Observable<any>{
+  get(route: string, searchOptions?: any) : Observable<any>{
     let options = this.requestOptions();
     let parameters = new URLSearchParams();
     for(var attribute in searchOptions){
@@ -60,34 +60,33 @@ export class HttpProvider {
     }
     options.search = parameters;
     console.log("GET to " + this.workingServer + route);
-    if(searchOptions){
-      console.log("GET Request SearchOptions:", options.search);
-    }
-
+        if(searchOptions){
+           console.log("GET Request SearchOptions:", options.search);
+        }
     return this.http.get(this.workingServer + route, options)
       .map(response => this.responseToJson(response));
   }
 
-  post(route: string, body: any): Observable<any>{
+  post(route: string, body: any) : Observable<any>{
     let jsonBody = JSON.stringify(body);
     console.log("Sending POST request to " + route + " with body: ", body);
     return this.http.post(this.workingServer + route, jsonBody, this.requestOptions())
       .map(response => this.responseToJson(response));
   }
 
-  patch(route: string, body: any): Observable<any>{
+  patch(route: string, body: any) : Observable<any>{
     console.log("Sending PATCH request to " + route + " with body: ", body);
     return this.http.patch(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => this.responseToJson(response));
   }
 
-  put(route: string, body: any): Observable<any>{
+  put(route: string, body: any) : Observable<any>{
     console.log("Sending PUT request to " + route + " with body: ", body);
     return this.http.put(this.workingServer + route, JSON.stringify(body), this.requestOptions())
       .map(response => this.responseToJson(response));
   }
 
-  delete(route: string): Observable<any>{
+  delete(route: string) : Observable<any>{
     console.log("Sending DELETE request to " + route);
     return this.http.delete(this.workingServer + route, this.requestOptions())
       .map(response => this.responseToJson(response));

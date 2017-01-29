@@ -23,34 +23,10 @@ export class ShopsProvider {
     return this.httpProvider.get(this.httpProvider.ROUTES.shops);
   }
 
-  // getShops(limit: number, page: number, filter: string, radius: number): Promise<any>{
-  //   var self = this;
-  //   return new Promise(function(resolve, reject){
-  //     self.locations.getUserLocation()
-  //       .then(
-  //         (location) => {
-  //           let lat = location.latitude;
-  //           let long = location.longitude;
-  //           var searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
-  //           if(!limit) delete searchOptions.size;
-  //           if(!page) delete searchOptions.page;
-  //           if(!filter) delete searchOptions.q;
-  //           if(!radius) delete searchOptions.radius;
-  //           console.log("GET shops with searchOptions: ", searchOptions);
-  //           resolve(self.httpProvider.get(self.httpProvider.ROUTES.shops, searchOptions));
-  //         },
-  //         (error) => {
-  //           console.log("Couldn't read user Location: ", error);
-  //           reject(error);
-  //         }
-  //       );
-  //   });
-  // }
 
   getShops(limit: number, page: number, filter: string, radius: any, lat: number, long: number): Observable<any>{
     let searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
     if(!radius) delete searchOptions.radius;
-    console.log("SEARCH OPTIONS: ", searchOptions);
     return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
   }
 
@@ -65,8 +41,8 @@ export class ShopsProvider {
     return this.httpProvider.get(route);
   }
 
-  getShop(id: any) : Observable<any>{
-    return this.httpProvider.get(this.httpProvider.ROUTES.shops + "/" + id);
+  getShop(shopID: number) : Observable<any>{
+    return this.httpProvider.get(this.httpProvider.ROUTES.shops + "/" + shopID);
   }
 
   createShop(shop: any) : Observable<any>{
@@ -74,47 +50,47 @@ export class ShopsProvider {
     return this.httpProvider.post(this.httpProvider.ROUTES.shops, body);
   }
 
-  editShop(shopID: any, shop: any) : Observable<any>{
+  editShop(shopID: number, shop: any) : Observable<any>{
     let body = this.mapToExpectedJson(shop);
     return this.httpProvider.put(this.httpProvider.ROUTES.shops + "/" + shopID, body);
   }
 
-  getEmployees(shopID) : Observable<any>{
+  getEmployees(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter";
     return this.httpProvider.get(route);
   }
 
-  getNextAvailableSlots(shopID) : Observable<any>{
+  getNextAvailableSlots(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/mitarbeiter";
     return this.httpProvider.get(route);
   }
 
-  getManagers(shopID) : Observable<any>{
+  getManagers(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter";
     return this.httpProvider.get(route);
   }
 
-  hireEmployee(userID, shopID, anwesend) : Observable<any>{
+  hireEmployee(userID: number, shopID: number, anwesend: boolean) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter";
     return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwesend: anwesend || false});
   }
 
-  hireManager(userID, shopID, anwesend) : Observable<any>{
+  hireManager(userID: number, shopID: number, anwesend: boolean) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter";
     return this.httpProvider.post(route, {anwenderId: userID, betriebId: shopID, anwsend: anwesend || false});
   }
 
-  fireEmployee(userID, shopID) : Observable<any>{
+  fireEmployee(userID: number, shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/mitarbeiter/" + userID;
     return this.httpProvider.delete(route);
   }
 
-  fireManager(userID, shopID) : Observable<any>{
+  fireManager(userID: number, shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter/" + userID;
     return this.httpProvider.delete(route);
   }
 
-  promoteEmployee(userID, shopID){
+  promoteEmployee(userID: number, shopID: number) : Promise<any>{
     let self = this;
     return new Promise(function(resolve, reject){
       self.fireEmployee(userID, shopID)
@@ -127,17 +103,10 @@ export class ShopsProvider {
           (error) => reject(error)
         )
     });
-    //
-    //
-    // this.fireEmployee(userID, shopID).
-    //     subscribe(
-    //     () => {
-    //       return this.hireManager(userID, shopID, false);
-    //     }
-    // );
+
   }
 
-  demoteManager(userID, shopID){
+  demoteManager(userID: number, shopID: number) : Promise<any>{
     let self = this;
     return new Promise(function(resolve, reject){
       self.fireManager(userID, shopID)
@@ -152,7 +121,7 @@ export class ShopsProvider {
     });
   }
 
-  private mapToExpectedJson(shop: any){
+  private mapToExpectedJson(shop: any) {
     return {
       name: shop.name,
       adresse: {

@@ -12,8 +12,8 @@ import scala.concurrent.Future
 
 class Mitarbeiter(
     mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)],
-    applicationLifecycle: ApplicationLifecycle, dbD: DB
-) extends Base(applicationLifecycle, dbD) {
+    dbD: DB
+) extends Base(dbD) {
 
   lazy val betrieb: Future[BetriebEntity] = mitarbeiterComposition map (_._1)
 

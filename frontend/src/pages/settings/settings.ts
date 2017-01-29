@@ -24,68 +24,74 @@ import { AboutNoQueuePage } from '../../pages/about-no-queue/about-no-queue';
 })
 export class SettingsPage {
 
+// declare variables used by the HTML template (ViewModel)
+
   theme: string;
   notificationSettings: string;
   isLoggedIn: boolean;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, public userConfig: UserConfigurationProvider) {
     this.isLoggedIn = this.auth.isLoggedIn();
     console.log("constructor: ", this.auth.isLoggedIn());
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.isLoggedIn = this.auth.isLoggedIn();
     console.log("constructor: ", this.auth.isLoggedIn());
   }
 
-  themeSelection(event){
+// ViewController logic (reacting to events)
+
+  themeSelection(event : any) : void{
     this.userConfig.selectTheme(this.theme);
   }
 
-  notificationSettingsSelection(event){
+  notificationSettingsSelection(event) : void{
     this.userConfig.selectNotificationSettings(this.notificationSettings);
   }
 
-  showEditProfilePage(){
+  showEditProfilePage() : void{
     this.navCtrl.push(EditProfilePage);
   }
 
-  showEditPasswordPage(){
+  showEditPasswordPage() : void{
     this.navCtrl.push(EditPasswordPage);
   }
 
-  logout(){
+  logout() : void{
     this.auth.logout();
     this.navCtrl.popToRoot();
   }
 
   // @TODO
-  deleteAccount(){
+  deleteAccount() : void{
     this.auth.logout();
     this.navCtrl.popToRoot();
   }
 
-  showLoginPage(){
+  showLoginPage() : void{
     this.navCtrl.push(LoginPage);
   }
 
-  showSignupPage(){
+  showSignupPage() : void{
     this.navCtrl.push(SignupPage);
   }
 
-  showReportProblemPage(){
+  showReportProblemPage() : void{
     this.navCtrl.push(ReportProblemPage);
   }
 
-  showFAQPage(){
+  showFAQPage() : void{
     this.navCtrl.push(FAQPage);
   }
 
-  showPrivacyPolicyPage(){
+  showPrivacyPolicyPage() : void{
     this.navCtrl.push(PrivacyPolicyPage);
   }
 
-  showAboutNoQueuePage(){
+  showAboutNoQueuePage() : void{
     this.navCtrl.push(AboutNoQueuePage);
   }
 

@@ -14,6 +14,7 @@ import scala.concurrent.Future
 class AnwenderSpec extends AsyncFlatSpec {
   override def withFixture(test: NoArgAsyncTest): FutureOutcome = super.withFixture(test)
 
+
   val application = new GuiceApplicationBuilder()
     .in(Mode.Test)
     .build

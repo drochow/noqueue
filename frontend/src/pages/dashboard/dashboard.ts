@@ -10,8 +10,6 @@ import { SettingsPage } from '../settings/settings';
 import { ShopsPage } from '../shops/shops';
 import { ShopSinglePage } from '../shop-single/shop-single';
 import { MyShopsPage } from '../my-shops/my-shops';
-import { MyQueuesPage } from '../my-queues/my-queues';
-import { MyQueueSinglePage } from '../my-queue-single/my-queue-single';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
@@ -28,30 +26,34 @@ import { LocationsProvider } from '../../providers/locations-provider';
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
   providers: [ShopsProvider, QueuesProvider, ConnectivityProvider, LocationsProvider],
-  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, MyQueuesPage, MyQueueSinglePage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
+  entryComponents: [LoginPage, SignupPage, SettingsPage, ShopsPage, ShopSinglePage, MyShopsPage, ShopInfoPage, MyQueuePositionPage, MyShopSinglePage]
 })
 export class DashboardPage {
 
-  // variables for data-binding with the template
-  isLoggedIn = false;
-  managerCount = 0;
-  employeeCount = 0;
-  myQueuePosition = {};
-  isInQueue = false;
-  shopsNearby = [];
-  hasShopsNearby = false;
-  myShops = [];
-  hasShops = false;
-  myQueues = [];
-  hasQueues = false;
-  searchTerm = "";
-  radius = 0;
+// variables for data-binding with the template
+
+  isLoggedIn: boolean = false;
+  managerCount: number = 0;
+  employeeCount: number = 0;
+  myQueuePosition: any = {};
+  isInQueue: boolean = false;
+  shopsNearby: any = [];
+  hasShopsNearby: boolean = false;
+  myShops: any = [];
+  hasShops: boolean = false;
+  myQueues: any = [];
+  hasQueues: boolean = false;
+  searchTerm: string = "";
+  radius: number = 0;
+
+
+// constructor and lifecycle-events
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
   public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
   }
 
-  ionViewWillEnter() {
+  ionViewWillEnter() : void{
     let loading = this.loadingCtrl.create({
       content: 'Fetching data ...'
     });
@@ -74,7 +76,9 @@ export class DashboardPage {
     }
   }
 
-  refresh(refresher){
+// ViewModel logic (working with the data)
+
+  refresh(refresher) : void{
     this.reloadData();
     if(refresher)
       setTimeout(() => {
@@ -82,7 +86,7 @@ export class DashboardPage {
       }, 1000);
   }
 
-  resetData(){
+  resetData() : void{
     this.isLoggedIn = false;
     this.myQueuePosition = {};
     this.isInQueue = false;
@@ -94,7 +98,7 @@ export class DashboardPage {
     this.hasQueues = false;
   }
 
-  reloadData(){
+  reloadData() : void{
     console.log("token: ", this.auth.getToken());
     console.log("Internet connection: ", this.connectivity.isOnline());
 
@@ -154,53 +158,47 @@ export class DashboardPage {
     }
   }
 
-  searchShops(){
+// ViewController logic (reacting to events)
+
+  searchShops() : void{
     this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
 
-  showMyQueuePositionPage(){
+  showMyQueuePositionPage() : void{
     this.navCtrl.push(MyQueuePositionPage);
   }
 
-  showSettingsPage(){
+  showSettingsPage() : void{
     this.navCtrl.push(SettingsPage);
   }
 
-  showLoginPage(){
+  showLoginPage() : void{
     this.navCtrl.push(LoginPage);
   }
 
-  showSignupPage(){
+  showSignupPage() : void{
     console.log("Why are you not working...");
     this.navCtrl.push(SignupPage);
   }
 
-  showShopsPage(){
+  showShopsPage() : void{
     this.navCtrl.push(ShopsPage);
   }
 
-  showShopSinglePage(shopID){
+  showShopSinglePage(shopID: number) : void{
     this.navCtrl.push(ShopSinglePage, {shopID: shopID});
   }
 
-  showMyShopsPage(){
+  showMyShopsPage() : void{
     this.navCtrl.push(MyShopsPage);
   }
 
-  showMyQueuesPage(){
-    this.navCtrl.push(MyQueuesPage);
-  }
-
-  showMyQueueSinglePage(queueID, shopName){
-    this.navCtrl.push(MyQueueSinglePage, {queueID: queueID, shopName: shopName});
-  }
-
-  showCreateShopPage(){
+  showCreateShopPage() : void{
     this.navCtrl.push(ShopInfoPage, {newShop: true});
   }
 
 
-  leave(){
+  leave() : void{
     this.queues.leave()
       .subscribe(
         () => this.refresh(undefined),

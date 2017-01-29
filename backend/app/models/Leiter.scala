@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by David on 29.11.16.
  */
-class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)], applicationLifecycle: ApplicationLifecycle, dbD: DB) extends Base(applicationLifecycle, dbD) {
+class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity)], dbD: DB) extends Base(dbD) {
 
   lazy val betrieb: Future[BetriebEntity] = leiterComposition map (_._1)
 

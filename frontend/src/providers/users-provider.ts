@@ -22,8 +22,8 @@ export class UsersProvider {
     return this.httpProvider.get(this.httpProvider.ROUTES.users + "/directory", searchOptions);
   }
 
-  getUser(id): Observable<any>{
-    return this.httpProvider.get(this.httpProvider.ROUTES.users + "/directory/" + id);
+  getUser(UserID: number) : Observable<any>{
+    return this.httpProvider.get(this.httpProvider.ROUTES.users + "/directory/" + UserID);
   }
 
   getMe() : Observable<any>{

@@ -11,11 +11,11 @@ import { Geolocation } from 'ionic-native';
 */
 @Injectable()
 export class LocationsProvider {
-  
+
   constructor(public http: Http) {
   }
 
-  getUserLocation(): Promise<any>{
+  getUserLocation() : Promise<any>{
     let latitude: number;
     let longitude: number;
 

@@ -40,8 +40,6 @@ import { MyShopSinglePage } from '../pages/my-shop-single/my-shop-single';
 import { ShopInfoPage } from '../pages/shop-info/shop-info';
 import { ServiceInfoPage } from '../pages/service-info/service-info';
 import { CoworkersPage } from '../pages/coworkers/coworkers';
-import { MyQueuesPage } from '../pages/my-queues/my-queues';
-import { MyQueueSinglePage } from '../pages/my-queue-single/my-queue-single';
 
 let storage = new Storage();
 
@@ -75,9 +73,7 @@ export function getAuthHttp(http) {
     MyShopSinglePage,
     ShopInfoPage,
     ServiceInfoPage,
-    CoworkersPage,
-    MyQueuesPage,
-    MyQueueSinglePage
+    CoworkersPage
   ],
   imports: [
     HttpModule,
@@ -104,9 +100,7 @@ export function getAuthHttp(http) {
     MyShopSinglePage,
     ShopInfoPage,
     ServiceInfoPage,
-    CoworkersPage,
-    MyQueuesPage,
-    MyQueueSinglePage
+    CoworkersPage
   ],
   providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
     UserConfigurationProvider, ValidatorProvider, ConnectivityProvider, GoogleMapsProvider, LocationsProvider, {

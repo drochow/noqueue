@@ -19,6 +19,8 @@ import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 })
 export class ServiceSinglePage {
 
+// declare variables used by the HTML template (ViewModel)
+
   employees = [];
   selectedEmployee: number = 0;
   service = {
@@ -28,9 +30,11 @@ export class ServiceSinglePage {
   };
   shopID: any;
   serviceID: number;
-  error = false;
-  errorMessage = "";
-  queueActive = false;
+  error: boolean = false;
+  errorMessage: string = "";
+  queueActive: boolean = false;
+
+// constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
   public servicesProvider: ServicesProvider) {
@@ -44,11 +48,13 @@ export class ServiceSinglePage {
     };
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  refresh(refresher){
+// ViewModel logic (working with the data)
+
+  refresh(refresher) : void{
     this.reloadData();
 
     // @TODO - return a promise in reloadData() and complete the refresher when resolved
@@ -57,7 +63,7 @@ export class ServiceSinglePage {
     }, 1000);
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -99,13 +105,15 @@ export class ServiceSinglePage {
     //   );
   }
 
+// ViewController logic (reacting to events)
+
   // @TODO
-  employeeSelection(){
+  employeeSelection() : void{
     console.log(this.selectedEmployee);
     // get the next available time slot for this employee
   }
 
-  lineUp(){
+  lineUp() : void{
     console.log("data at this point: ", this.shopID, this.serviceID, this.selectedEmployee);
     this.queuesProvider.lineup(this.serviceID, this.selectedEmployee)
       .subscribe(

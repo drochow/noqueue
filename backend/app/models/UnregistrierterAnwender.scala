@@ -16,7 +16,7 @@ import scala.concurrent.Future
 /**
  * Created by David on 29.11.16.
  */
-class UnregistrierterAnwender(applicationLifecycle: ApplicationLifecycle, dbD: DB) extends Base(applicationLifecycle, dbD) {
+class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,15 +31,15 @@ class UnregistrierterAnwender(applicationLifecycle: ApplicationLifecycle, dbD: D
   }
 
   def anmeldenMitPayload(jwtPayload: TokenPayload): Anwender = {
-    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle, dbD)
+    new Anwender(dal.getAnwenderWithAdress(new PK[AnwenderEntity](jwtPayload.anwenderId)), dbD)
   }
 
   def anmeldenMitPayloadAlsMitarbeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Mitarbeiter = {
-    new Mitarbeiter(dal.getMitarbeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle, dbD)
+    new Mitarbeiter(dal.getMitarbeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), dbD)
   }
 
   def anmeldenMitPayloadAlsLeiterVon(jwtPayload: TokenPayload, betriebId: PK[BetriebEntity]): Leiter = {
-    new Leiter(dal.getLeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), applicationLifecycle, dbD)
+    new Leiter(dal.getLeiterOfById(betriebId, PK[AnwenderEntity](jwtPayload.anwenderId)), dbD)
   }
 
   def anbieterSuchen(

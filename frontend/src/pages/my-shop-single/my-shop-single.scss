@@ -1,3 +1,48 @@
-page-my-shop-single {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-my-shop-single {
+    ion-content{
+
+      .group{
+        width: 85%;
+        margin: auto;
+        margin-bottom: 40px;
+      }
+
+      .fa{
+        width: 30px;
+      }
+
+      ion-item, ion-item-sliding{
+        padding: 0;
+      }
+
+      ion-item-sliding{
+        ion-item{
+          width: 100%;
+          padding-right: 0;
+        }
+      }
+
+      .manager{
+        margin-top: 2px;
+        float: right;
+        text-align: right;
+        font-size: map-get($font-sizes, footnote);
+        font-weight: bold;
+        text-transform: uppercase;
+        color: map-get($colors, dark-grey);
+      }
+
+      .right{
+        float: right;
+        text-align: right;
+        color: map-get($colors, primary);
+      }
+
+    }
+  }
 }
+
+

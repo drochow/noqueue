@@ -17,10 +17,10 @@ import play.api.inject.ApplicationLifecycle
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Application @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifecycle, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+class Application @Inject() (val dbD: DB, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
 
   def setup = ApiAction { implicit request =>
-    val base = new Base(applicationLifecycle, dbD)
+    val base = new Base(dbD)
     base.setupDB flatMap {
       case _ => ok("Setup complete...")
     } recover {
@@ -34,14 +34,14 @@ class Application @Inject() (val dbD: DB, val applicationLifecycle: ApplicationL
   }
 
   def insertTestDlTs = ApiAction { implicit request =>
-    val unregistrierterAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
+    val unregistrierterAnwender = new UnregistrierterAnwender(dbD)
     unregistrierterAnwender.testDltinserts
     ok("inserted")
   }
 
   //please put this method where it belongs, but for now i will leave it here
   def getDienstleistungsTypen(page: Int, size: Int) = ApiActionWithBody { implicit request =>
-    okF((new UnregistrierterAnwender(applicationLifecycle, dbD)).getDienstleistungsTypen(page, size))
+    okF((new UnregistrierterAnwender(dbD)).getDienstleistungsTypen(page, size))
   }
 
 }

@@ -55,11 +55,13 @@
     }
 
     ion-header{
+      border-bottom: none;
       background-color: map-get($colors, light);
       margin-bottom: 20px;
     }
 
     ion-navbar{
+      border-bottom: none;
       background-color: map-get($colors, light);
 
       ion-title{
