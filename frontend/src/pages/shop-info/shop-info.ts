@@ -37,11 +37,35 @@ export class ShopInfoPage {
   newShop: boolean;
   // when editing an existing shop:
   shopID: number;
+  validationRules: any;
+  isValid = {
+    shopName: true,
+    email: true,
+    phone: true,
+    openingHours: true,
+    street: true,
+    streetNr: true,
+    zip: true,
+    city: true,
+    address: true
+  };
+  allFieldsValid = false;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
   public validator: ValidatorProvider) {
+    this.validationRules = {
+      shopName: "Must be 2 to 30 letters.",
+      email: "Must be a valid email.",
+      phone: "Must be a valid phone.",
+      openingHours: "Must be 1-50 characters.",
+      street: "Must be 2-50 letters.",
+      streetNr: "Must be 1-5 numbers, followed by an optional letter.",
+      zip: "Must be 5 numbers.",
+      city: "Must be 2-40 letters."
+    };
+
     this.newShop = navParams.get('newShop');
     if(!this.newShop){
       this.shopID = navParams.get('shopID');
@@ -51,6 +75,85 @@ export class ShopInfoPage {
 
   ionViewDidLoad() {
   }
+
+  checkShopName() : void{
+    this.isValid.shopName = this.validator.shopName(this.shop.name);
+    this.checkAllFields();
+  }
+
+  checkEmail() : void{
+    this.isValid.email = this.validator.email(this.shop.email);
+    this.checkAllFields();
+  }
+
+  checkPhone() : void{
+    this.isValid.phone = this.validator.phone(this.shop.phone);
+    this.checkAllFields();
+  }
+
+  checkOpeningHours() : void{
+    this.isValid.openingHours = this.validator.openingHours(this.shop.openingHours);
+    this.checkAllFields();
+  }
+
+  checkStreet() : void{
+    this.isValid.street = this.validator.street(this.shop.address.street);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkStreetNr() : void{
+    this.isValid.streetNr = this.validator.streetNumber(this.shop.address.streetNr);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkZip() : void{
+    this.isValid.zip = this.validator.zip(this.shop.address.zip);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkCity() : void{
+    this.isValid.city = this.validator.city(this.shop.address.city);
+    this.checkAddress();
+    this.checkAllFields();
+  }
+
+  checkAddress() : void{
+    var allEmpty = this.validator.allEmpty(this.shop.address.street, this.shop.address.streetNr, this.shop.address.zip, this.shop.address.city);
+    if(allEmpty){
+      this.isValid.address = true;
+      this.isValid.street = true;
+      this.isValid.streetNr = true;
+      this.isValid.zip = true;
+      this.isValid.city = true;
+      return;
+    }
+    this.isValid.address = this.isValid.street && this.isValid.streetNr && this.isValid.zip && this.isValid.city;
+  }
+
+  checkAllFields() : void{
+    var valid = true;
+    for(let attr in this.isValid){
+      if(this.isValid[attr] == false) valid = false;
+    }
+    this.allFieldsValid = valid;
+    console.log("all fields now: " + this.allFieldsValid);
+    console.log("shopname " + this.isValid.shopName + " phone " + this.isValid.phone + " email " + this.isValid.email + " open " + this.isValid.openingHours);
+  }
+
+  checkInput(): void {
+    this.checkShopName();
+    this.checkEmail();
+    this.checkPhone();
+    this.checkOpeningHours();
+    this.checkStreet();
+    this.checkStreetNr();
+    this.checkZip();
+    this.checkCity();
+  }
+
 
 // ViewModel logic (working with the data)
 
@@ -73,7 +176,8 @@ export class ShopInfoPage {
               streetNr: shop.adresse.hausNummer,
               street: shop.adresse.strasse
             }
-          }
+          };
+          this.checkInput();
         },
         (error) => this.registerError(error.message || "Couldn't retrieve data from server")
       );
@@ -89,39 +193,13 @@ export class ShopInfoPage {
     this.errorMessage = "";
   }
 
-  checkInput(){
-    if(!this.validator.shopName(this.shop.name)){
-      this.registerError("Shop name not valid");
-    }
-    if(!this.validator.phone(this.shop.phone)){
-      this.registerError("Phone number not valid");
-    }
-    if(!this.validator.email(this.shop.email)){
-      this.registerError("Email not valid");
-    }
-    if(!this.validator.openingHours(this.shop.openingHours)){
-      this.registerError("Opening Hours not valid");
-    }
-    if(!this.validator.city(this.shop.address.city)){
-      this.registerError("City not valid");
-    }
-    if(!this.validator.zip(this.shop.address.zip)){
-      this.registerError("ZIP Code not valid");
-    }
-    if(!this.validator.streetNumber(this.shop.address.streetNr)){
-      this.registerError("Street Number not valid");
-    }
-    if(!this.validator.street(this.shop.address.street)){
-      this.registerError("Street not valid");
-    }
-  }
 
 // ViewController logic (reacting to events)
 
   save(){
     this.resetError();
     this.checkInput();
-    if(this.error) return;
+    if(!this.allFieldsValid) return;
 
     this.shopsProvider.editShop(this.shopID, this.shop)
       .subscribe(
@@ -139,7 +217,7 @@ export class ShopInfoPage {
   proceed(){
     this.resetError();
     this.checkInput();
-    if(this.error) return;
+    if(!this.allFieldsValid) return;
 
     this.shopsProvider.createShop(this.shop)
       .subscribe(

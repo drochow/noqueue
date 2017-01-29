@@ -1,3 +1,13 @@
-page-shop-info {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-shop-info {
+    ion-content{
+      .progress{
+        font-size: map-get($font-sizes, subhead);
+      }
+    }
+  }
 }
+
+

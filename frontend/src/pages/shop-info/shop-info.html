@@ -4,42 +4,86 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border>
+  <ion-navbar color="light">
     <ion-title>Shop Information</ion-title>
   </ion-navbar>
 </ion-header>
 
 
-<ion-content padding>
-  <p *ngIf="error" color="danger">{{errorMessage}}</p>
-  <p *ngIf="newShop">Step 1: Shop Information</p>
+<ion-content>
+  <div class="form">
+    <p *ngIf="newShop" class="progress">Step 1: Shop Information</p>
+    <div class="item">
+      <p class="label">Shop name:</p>
+      <ion-input type="text" placeholder="Shop Name" [ngClass]="{'valid': isValid.shopName && shop.name}"  (input)="checkShopName()" [(ngModel)]="shop.name" name="name"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.shopName === false">{{validationRules.shopName}}</p>
+    </div>
+    <div class="item">
+      <p class="label">Contact email:</p>
+      <ion-input type="email" placeholder="Email" [ngClass]="{'valid': isValid.email && shop.email}"  (input)="checkEmail()" [(ngModel)]="shop.email"  name="email"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.email === false">{{validationRules.email}}</p>
+    </div>
+    <div class="item">
+      <p class="label">Phone number:</p>
+      <ion-input type="text" placeholder="Phone" [ngClass]="{'valid': isValid.phone && shop.phone}"  (input)="checkPhone()" [(ngModel)]="shop.phone"  name="phone"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.phone === false">{{validationRules.phone}}</p>
+    </div>
+    <div class="item">
+      <p class="label">Opening hours:</p>
+      <ion-input type="text" placeholder="Opening Hours" [ngClass]="{'valid': isValid.openingHours && shop.openingHours}" (input)="checkOpeningHours()" [(ngModel)]="shop.openingHours"  name="openingHours"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.openingHours === false">{{validationRules.openingHours}}</p>
+    </div>
+    <div class="item">
+      <p class="label">Street:</p>
+      <ion-input type="text" placeholder="Street" [ngClass]="{'valid': isValid.street && shop.address.street}" (input)="checkStreet()" [(ngModel)]="shop.address.street"  name="street"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.street === false">{{validationRules.street}}</p>
+    </div>
+    <div class="item">
+      <p class="label">Street Number:</p>
+      <ion-input type="text" placeholder="Street Nr" [ngClass]="{'valid': isValid.streetNr && shop.address.streetNr}" (input)="checkStreetNr()" [(ngModel)]="shop.address.streetNr"  name="streetNr"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.streetNr === false">{{validationRules.streetNr}}</p>
+    </div>
+    <div class="item">
+      <p class="label">ZIP Code:</p>
+      <ion-input type="text" placeholder="ZIP Code" [ngClass]="{'valid': isValid.zip && shop.address.zip}" (input)="checkZip()" [(ngModel)]="shop.address.zip"  name="zip"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.zip === false">{{validationRules.zip}}</p>
+    </div>
+    <div class="item">
+      <p class="label">City:</p>
+      <ion-input type="text" placeholder="City" [ngClass]="{'valid': isValid.city && shop.address.city}" (input)="checkCity()" [(ngModel)]="shop.address.city"  name="city"></ion-input>
+      <p class="info" color="danger" *ngIf="isValid.city === false">{{validationRules.city}}</p>
+    </div>
+    <button *ngIf="newShop" class="button" ion-button full [disabled]="allFieldsValid == false" (click)="proceed()">Proceed</button>
+    <button *ngIf="newShop === false" class="button" ion-button full [disabled]="allFieldsValid == false" (click)="save()">Save</button>
 
-  <ion-item>
-    <ion-input type="text" placeholder="Shop Name" [(ngModel)]="shop.name" name="name"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="email" placeholder="Email" [(ngModel)]="shop.email"  name="email"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="Phone" [(ngModel)]="shop.phone"  name="phone"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="Opening Hours" [(ngModel)]="shop.openingHours"  name="openingHours"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="Street" [(ngModel)]="shop.address.street"  name="street"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="Street Nr" [(ngModel)]="shop.address.streetNr"  name="streetNr"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="ZIP Code" [(ngModel)]="shop.address.zip"  name="zip"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input type="text" placeholder="City" [(ngModel)]="shop.address.city"  name="city"></ion-input>
-  </ion-item>
+    <p color="danger" *ngIf="error">{{errorMessage}}</p>
+  </div>
 
-  <button *ngIf="newShop" ion-button clear (click)="proceed()">Proceed</button>
-  <button *ngIf="newShop === false" ion-button clear (click)="save()">Save</button>
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="Shop Name" [(ngModel)]="shop.name" name="name"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="email" placeholder="Email" [(ngModel)]="shop.email"  name="email"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="Phone" [(ngModel)]="shop.phone"  name="phone"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="Opening Hours" [(ngModel)]="shop.openingHours"  name="openingHours"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="Street" [(ngModel)]="shop.address.street"  name="street"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="Street Nr" [(ngModel)]="shop.address.streetNr"  name="streetNr"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="ZIP Code" [(ngModel)]="shop.address.zip"  name="zip"></ion-input>-->
+  <!--</ion-item>-->
+  <!--<ion-item>-->
+    <!--<ion-input type="text" placeholder="City" [(ngModel)]="shop.address.city"  name="city"></ion-input>-->
+  <!--</ion-item>-->
+
+
 </ion-content>
