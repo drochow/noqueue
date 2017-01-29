@@ -18,21 +18,9 @@ export class ShopsProvider {
   constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider, public locations: LocationsProvider) {
   }
 
-  // @TODO - see getNearbyShops
-  getAllShops() : Observable<any>{
-    return this.httpProvider.get(this.httpProvider.ROUTES.shops);
-  }
-
-
   getShops(limit: number, page: number, filter: string, radius: any, lat: number, long: number): Observable<any>{
     let searchOptions = {size: limit, page: page, q: filter, radius: radius, lat: lat, long: long};
     if(!radius) delete searchOptions.radius;
-    return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
-  }
-
-  // @TODO - merge this method and the above one into one (getShops, with get params: size,page,q,radius [see rest-api.md])
-  getNearbyShops(limit: number, page: number, filter: string) : Observable<any>{
-    let searchOptions = { size: limit, page, q: filter };
     return this.httpProvider.get(this.httpProvider.ROUTES.shops, searchOptions);
   }
 
@@ -90,36 +78,6 @@ export class ShopsProvider {
     return this.httpProvider.delete(route);
   }
 
-  promoteEmployee(userID: number, shopID: number) : Promise<any>{
-    let self = this;
-    return new Promise(function(resolve, reject){
-      self.fireEmployee(userID, shopID)
-        .subscribe(
-          () => self.hireManager(userID, shopID, false)
-            .subscribe(
-              () => resolve(),
-              (error) => reject(error)
-            ),
-          (error) => reject(error)
-        )
-    });
-
-  }
-
-  demoteManager(userID: number, shopID: number) : Promise<any>{
-    let self = this;
-    return new Promise(function(resolve, reject){
-      self.fireManager(userID, shopID)
-        .subscribe(
-          () => self.hireEmployee(userID, shopID, false)
-            .subscribe(
-              () => resolve(),
-              (error) => reject(error)
-            ),
-          (error) => reject(error)
-        )
-    });
-  }
 
   private mapToExpectedJson(shop: any) {
     return {

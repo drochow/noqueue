@@ -150,23 +150,6 @@ export class MyShopSinglePage {
     )
   }
 
-  demoteManager(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.demoteManager(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
-
-  promoteEmployee(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.promoteEmployee(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
 
   fireManager(slidingItem, userID){
     slidingItem.close();
