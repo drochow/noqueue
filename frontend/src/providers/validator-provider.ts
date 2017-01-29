@@ -45,7 +45,7 @@ export class ValidatorProvider {
   city = string => /^[a-zA-ZüäöÄÖÜß]{2,40}$/.test(string);
 
   // 2-30 alphanumeric, . - _ space
-  shopName = string => /^[a-zA-Z\d\.\-\_\'\"\s]{2,30}$/.test(string);
+  shopName = string => /^[a-zA-ZäöüÄÖÜß\d\.\-\_\'\"\s]{2,30}$/.test(string);
 
   //includes +4930 1234, 030 1234, +4938293 1234, 038293 1234, 0173 12345678, +49173 12345678
   // +49301234, 0301234, +49382931234, 0382931234, 017312345678, +4917312345678
