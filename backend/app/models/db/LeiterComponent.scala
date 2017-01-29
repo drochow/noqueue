@@ -17,6 +17,7 @@ trait LeiterComponent {
     def anwender = foreignKey("LTD_ANW_FK", anwenderId, anwenders)(_.id)
     def betriebeFK = foreignKey("BTRL_FK", betriebId, betriebe)(_.id)
 
+    def mUnique = index("mUnique", (betriebId, anwenderId), unique = true)
     /**
      * Default Projection Mapping to case Class
      * @return

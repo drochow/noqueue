@@ -21,6 +21,8 @@ trait AdresseComponent {
     def latitude = column[Double]("LATITUDE")
     def longitude = column[Double]("LONGITUDE")
 
+    //@todo add unique index
+
     /**
      * Default Projection Mapping to case Class
      * @return

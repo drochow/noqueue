@@ -10,7 +10,7 @@ import Assertions._
 import scala.concurrent.{ Await, Future }
 import play.api.{ Environment, Mode }
 import play.api.inject.guice.GuiceApplicationBuilder
-import utils.UnauthorizedException
+import utils.{ OneLeiterRequiredException, UnauthorizedException }
 
 import scala.concurrent.duration._
 
@@ -110,6 +110,7 @@ class LeiterTest extends AsyncWordSpec {
   }
 
   "An authorized Leiter" can {
+
     "call dienstleistungAnbieten and " should {
       "be able to create DL with an existing DLTypeEntity with same Name and get the DL returned" in {
         val expectedResult = DienstleistungEntity("Saubere Haare", 3600, PK[BetriebEntity](11L), PK[DienstleistungsTypEntity](5L), Some(PK[DienstleistungEntity](10L)))
@@ -135,6 +136,7 @@ class LeiterTest extends AsyncWordSpec {
         }
       }
     }
+
     "call dienstLeistungsInformationVeraendern and " should {
       "not be able to modify an not owned DL" in {
         leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](1L), "Haare Waschen", 40, "Haare Waschen") map {
@@ -145,6 +147,223 @@ class LeiterTest extends AsyncWordSpec {
         leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](100L), "Haare Waschen", 40, "Haare Waschen") map {
           affectedRows => affectedRows should be(0)
         }
+      }
+      "not  be able to modify an DL to the same Data set as an other existing DL" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(
+            leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](5L), "Haare Waschen", 40, "Haare Waschen"),
+            2 seconds
+          )
+        }
+      }
+      "be able to modify an DL changing Dauer and Kommentar" in {
+        leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](5L), "Haare Waschen", 60, "Tolle Haare") map {
+          affectedRows => affectedRows should be(1)
+        }
+      }
+      "be able to modify an DL changing Name of Type" in {
+        leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](5L), "Tolle nacken Massage", 40, "Haare Waschen") map {
+          affectedRows => affectedRows should be(1)
+        }
+      }
+    }
+
+    "call mitarbeiterAnstellen and " should {
+      "not be able to hire a not existing Anwender" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(
+            leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](100L), None)),
+            2 seconds
+          )
+        }
+      }
+      "not be able to hire a already employed Mitarbeiter" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(
+            leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](4L), None)),
+            2 seconds
+          )
+        }
+      }
+      "be able to hire a valid Mitarbeiter" in {
+        leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](1L), None)) map {
+          m => m should equal(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](1L), Some(PK[MitarbeiterEntity](15L))))
+        }
+      }
+      "be able to hire a Mitarbeiter with autocorrected BetriebId" in {
+        leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](1L), PK[AnwenderEntity](1L), None)) map {
+          m => m should equal(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](1L), Some(PK[MitarbeiterEntity](15L))))
+        }
+      }
+    }
+
+    "call mitarbeiterEntlassen and " should {
+      "not be able to fire a not existing Mitarbeiter" in {
+        leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](100L)) map {
+          success => success should be(false)
+        }
+      }
+      "not be able to fire a existing Mitarbeiter of another Betrieb" in {
+        leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](1L)) map {
+          success => success should be(false)
+        }
+      }
+      "be able to fire a existing (last) Mitarbeiter of this Betrieb" in {
+        leiter.mitarbeiterEntlassen(PK[MitarbeiterEntity](4L)) map {
+          success => success should be(false)
+        }
+      }
+    }
+    "call leiterEntlassen and " should {
+      "not be able to fire a not existing Leiter" in {
+        leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)) flatMap {
+          leiterE =>
+            leiter.leiterEntlassen(PK[LeiterEntity](100L)) map {
+              success => success should be(0)
+            }
+        }
+      }
+      "not be able to fire a existing Leiter of another Betrieb" in {
+        leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)) flatMap {
+          leiterE =>
+            leiter.leiterEntlassen(PK[LeiterEntity](1L)) map {
+              success => success should be(0)
+            }
+        }
+      }
+      "not be able to fire the last existing Leiter of this Betrieb" in {
+        assertThrows[OneLeiterRequiredException] {
+          Await.result(leiter.leiterEntlassen(PK[LeiterEntity](4L)), 2 seconds)
+        }
+      }
+      "be able to fire existing Leiter of this Betrieb who is not th last leiter" in {
+        leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)) flatMap {
+          leiterE =>
+            leiter.leiterEntlassen(PK[LeiterEntity](11L)) map {
+              success => success should be(1)
+            }
+        }
+      }
+    }
+    "call leiterEinstellen and" should {
+      "not be able to hire a not existing Anwender" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(
+            leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](100L), PK[BetriebEntity](11L), None)),
+            2 seconds
+          )
+        }
+      }
+      "not be able to hire a Anwender who already is a Leiter" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(
+            leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](4L), PK[BetriebEntity](11L), None)),
+            2 seconds
+          )
+        }
+      }
+      "be able to hire a Anwender who is not a Leiter yet" in {
+        leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)) map {
+          leiterE => leiterE should equal(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), Some(PK[LeiterEntity](11L))))
+        }
+      }
+      "be able to hire a Anwender who is not a Leiter yet with autocorrected BetriebID" in {
+        leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](1L), None)) map {
+          leiterE => leiterE should equal(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), Some(PK[LeiterEntity](11L))))
+        }
+      }
+    }
+    "call leiterAnzeigen and" should {
+      "be able to see 1 Leiters on page 1 with pagesize 10" in {
+        leiter.leiterAnzeigen(0, 10) map {
+          leiterSeq => leiterSeq.length should be(1)
+        }
+      }
+      "be able to see 0 Leiters on page 2 with pagesize 10" in {
+        leiter.leiterAnzeigen(1, 10) map {
+          leiterSeq => leiterSeq.length should be(0)
+        }
+      }
+      "be able to see 0 Leiters on page 100 with pagesieze 10" in {
+        leiter.leiterAnzeigen(99, 10) map {
+          leiterSeq => leiterSeq.length should be(0)
+        }
+      }
+      "be able to see 5 Leiters on page 2 after inserting 12 with pagesize 5" in {
+        for {
+          l1 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](6L), PK[BetriebEntity](11L), None))
+          l2 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](7L), PK[BetriebEntity](11L), None))
+          l3 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](8L), PK[BetriebEntity](11L), None))
+          l4 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](9L), PK[BetriebEntity](11L), None))
+          l5 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](10L), PK[BetriebEntity](11L), None))
+          l6 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](11L), PK[BetriebEntity](11L), None))
+          l7 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](12L), PK[BetriebEntity](11L), None))
+          l8 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](13L), PK[BetriebEntity](11L), None))
+          l9 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](14L), PK[BetriebEntity](11L), None))
+          l10 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](15L), PK[BetriebEntity](11L), None))
+          l11 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](16L), PK[BetriebEntity](11L), None))
+          l12 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](17L), PK[BetriebEntity](11L), None))
+          res <- leiter.leiterAnzeigen(1, 5) map {
+            leiterSeq => leiterSeq.length should be(5)
+          }
+        } yield res
+      }
+      "be able to see 10 Leiters on page 1 after inserting 12 with pagesize 5" in {
+        for {
+          l1 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](6L), PK[BetriebEntity](11L), None))
+          l2 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](7L), PK[BetriebEntity](11L), None))
+          l3 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](8L), PK[BetriebEntity](11L), None))
+          l4 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](9L), PK[BetriebEntity](11L), None))
+          l5 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](10L), PK[BetriebEntity](11L), None))
+          l6 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](11L), PK[BetriebEntity](11L), None))
+          l7 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](12L), PK[BetriebEntity](11L), None))
+          l8 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](13L), PK[BetriebEntity](11L), None))
+          l9 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](14L), PK[BetriebEntity](11L), None))
+          l10 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](15L), PK[BetriebEntity](11L), None))
+          l11 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](16L), PK[BetriebEntity](11L), None))
+          l12 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](17L), PK[BetriebEntity](11L), None))
+          res <- leiter.leiterAnzeigen(0, 10) map {
+            leiterSeq => leiterSeq.length should be(10)
+          }
+        } yield res
+      }
+      "be able to see 3 Leiters on page 2 after inserting 12 with pagesize 10" in {
+        for {
+          l1 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](6L), PK[BetriebEntity](11L), None))
+          l2 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](7L), PK[BetriebEntity](11L), None))
+          l3 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](8L), PK[BetriebEntity](11L), None))
+          l4 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](9L), PK[BetriebEntity](11L), None))
+          l5 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](10L), PK[BetriebEntity](11L), None))
+          l6 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](11L), PK[BetriebEntity](11L), None))
+          l7 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](12L), PK[BetriebEntity](11L), None))
+          l8 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](13L), PK[BetriebEntity](11L), None))
+          l9 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](14L), PK[BetriebEntity](11L), None))
+          l10 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](15L), PK[BetriebEntity](11L), None))
+          l11 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](16L), PK[BetriebEntity](11L), None))
+          l12 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](17L), PK[BetriebEntity](11L), None))
+          res <- leiter.leiterAnzeigen(1, 10) map {
+            leiterSeq => leiterSeq.length should be(3)
+          }
+        } yield res
+      }
+      "be able to see 0 Leiters on page 3 after inserting 12 with pagesize 10" in {
+        for {
+          l1 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](6L), PK[BetriebEntity](11L), None))
+          l2 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](7L), PK[BetriebEntity](11L), None))
+          l3 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](8L), PK[BetriebEntity](11L), None))
+          l4 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](9L), PK[BetriebEntity](11L), None))
+          l5 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](10L), PK[BetriebEntity](11L), None))
+          l6 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](11L), PK[BetriebEntity](11L), None))
+          l7 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](12L), PK[BetriebEntity](11L), None))
+          l8 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](13L), PK[BetriebEntity](11L), None))
+          l9 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](14L), PK[BetriebEntity](11L), None))
+          l10 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](15L), PK[BetriebEntity](11L), None))
+          l11 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](16L), PK[BetriebEntity](11L), None))
+          l12 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](17L), PK[BetriebEntity](11L), None))
+          res <- leiter.leiterAnzeigen(2, 10) map {
+            leiterSeq => leiterSeq.length should be(0)
+          }
+        } yield res
       }
     }
   }
