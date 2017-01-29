@@ -14,7 +14,7 @@ trait DienstleistungComponent {
     def kommentar = column[String]("KOMMENTAR")
     def dauer = column[Int]("DAUER")
     def dienstleistungsTyp = foreignKey("DLT_FK", dlTypId, dienstleistungsTypen)(_.id)
-    def betrieb = foreignKey("BTR_FK", betriebId, betriebe)(_.id)
+    def betrieb = foreignKey("BTRDL_FK", betriebId, betriebe)(_.id)
 
     /**
      * Unique index to ensure uniqueness of the combination: betriebId, dlTypId, dauer, kommentar

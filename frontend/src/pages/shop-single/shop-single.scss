@@ -1,6 +1,28 @@
-page-shop-single {
-  #map {
-    width: 100%;
-    height: 30%;
+@import "../../theme/variables.scss";
+
+.ios, .md, .wp{
+  page-shop-single {
+    ion-content{
+      #map {
+        width: 85%;
+        height: 30%;
+        margin: 15px auto;
+      }
+
+      .group{
+        width: 85%;
+        margin: 30px auto;
+
+        ion-item{
+          padding-left: 0;
+          border: none;
+        }
+      }
+
+      .fa{
+        width: 30px;
+      }
+    }
   }
 }
+

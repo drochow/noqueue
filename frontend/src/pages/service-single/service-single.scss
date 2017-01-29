@@ -1,3 +1,28 @@
-page-service-single {
+@import "../../theme/variables.scss";
+.ios, .md, .wp{
+  page-service-single {
+    ion-content{
+      ion-refresher{
+        border: none;
+      }
 
+      .group{
+        width: 85%;
+        margin: 30px auto;
+
+        ion-list{
+          ion-item{
+            padding-left: 0;
+            border: none;
+            border-bottom: 1px solid map-get($colors, divider);
+          }
+        }
+      }
+
+      .fa{
+        width: 30px;
+      }
+    }
+  }
 }
+

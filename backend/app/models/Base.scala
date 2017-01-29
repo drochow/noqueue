@@ -10,7 +10,6 @@ import scala.concurrent.Future
 /**
  * Created by David on 29.11.16.
  */
-//@todo inject config and choose db
 class Base(val dbD: DB) {
 
   val db = dbD.db;
@@ -20,3 +19,4 @@ class Base(val dbD: DB) {
 
   def setupDB = db.run(dal.create)
 }
+
