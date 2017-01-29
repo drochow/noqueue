@@ -16,7 +16,7 @@ export class ValidatorProvider {
 
    rules = {
      username:"Must be 6 to 30 letters, numbers or . - _",
-     password:"Must be 8 to 30 characters long, must contain at least 1 lower case letter, 1 upper case letter, 1 number",
+     password:"Must be 8 to 20 characters long, must contain at least 1 lower case letter, 1 upper case letter, 1 number",
      newPassword:"Must be at least 8 characters.",
      samePassword:"New password equals old password.",
      emptyPassword: "Please fill in this field",
@@ -39,8 +39,8 @@ export class ValidatorProvider {
   // 6 to 30 alphanumeric + special characters - _ .
   username = string => /^[a-zA-Z\d\.\-\_]{6,30}$/.test(string);
 
-  // 8 to 30 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number)
-  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/.test(string);
+  // 8 to 20 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number)
+  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,20}$/.test(string);
 
   passwordsMatching = (string1, string2) => string1 === string2;
 
