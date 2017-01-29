@@ -87,11 +87,11 @@ trait BetriebComponent {
    * @param adresse
    * @return
    */
-  def update(id: PK[BetriebEntity], betrieb: BetriebEntity, adresse: AdresseEntity): DBIO[Int] =
+  def update(id: PK[BetriebEntity], betrieb: BetriebEntity, adresse: AdresseEntity): DBIO[Boolean] =
     (for {
       adr: AdresseEntity <- findOrInsert(adresse)
       count: Int <- betriebe.filter(_.id === id).update(betrieb.copy(adresseId = adr.id.get, id = Option(id)))
-    } yield count).transactionally
+    } yield count == 1).transactionally
 
   /**
    *

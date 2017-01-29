@@ -48,7 +48,7 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
           apiResult <- request.leiter.betriebsInformationenVeraendern(PK[BetriebEntity](id), btrAndAdr.betriebEntity,
             btrAndAdr.adresseEntity.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude)))
             .flatMap {
-              case affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
+              case updated: Boolean => if (updated) accepted() else ApiError.errorItemNotFound
             }
         } yield apiResult)
       }
@@ -78,8 +78,9 @@ class Betrieb @Inject() (val dbD: DB, val applicationLifecycle: ApplicationLifec
     }
   }
 
-  def listMitarbeiter(betriebId: Long, page: Int, size: Int) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
-    request.leiter.mitarbeiterAnzeigen(page, size) flatMap {
+  def listMitarbeiter(betriebId: Long, page: Int, size: Int) = ApiAction { implicit request =>
+    val uAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
+    uAnwender.mitarbeiterAnzeigen(PK[BetriebEntity](betriebId), page, size) flatMap {
       mitarbeiter => ok(mitarbeiter)
     }
   }

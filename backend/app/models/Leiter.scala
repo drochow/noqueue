@@ -55,13 +55,6 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
       case betriebE => authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK)).map(_ == 1), betriebE.id.get)
     }
 
-  def mitarbeiterAnzeigen(page: Int, size: Int): Future[Seq[(MitarbeiterEntity, AnwenderEntity)]] =
-    betrieb flatMap {
-      case betrieb => db.run(dal.listMitarbeiterOf(betrieb.id.get, page, size))
-    } recover {
-      case nse: NoSuchElementException => throw new UnauthorizedException
-    }
-
   def leiterEinstellen(leiterEntity: LeiterEntity, betriebId: PK[BetriebEntity]): Future[LeiterEntity] =
     authorizedAction(() => db.run(dal.insert(leiterEntity)), betriebId)
 
