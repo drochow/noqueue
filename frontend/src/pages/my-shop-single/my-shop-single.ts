@@ -150,23 +150,6 @@ export class MyShopSinglePage {
     )
   }
 
-  demoteManager(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.demoteManager(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
-
-  promoteEmployee(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.promoteEmployee(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
 
   fireManager(slidingItem, userID){
     slidingItem.close();
@@ -224,8 +207,8 @@ export class MyShopSinglePage {
   }
 
   showService(serviceID){
-    console.log("will show: " + serviceID);
     let service = this.services.filter(s => s.id == serviceID)[0];
+    console.log("will show: ", service);
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
@@ -235,7 +218,8 @@ export class MyShopSinglePage {
   }
 
   createService(){
-    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true});
+    console.log("will create");
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true, serviceID: -1, service: undefined});
   }
 
   addCoworkers(){
