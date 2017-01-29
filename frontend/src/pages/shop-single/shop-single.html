@@ -12,7 +12,9 @@
 
 
 <ion-content>
-  <p *ngIf="error">{{errorMessage}}</p>
+  <div class="group">
+    <p *ngIf="error">{{errorMessage}}</p>
+  </div>
   <div #map id="map"></div>
 
   <div class="group">
