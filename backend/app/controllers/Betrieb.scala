@@ -79,7 +79,7 @@ class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: Me
   }
 
   def listMitarbeiter(betriebId: Long, page: Int, size: Int) = ApiAction { implicit request =>
-    val uAnwender = new UnregistrierterAnwender(applicationLifecycle, dbD)
+    val uAnwender = new UnregistrierterAnwender(dbD)
     uAnwender.mitarbeiterAnzeigen(PK[BetriebEntity](betriebId), page, size) flatMap {
       mitarbeiter => ok(mitarbeiter)
     }
