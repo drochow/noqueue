@@ -17,13 +17,7 @@ export class QueuesProvider {
 
   constructor(public http: Http, private httpProvider: HttpProvider, public auth: AuthenticationProvider) {
   }
-
-  // @TODO - use getMyShops() instead and check if the user is 'isAnwesend'
-  getMyQueues(shopId: number) : Observable<any>{
-    let route = this.httpProvider.ROUTES.shops + "/" + shopId + "/ws";
-    return this.httpProvider.get(route);
-  }
-
+  
   getMyQueuePosition() : Observable<any>{
     let route = this.httpProvider.ROUTES.users + "/wsp";
     return this.httpProvider.get(route);
@@ -54,9 +48,6 @@ export class QueuesProvider {
     return this.httpProvider.delete(this.httpProvider.ROUTES.shops + '/' + shopId +  '/wsp/' + wspId)
   }
 
-
-  // @TODO remove the default userid  value; it's only used for testing purposes
-  // as the token from the fake server doesn't contain userID
   private mapToExpectedJson(serviceID: number, employeeID: number){
     return {
       dienstleistung: Number(serviceID),

@@ -3,7 +3,6 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { HttpProvider } from '../providers/http-provider';
 import { Storage } from '@ionic/storage';
-import { JwtHelper } from 'angular2-jwt';
 
 /*
   Generated class for the AuthenticationProvider provider.
@@ -15,9 +14,8 @@ import { JwtHelper } from 'angular2-jwt';
 export class AuthenticationProvider {
 
   private token: string;
-  private userID: string;
 
-  constructor(public http: Http, private httpProvider: HttpProvider, private storage: Storage, private jwtHelper: JwtHelper) {
+  constructor(public http: Http, private httpProvider: HttpProvider, private storage: Storage) {
     if(this.storage){
       this.storage.get('token').then(
         (token) => this.token = token
@@ -37,7 +35,6 @@ export class AuthenticationProvider {
               (token) => {
                 auth.token = token;
                 auth.httpProvider.setToken(token);
-                auth.decodeUserID();
                 resolve()
               },
               () => reject()
@@ -98,15 +95,6 @@ export class AuthenticationProvider {
 
   getToken() : string{
     return this.token;
-  }
-
-  decodeUserID() : void{
-    let decoded = this.jwtHelper.decodeToken(this.token);
-    this.userID = decoded.userId;
-  }
-
-  getUserId() : string{
-    return this.userID;
   }
 
 }
