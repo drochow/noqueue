@@ -115,8 +115,8 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
   def wsVerlassen() = {
     for {
       anw <- anwender
-      del <- db.run(dal.delete(anw.id.get))
-    } yield del
+      del <- db.run(dal.deleteWspOfAnw(anw.id.get))
+    } yield (del == 1)
   }
 
   def meineBetriebe(): Future[Seq[(BetriebAndAdresse, Boolean, Boolean)]] = {

@@ -100,7 +100,7 @@ trait WarteschlangenPlatzComponent {
     } yield persistedWsp).transactionally
   }
 
-  def delete(anwID: PK[AnwenderEntity]) =
+  def deleteWspOfAnw(anwID: PK[AnwenderEntity]) =
     for {
       wsp <- warteschlangenplaetze.filter(_.anwenderId === anwID).result.head
       prevWsp <- warteschlangenplaetze.filter(_.folgePlatzId === wsp.id).map(_.folgePlatzId).update(wsp.folgeNummer)

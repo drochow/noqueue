@@ -1,6 +1,7 @@
 package models
 
 import java.sql.SQLException
+import java.util.NoSuchElementException
 import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
@@ -8,6 +9,7 @@ import api.jwt.TokenPayload
 import models.db._
 import org.mindrot.jbcrypt.BCrypt
 import play.api.inject.ApplicationLifecycle
+import utils.UnauthorizedException
 
 import scala.concurrent.Future
 
@@ -69,6 +71,9 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
   def betriebAnzeigen(id: PK[BetriebEntity]) = {
     db.run(dal.getBetriebWithAdresseById(id))
   }
+
+  def mitarbeiterAnzeigen(betriebId: PK[BetriebEntity], page: Int, size: Int): Future[Seq[(MitarbeiterEntity, AnwenderEntity)]] =
+    db.run(dal.listMitarbeiterOf(betriebId, page, size))
 
   //@todo DELET This
   def testDltinserts = {

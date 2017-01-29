@@ -50,14 +50,9 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
   def mitarbeiterAnstellen(mitarbeiter: MitarbeiterEntity): Future[MitarbeiterEntity] =
     authorizedAction(() => db.run(dal.insert(mitarbeiter)), mitarbeiter.betriebId)
 
-  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): Future[Int] =
-    authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK, betriebId)), betriebId)
-
-  def mitarbeiterAnzeigen(page: Int, size: Int): Future[Seq[(MitarbeiterEntity, AnwenderEntity)]] =
+  def mitarbeiterEntlassen(mitarbeiterPK: PK[MitarbeiterEntity]): Future[Boolean] =
     betrieb flatMap {
-      case betrieb => db.run(dal.listMitarbeiterOf(betrieb.id.get, page, size))
-    } recover {
-      case nse: NoSuchElementException => throw new UnauthorizedException
+      case betriebE => authorizedAction(() => db.run(dal.deleteMitarbeiter(mitarbeiterPK)).map(_ == 1), betriebE.id.get)
     }
 
   def leiterEinstellen(leiterEntity: LeiterEntity, betriebId: PK[BetriebEntity]): Future[LeiterEntity] =
@@ -108,11 +103,11 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
       case nse: NoSuchElementException => throw new UnauthorizedException
     }
 
-  def dienstleistungEntfernen(dienstleistungPK: PK[DienstleistungEntity]): Future[Int] =
+  def dienstleistungEntfernen(dienstleistungPK: PK[DienstleistungEntity]): Future[Boolean] =
     (for {
       betrieb <- betrieb
       affectedRows <- db.run(dal.deleteDienstleistung(dienstleistungPK, betrieb.id.get))
-    } yield affectedRows) recover {
+    } yield affectedRows == 1) recover {
       case nse: NoSuchElementException => throw new UnauthorizedException
     }
 }
