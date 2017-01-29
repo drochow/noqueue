@@ -15,6 +15,16 @@ class DAL(val driver: JdbcProfile)
     with DriverComponent {
   import driver.api._
 
+  def runScript(location: String) =
+    sqlu"""
+       RUNSCRIPT FROM $location;
+      """
+
+  def dropAllObjectsForTestDB() =
+    sqlu"""
+          DROP ALL OBJECTS;
+        """
+
   def create =
     (anwenders.schema
       ++ adresses.schema
