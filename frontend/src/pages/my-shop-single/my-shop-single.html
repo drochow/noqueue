@@ -11,35 +11,23 @@
 </ion-header>
 
 <ion-content>
-  <div class="info-group">
-    <p class="sectionName test">Overview</p>
-    <p class="item">{{shop.name}}</p>
-    <i class="fa fa-map-o abc" aria-hidden="true"></i>
-    <ion-icon class="fa fa-heart"></ion-icon>
+  <div class="group info-group">
+    <p class="sectionName">Overview<i *ngIf="isLeiter" class="fa fa-wrench right" (click)="editShopInfo()"></i></p>
+    <p class="item"><i class="fa fa-home"></i>{{shop.name}}</p>
+    <p class="item"><i class="fa fa-location-arrow"></i>{{shop.address}}</p>
+    <p class="item"><i class="fa fa-clock-o"></i>{{shop.openingHours}}</p>
+    <p class="item"><i class="fa fa-phone"></i>{{shop.phone}}</p>
+    <p class="item"><i class="fa fa-envelope-o"></i>{{shop.email}}</p>
   </div>
-  <ion-item-group>
-    <ion-item-divider color="light" (click)="editShopInfo()">Info</ion-item-divider>
-    <ion-item><ion-icon name="home" item-left></ion-icon>{{shop.name}}</ion-item>
-    <ion-item><ion-icon name="map" item-left></ion-icon>{{shop.address}}</ion-item>
-    <ion-item><ion-icon name="call" item-left></ion-icon>{{shop.phone}}</ion-item>
-    <ion-item><ion-icon name="time" item-left></ion-icon>{{shop.openingHours}}</ion-item>
-    <ion-item><ion-icon name="mail" item-left></ion-icon>{{shop.email}}</ion-item>
-    <ion-item *ngIf="!isLeiter">
-      <!--<ion-icon name="checkmark" item-left></ion-icon>-->
-      <ion-label>marked as currently{{isAnwesend ? ' ' : ' not '}}working</ion-label>
-      <ion-toggle (click)="switchAttendance()" [checked]="isAnwesend" color="secondary" item-left></ion-toggle>
-    </ion-item>
-  </ion-item-group>
-
-
-  <ion-list *ngIf="isLeiter">
-    <ion-item-divider color="light" (click)="addCoworkers()">Co-Workers</ion-item-divider>
+  <div class="group" *ngIf="isLeiter">
+    <p class="sectionName">Co-Workers<i class="fa fa-plus right" (click)="addCoworkers()"></i></p>
+    <ion-list>
     <ion-item-sliding *ngFor="let manager of managers" #item>
       <ion-item>
-        {{manager.anwender.nutzerName}} <ion-badge item-right>Manager</ion-badge>
+        {{manager.anwender.nutzerName}} <span class="manager">Manager</span>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="danger" (click)="fireManager(item, manager.leiter.id)"><ion-icon name="remove"></ion-icon>Fire</button>
+        <button ion-button color="danger" (click)="fireManager(item, manager.leiter.id)"><ion-icon class="fa fa-ban"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
     <ion-item-sliding *ngFor="let employee of employees" #item>
@@ -47,46 +35,72 @@
         {{employee.anwender.nutzerName}}
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="danger" (click)="fireEmployee(item, employee.mitarbeiter.id)"><ion-icon name="remove"></ion-icon>Fire</button>
+        <button ion-button color="danger" (click)="fireEmployee(item, employee.mitarbeiter.id)"><ion-icon class="fa fa-ban"></ion-icon>Fire</button>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-list>
+    </ion-list>
+  </div>
+  <div class="group" *ngIf="isLeiter">
+    <p class="sectionName">Services<i class="fa fa-plus right" (click)="createService()"></i></p>
+    <ion-list>
+      <ion-item-sliding *ngFor="let service of services" #item>
+        <ion-item (click)="showService(service.id)">
+          {{service.name}}
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteService(service.serviceID)"><ion-icon class="fa fa-minus-circle"></ion-icon>Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
 
-  <ion-list *ngIf="isLeiter">
-    <ion-item-divider color="light">Services</ion-item-divider>
-    <ion-item (click)="createService()">
-      Add New Service
-    </ion-item>
-    <ion-item-sliding *ngFor="let service of services" #item>
-      <ion-item (click)="showService(service.id)">
-        {{service.name}}
+  <div class="group" *ngIf="isLeiter === false">
+    <p class="sectionName">Queue</p>
+    <ion-list no-lines>
+      <ion-item *ngIf="!isLeiter">
+        <ion-label>Currently working</ion-label>
+        <ion-toggle class="toggle-element" (click)="switchAttendance()" [checked]="isAnwesend" color="primary" item-right></ion-toggle>
       </ion-item>
-      <ion-item-options side="right">
-        <button ion-button color="danger" (click)="deleteService(service.serviceID)"><ion-icon name="trash"></ion-icon>Delete</button>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-
-  <ion-list *ngIf="!isLeiter">
-    <ion-item-divider color="light">Queue</ion-item-divider>
-    <ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>
-    <ion-item *ngIf="queue.length < 1">Nobody in the line</ion-item>
-    <ion-item-sliding *ngFor="let q of queue.wsps" #item>
-      <ion-item>
-        <h2>{{q.anwender.nutzerName}}</h2>
-        <h3>{{q.dlName}}</h3>
-        <p>Estimated duration for Service is {{q.dauer/60}} Minutes</p>
-        <ion-badge *ngIf="q.beginnZeitpunk != 0" color="primary" item-right>In progress</ion-badge>
-      </ion-item>
-      <ion-item-options side="right">
-        <button ion-button *ngIf="q.beginnZeitpunk == 0" color="primary" (click)="startWorkOn(q.id)"><ion-icon name="hammer"></ion-icon>Start</button>
-        <button ion-button *ngIf="q.beginnZeitpunk != 0" color="secondary" (click)="finishWorkOn(q.id)"><ion-icon name="checkmark"></ion-icon>Finish</button>
-      </ion-item-options>
-    </ion-item-sliding>
+      <ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>
+      <ion-item *ngIf="queue.length < 1">Nobody in the line!</ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item-sliding *ngFor="let q of queue.wsps" #item>
+        <ion-item>
+          <h2>{{q.anwender.nutzerName}}</h2>
+          <h3>{{q.dlName}}</h3>
+          <p>Estimated duration for Service is {{q.dauer/60}} Minutes</p>
+          <ion-badge *ngIf="q.beginnZeitpunk != 0" color="primary" item-right>In progress</ion-badge>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button *ngIf="q.beginnZeitpunk == 0" color="primary" (click)="startWorkOn(q.id)"><ion-icon name="hammer"></ion-icon>Start</button>
+          <button ion-button *ngIf="q.beginnZeitpunk != 0" color="secondary" (click)="finishWorkOn(q.id)"><ion-icon name="checkmark"></ion-icon>Finish</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
 
 
+  <!--<ion-list *ngIf="!isLeiter">-->
+    <!--<ion-item-divider color="light">Queue</ion-item-divider>-->
+    <!--<ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>-->
+    <!--<ion-item *ngIf="queue.length < 1">Nobody in the line</ion-item>-->
+    <!--<ion-item-sliding *ngFor="let q of queue.wsps" #item>-->
+      <!--<ion-item>-->
+        <!--<h2>{{q.anwender.nutzerName}}</h2>-->
+        <!--<h3>{{q.dlName}}</h3>-->
+        <!--<p>Estimated duration for Service is {{q.dauer/60}} Minutes</p>-->
+        <!--<ion-badge *ngIf="q.beginnZeitpunk != 0" color="primary" item-right>In progress</ion-badge>-->
+      <!--</ion-item>-->
+      <!--<ion-item-options side="right">-->
+        <!--<button ion-button *ngIf="q.beginnZeitpunk == 0" color="primary" (click)="startWorkOn(q.id)"><ion-icon name="hammer"></ion-icon>Start</button>-->
+        <!--<button ion-button *ngIf="q.beginnZeitpunk != 0" color="secondary" (click)="finishWorkOn(q.id)"><ion-icon name="checkmark"></ion-icon>Finish</button>-->
+      <!--</ion-item-options>-->
+    <!--</ion-item-sliding>-->
 
-  </ion-list>
+
+
+  <!--</ion-list>-->
 
 </ion-content>
 

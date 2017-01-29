@@ -78,7 +78,7 @@ export class ShopsPage {
       )
   }
 
-  loadShops() : void{
+  loadShops() : Promise<any>{
     this.shouldShowShops = true;
     this.noShops = false;
     let size = 10;

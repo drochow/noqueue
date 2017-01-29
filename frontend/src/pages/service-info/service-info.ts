@@ -29,9 +29,9 @@ export class ServiceInfoPage {
   newShop: boolean = false;
   shopID: number;
   service = {
-    type: string = "",
-    duration: number = 0,
-    description: string = ""
+    type: "",
+    duration: 0,
+    description: ""
   };
   types = [];
   customType: boolean = false;

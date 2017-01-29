@@ -29,13 +29,13 @@ export class EditProfilePage {
   city: string;
   validationRules: any;
   isValid = {
-    username: boolean = true,
-    email: boolean = true,
-    street: boolean = true,
-    streetNr: boolean = true,
-    zip: boolean = true,
-    city: boolean = true,
-    address: boolean = true
+    username: true,
+    email: true,
+    street: true,
+    streetNr: true,
+    zip: true,
+    city: true,
+    address: true
   };
   allFieldsValid: boolean = false;
 

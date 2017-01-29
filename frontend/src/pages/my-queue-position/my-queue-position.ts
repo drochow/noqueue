@@ -24,12 +24,12 @@ export class MyQueuePositionPage {
 
   shop: any = {};
   queuePosition = {
-    id: number = 0,
-    mitarbeiter: string = "",
-    betrieb: string = "",
-    dlId: number =0,
-    dlName: string ="",
-    schaetzZeitpunkt: number = 0,
+    id: 0,
+    mitarbeiter: "",
+    betrieb: "",
+    dlId: 0,
+    dlName: "",
+    schaetzZeitpunkt: 0,
   };
 
 // constructor and lifecycle-events (chronological order)
