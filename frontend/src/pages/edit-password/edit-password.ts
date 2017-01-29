@@ -27,11 +27,11 @@ export class EditPasswordPage {
   username: string = "";
   validationRules: any;
   isValid = {
-    oldPassword: true,
-    newPassword: true,
-    confirmPassword: true,
-    passwordsMatching: true,
-    differentPasswords: true
+    oldPassword: boolean = true,
+    newPassword: boolean = true,
+    confirmPassword: boolean = true,
+    passwordsMatching: boolean = true,
+    differentPasswords: boolean = true
   };
   allFieldsValid: boolean = false;
 

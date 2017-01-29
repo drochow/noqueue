@@ -26,11 +26,11 @@ export class SignupPage {
   errorMessage: string = "";
   validationRules: any;
   isValid = {
-    username: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-    passwordsMatching: true
+    username: boolean = true,
+    email: boolean = true,
+    password: boolean = true,
+    confirmPassword: boolean = true,
+    passwordsMatching: boolean = true
   };
   allFieldsValid: boolean = false;
 

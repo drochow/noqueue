@@ -20,18 +20,18 @@ export class ShopInfoPage {
 
 // declare variables used by the HTML template (ViewModel)
 
-  error = false;
-  errorMessage = "";
+  error: boolean = false;
+  errorMessage: string = "";
   shop = {
-    name: "",
-    phone: "",
-    email: "",
-    openingHours: "",
+    name: string = "",
+    phone: string = "",
+    email: string = "",
+    openingHours: string = "",
     address: {
-      city: "",
-      zip: "",
-      streetNr: "",
-      street: ""
+      city: string = "",
+      zip: string = "",
+      streetNr: string = "",
+      street: string = ""
     }
   };
   newShop: boolean;
@@ -39,17 +39,17 @@ export class ShopInfoPage {
   shopID: number;
   validationRules: any;
   isValid = {
-    shopName: true,
-    email: true,
-    phone: true,
-    openingHours: true,
-    street: true,
-    streetNr: true,
-    zip: true,
-    city: true,
-    address: true
+    shopName: boolean = true,
+    email: boolean = true,
+    phone: boolean = true,
+    openingHours: boolean = true,
+    street: boolean = true,
+    streetNr: boolean = true,
+    zip: boolean = true,
+    city: boolean = true,
+    address: boolean = true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
 
 // constructor and lifecycle-events (chronological order)
 
@@ -73,7 +73,7 @@ export class ShopInfoPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
   }
 
   checkShopName() : void{
@@ -156,7 +156,7 @@ export class ShopInfoPage {
 // ViewModel logic (working with the data)
 
   // call only if editing existing shop
-  reloadData(){
+  reloadData() : void{
     this.resetError();
 
     this.shopsProvider.getShop(this.shopID)
@@ -181,12 +181,12 @@ export class ShopInfoPage {
       );
   }
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
 
-  resetError(){
+  resetError() : void{
     this.error = false;
     this.errorMessage = "";
   }
@@ -194,7 +194,7 @@ export class ShopInfoPage {
 
 // ViewController logic (reacting to events)
 
-  save(){
+  save() : void{
     this.resetError();
     this.checkInput();
     if(!this.allFieldsValid) return;
@@ -212,7 +212,7 @@ export class ShopInfoPage {
       )
   }
 
-  proceed(){
+  proceed() : void{
     this.resetError();
     this.checkInput();
     if(!this.allFieldsValid) return;
