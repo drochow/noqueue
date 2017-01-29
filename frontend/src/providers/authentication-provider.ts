@@ -47,7 +47,7 @@ export class AuthenticationProvider {
 
   login(username: string, password: string) : Promise<any>{
     let auth = this;
-    let body = {nutzerName: username, password};
+    let body = {nutzerName: username, password: password};
     return new Promise(function(resolve, reject){
       auth.httpProvider.post(auth.httpProvider.ROUTES.authentication, body)
         .subscribe(

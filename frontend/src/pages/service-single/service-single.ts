@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
+import { AuthenticationProvider } from '../../providers/authentication-provider';
 
 /*
   Generated class for the ServiceSingle page.
@@ -21,23 +22,24 @@ export class ServiceSinglePage {
 
 // declare variables used by the HTML template (ViewModel)
 
-  employees = [];
+  employees: any  = [];
   selectedEmployee: number = 0;
   service = {
-    type: "",
-    description: "",
-    duration: 0
+    type: string = "",
+    description: string = "",
+    duration: number = 0
   };
   shopID: any;
   serviceID: number;
   error: boolean = false;
   errorMessage: string = "";
   queueActive: boolean = false;
+  isLoggedIn: boolean;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider) {
+  public servicesProvider: ServicesProvider, public auth: AuthProvider) {
     this.shopID = this.navParams.get('shopID');
     this.serviceID = this.navParams.get('serviceID');
     let navService = this.navParams.get('service');
@@ -52,9 +54,13 @@ export class ServiceSinglePage {
     this.reloadData();
   }
 
+  ionViewWillEnter() : void{
+    this.isLoggedIn = this.auth.isLoggedIn();
+  }
+
 // ViewModel logic (working with the data)
 
-  refresh(refresher) : void{
+  refresh(refresher: any) : void{
     this.reloadData();
 
     // @TODO - return a promise in reloadData() and complete the refresher when resolved

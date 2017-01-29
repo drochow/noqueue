@@ -35,6 +35,6 @@
     </ion-list>
   </div>
   <div class="group">
-    <button ion-button full (click)="lineUp()">Line up</button>
+    <button ion-button full [disabled]="!isLoggedIn" (click)="lineUp()">Line up</button>
   </div>
 </ion-content>
