@@ -26,13 +26,13 @@ export class ValidatorProvider {
      searchName:"Must be 1 to 30 characters long",
      street:"Must be 2-50 characters long + german symbols",
      zip:"Must be 5 numbers",
-     streetNumber:"1-5 numeric, followed by 0 or 1 letter",
+     streetNumber:"Must be 1-5 numeric, followed by 0 or 1 letter",
      city:"Must be 2-40 letters (including german symbols) long",
      shopName:"Must be 2-30 alphanumeric, . - _ space",
      phone:"Phone number is not matching the proper format",
      openingHours:"Must be 1-50 characters",
      serviceDescription:"0-250 from any kind",
-     serviceType:"2-40 alphanumeric (including german symbols)",
+     serviceType:"Must be 2-40 alphanumeric (including german symbols)",
      duration: ""
   }
 
