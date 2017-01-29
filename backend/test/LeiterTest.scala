@@ -308,7 +308,7 @@ class LeiterTest extends AsyncWordSpec {
           }
         } yield res
       }
-      "be able to see 10 Leiters on page 1 after inserting 12 with pagesize 5" in {
+      "be able to see 10 Leiters on page 1 after inserting 12 with pagesize 10" in {
         for {
           l1 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](6L), PK[BetriebEntity](11L), None))
           l2 <- leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](7L), PK[BetriebEntity](11L), None))
