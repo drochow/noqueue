@@ -85,7 +85,7 @@ export class ShopsPage {
     let self = this;
     return new Promise(function(resolve, reject){
 
-      self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius * 100 : "", self.location.latitude, self.location.longitude)
+      self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius : "", self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
               console.log("GET Shops in shops.ts :", shops);
@@ -94,6 +94,7 @@ export class ShopsPage {
               }
               for(var item of shops){
                 if(self.shops){
+                  item.distance = (Number(item.distanz)/1000).toFixed(1);
                   self.shops.push(item);
                 }
               }
