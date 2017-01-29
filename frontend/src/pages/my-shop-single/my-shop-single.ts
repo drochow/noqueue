@@ -207,8 +207,8 @@ export class MyShopSinglePage {
   }
 
   showService(serviceID){
-    console.log("will show: " + serviceID);
     let service = this.services.filter(s => s.id == serviceID)[0];
+    console.log("will show: ", service);
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
@@ -218,7 +218,8 @@ export class MyShopSinglePage {
   }
 
   createService(){
-    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true});
+    console.log("will create");
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true, serviceID: -1, service: undefined});
   }
 
   addCoworkers(){

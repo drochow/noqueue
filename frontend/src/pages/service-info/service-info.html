@@ -4,41 +4,69 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border>
+  <ion-navbar color="light">
     <ion-title>Service Information</ion-title>
   </ion-navbar>
 </ion-header>
 
 
-<ion-content padding>
-  <p *ngIf="error" color="danger">{{errorMessage}}</p>
-  <p *ngIf="newShop">Step 2: Service Information</p>
+<ion-content>
 
-  <ion-item>
-    <ion-textarea rows="3" placeholder="Description" [(ngModel)]="service.description"></ion-textarea>
-  </ion-item>
+  <div class="form">
+    <p *ngIf="newShop" class="progress">Step 2: Add Service</p>
 
-  <ion-item>
-  <ion-label>Duration (min)
-    <ion-badge item-right>{{service.duration}} min</ion-badge>
-  </ion-label>
-  </ion-item>
+    <div class="item">
+      <p class="label">Service description:</p>
+      <ion-textarea rows="4" placeholder="Description" [ngClass]="{'valid': isValid.description && service.description}"  (input)="checkDescription()"  [(ngModel)]="service.description"></ion-textarea>
+      <p class="info" color="danger" *ngIf="isValid.description === false">{{validationRules.description}}</p>
+    </div>
 
-  <ion-item>
-    <ion-range min="5" max="120" step="5" snaps="true" color="secondary" [(ngModel)]="service.duration"></ion-range>
-  </ion-item>
+    <div class="item">
+      <p class="label">Service duration: {{service.duration}} min</p>
+      <ion-range min="5" max="120" step="5" snaps="true" color="secondary" [(ngModel)]="service.duration"></ion-range>
+    </div>
 
-  <ion-item>
-    <ion-label>Type</ion-label>
-    <ion-select [(ngModel)]="selectedType">
-      <ion-option *ngFor="let type of types">{{type}}</ion-option>
-    </ion-select>
-  </ion-item>
-  <ion-item (click)="addCustomType()">
-    Add Custom Type
-  </ion-item>
+    <ion-item class="item">
+      <ion-label class="label">Service type:</ion-label>
+      <ion-select [(ngModel)]="selectedType" (ionChange)="checkType()">
+        <ion-option *ngFor="let type of types">{{type}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <p (click)="addCustomType()">Add Custom Type</p>
+    <div class="item">
+      <p class="info" color="danger" *ngIf="isValid.type === false">{{validationRules.type}}</p>
+    </div>
 
-  <button *ngIf="newShop" ion-button full (click)="proceed()">Proceed</button>
-  <button *ngIf="newShop === false" ion-button full (click)="save()">Save</button>
+    <button *ngIf="newShop" class="button" ion-button full (click)="proceed()" [disabled]="allFieldsValid == false || selectedType.length < 1">Proceed</button>
+    <button *ngIf="newShop === false" class="button" ion-button full (click)="save()" [disabled]="allFieldsValid == false || selectedType.length < 1">Save</button>
+
+    <p *ngIf="error" color="danger">{{errorMessage}}</p>
+  </div>
+
+  <!--<ion-item>-->
+    <!--<ion-textarea rows="3" placeholder="Description" [(ngModel)]="service.description"></ion-textarea>-->
+  <!--</ion-item>-->
+
+  <!--<ion-item>-->
+  <!--<ion-label>Duration (min)-->
+    <!--<ion-badge item-right>{{service.duration}} min</ion-badge>-->
+  <!--</ion-label>-->
+  <!--</ion-item>-->
+
+  <!--<ion-item>-->
+    <!--<ion-range min="5" max="120" step="5" snaps="true" color="secondary" [(ngModel)]="service.duration"></ion-range>-->
+  <!--</ion-item>-->
+
+  <!--<ion-item>-->
+    <!--<ion-label>Type</ion-label>-->
+    <!--<ion-select [(ngModel)]="selectedType">-->
+      <!--<ion-option *ngFor="let type of types">{{type}}</ion-option>-->
+    <!--</ion-select>-->
+  <!--</ion-item>-->
+  <!--<ion-item (click)="addCustomType()">-->
+    <!--Add Custom Type-->
+  <!--</ion-item>-->
+
+
 </ion-content>

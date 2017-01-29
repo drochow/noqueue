@@ -36,11 +36,23 @@ export class ServiceInfoPage {
   types = [];
   customType: boolean = false;
   selectedType: string  = "";
+  validationRules: any;
+  isValid = {
+    description: true,
+    duration: true,
+    type: true
+  };
+  allFieldsValid = false;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
   public alertCtrl: AlertController) {
+    this.validationRules = {
+      description: "Must be 0-250 characters.",
+      duration: "",
+      type: "Must be 2-40 characters."
+    };
     this.newShop = navParams.get('newShop');
     this.newService = navParams.get('newService');
     this.shopID = navParams.get('shopID');
@@ -53,7 +65,8 @@ export class ServiceInfoPage {
         duration: navService.dauer,
         description: navService.kommentar
       };
-      this.reloadData();
+      this.selectedType = this.service.type;
+      this.checkInput();
     }
   }
 
@@ -87,27 +100,42 @@ export class ServiceInfoPage {
   }
 
   // only if editing existing service
-  reloadData() : void{
-     this.servicesProvider.getService(this.serviceID, this.shopID)
-       .subscribe(
-         (service) => {
-           this.service = {
-             duration: service.dauer,
-             type: service.name,
-             description: service.kommentar
-           }
-         },
-         (error) => this.registerError(error.message || "Couldn't retrieve service from server")
-       );
+  // reloadData() : void{
+  //    this.servicesProvider.getService(this.serviceID, this.shopID)
+  //      .subscribe(
+  //        (service) => {
+  //          this.service = {
+  //            duration: service.dauer,
+  //            type: service.name,
+  //            description: service.kommentar
+  //          }
+  //        },
+  //        (error) => this.registerError(error.message || "Couldn't retrieve service from server")
+  //      );
+  // }
+
+  checkDescription(){
+    this.isValid.description = this.validator.serviceDescription(this.service.description);
+    this.checkAllFields();
+  }
+
+  checkType(){
+    console.log("Selected type: ", this.selectedType);
+    this.isValid.type = this.validator.serviceType(this.selectedType);
+    this.checkAllFields();
+  }
+
+  checkAllFields(){
+    var valid = true;
+    for(let attr in this.isValid){
+      if(this.isValid[attr] == false) valid = false;
+    }
+    this.allFieldsValid = valid;
   }
 
   checkInput() : void{
-    if(!this.validator.serviceDescription(this.service.description)){
-      this.registerError("Description not valid");
-    }
-    if(!this.validator.serviceType(this.service.type)){
-      this.registerError("Service type not valid");
-    }
+    this.checkType();
+    this.checkDescription();
   }
 
 // ViewController logic (reacting to events)
@@ -117,7 +145,7 @@ export class ServiceInfoPage {
 
     this.resetError();
     this.checkInput();
-    if(this.error) return;
+    if(!this.allFieldsValid) return;
     console.log("trying to edit service");
 
     if(this.newService){
@@ -132,7 +160,7 @@ export class ServiceInfoPage {
 
     this.resetError();
     this.checkInput();
-    if(this.error) return;
+    if(!this.allFieldsValid) return;
 
     console.log("trying to save service");
 
@@ -140,6 +168,7 @@ export class ServiceInfoPage {
   }
 
   editService() : void{
+    this.service.type = this.selectedType;
     this.servicesProvider.editService(this.shopID, this.serviceID, this.service)
       .subscribe(
         () => this.navCtrl.pop(),
@@ -152,6 +181,7 @@ export class ServiceInfoPage {
   }
 
   createService() : void{
+    this.service.type = this.selectedType;
     this.servicesProvider.createService(this.shopID, this.service)
       .subscribe(
         (id) => {

@@ -139,8 +139,6 @@ export class ShopInfoPage {
       if(this.isValid[attr] == false) valid = false;
     }
     this.allFieldsValid = valid;
-    console.log("all fields now: " + this.allFieldsValid);
-    console.log("shopname " + this.isValid.shopName + " phone " + this.isValid.phone + " email " + this.isValid.email + " open " + this.isValid.openingHours);
   }
 
   checkInput(): void {
