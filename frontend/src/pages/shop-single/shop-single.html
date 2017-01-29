@@ -4,41 +4,31 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border>
+  <ion-navbar color="light">
     <ion-title>Shop Information</ion-title>
   </ion-navbar>
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
   <p *ngIf="error">{{errorMessage}}</p>
   <div #map id="map"></div>
 
-  <ion-item-group>
-    <ion-item-divider color="light">Info</ion-item-divider>
-    <ion-item><ion-icon name="home" item-left></ion-icon>{{shop.name}}</ion-item>
-    <ion-item><ion-icon name="map" item-left></ion-icon>{{shop.addressString}}</ion-item>
-    <ion-item><ion-icon name="call" item-left></ion-icon>{{shop.phone}}</ion-item>
-    <ion-item><ion-icon name="time" item-left></ion-icon>{{shop.openingHours}}</ion-item>
-    <ion-item><ion-icon name="mail" item-left></ion-icon>{{shop.email}}</ion-item>
-  </ion-item-group>
+  <div class="group">
+    <p class="sectionName">Information</p>
+    <p class="item"><i class="fa fa-home"></i>{{shop.name}}</p>
+    <p class="item"><i class="fa fa-location-arrow"></i>{{shop.addressString}}</p>
+    <p class="item"><i class="fa fa-clock-o"></i>{{shop.openingHours}}</p>
+    <p class="item"><i class="fa fa-phone"></i>{{shop.phone}}</p>
+    <p class="item"><i class="fa fa-envelope-o"></i>{{shop.email}}</p>
+  </div>
 
-  <ion-item-group>
-    <ion-item-divider color="light">Services</ion-item-divider>
+  <div class="group">
+    <p class="sectionName">Services</p>
     <ion-item *ngFor="let service of services" (click)="showService(service.id)">
       {{service.name}}
-      <!--<ion-card>-->
-        <!--<p>{{service.typ}}</p>-->
-        <!--<p>{{service.dauer}}</p>-->
-        <!--<p>{{service.beschreibung}}</p>-->
-          <!--<ion-label>Employee</ion-label>-->
-          <!--<ion-select (ionChange)="employeeSelection($event, service.serviceID, employee.nutzerName)">-->
-            <!--<ion-option *ngFor="let employee of employees">{{employee.nutzerName}}</ion-option>-->
-          <!--</ion-select>-->
-      <!--</ion-card>-->
-      <!--<button ion-button full (click)="lineUp(service.serviceID)">Line up</button>-->
     </ion-item>
-  </ion-item-group>
+  </div>
 
 </ion-content>
