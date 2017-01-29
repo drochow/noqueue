@@ -39,9 +39,77 @@ class LeiterTest extends AsyncWordSpec {
 
   val db: DB = application.injector.instanceOf[DB]
 
+  val uaLeiter = new Leiter(db.dal.getLeiterOfById(PK[BetriebEntity](11L), PK[AnwenderEntity](1L)), db)
   val leiter = new Leiter(db.dal.getLeiterOfById(PK[BetriebEntity](11L), PK[AnwenderEntity](4L)), db)
 
-  "An Leiter" can {
+  "An unauthorized Leiter" should {
+    "not be able to call dienstleistungAnbieten" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(uaLeiter.dienstleistungAnbieten("Haare Waschen", 3600, "Saubere Haare"), 2 seconds)
+      }
+    }
+    "not be able to call dienstLeistungsInformationVeraendern" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(uaLeiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](10L), "Haare Waschen", 40, "Haare Waschen"), 2 seconds)
+      }
+    }
+    "not be able to call betriebsInformationenVeraendern" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(uaLeiter.betriebsInformationenVeraendern(
+          BetriebEntity("Test", "0162 123 231 0", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
+          AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
+        ), 2 seconds)
+      }
+    }
+    "not be able to call mitarbeiterAnstellen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(
+          uaLeiter.mitarbeiterAnstellen(
+            MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](1L), None)
+          ),
+          2 seconds
+        )
+      }
+    }
+    "not be able to call leiterAnstellen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(
+          uaLeiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)),
+          2 seconds
+        )
+      }
+    }
+    "not be able to call mitarbeiterEntlassen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(
+          uaLeiter.mitarbeiterEntlassen(
+            PK[MitarbeiterEntity](9L)
+          ),
+          2 seconds
+        )
+      }
+    }
+    "not be able to call leiterEntlassen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(
+          uaLeiter.leiterEntlassen(PK[LeiterEntity](5L)),
+          2 seconds
+        )
+      }
+    }
+    "not be able to call leiterAnzeigen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(uaLeiter.leiterAnzeigen(0, 10), 2 seconds)
+      }
+    }
+    "not be able to call dienstleistungEntfernen" in {
+      assertThrows[UnauthorizedException] {
+        Await.result(uaLeiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)), 2 seconds)
+      }
+    }
+  }
+
+  "An authorized Leiter" can {
     "call dienstleistungAnbieten and " should {
       "be able to create DL with an existing DLTypeEntity with same Name and get the DL returned" in {
         val expectedResult = DienstleistungEntity("Saubere Haare", 3600, PK[BetriebEntity](11L), PK[DienstleistungsTypEntity](5L), Some(PK[DienstleistungEntity](10L)))
