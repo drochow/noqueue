@@ -29,20 +29,20 @@ export class ServiceInfoPage {
   newShop: boolean = false;
   shopID: number;
   service = {
-    type: "",
-    duration: 0,
-    description: ""
+    type: string = "",
+    duration: number = 0,
+    description: string =""
   };
-  types = [];
+  types: any = [];
   customType: boolean = false;
   selectedType: string  = "";
   validationRules: any;
   isValid = {
-    description: true,
-    duration: true,
-    type: true
+    description: boolean = true,
+    duration: boolean = true,
+    type: boolean = true
   };
-  allFieldsValid = false;
+  allFieldsValid: boolean = false;
 
 // constructor and lifecycle-events (chronological order)
 

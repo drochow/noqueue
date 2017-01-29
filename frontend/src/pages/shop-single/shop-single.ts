@@ -27,11 +27,11 @@ export class ShopSinglePage {
 
   employees: any = [];
   shop = {
-    name: "",
-    addressString: "",
-    phone: "",
-    email: "",
-    openingHours: ""
+    name: string = "",
+    addressString: string = "",
+    phone: string = "",
+    email: string = "",
+    openingHours: string = ""
   };
   services: any = [];
   shopID: any;

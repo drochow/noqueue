@@ -18,22 +18,22 @@ import { ShopInfoPage } from '../shop-info/shop-info';
 })
 export class MyShopsPage {
 
-  myShops = [];
-  hasShops = false;
-  error = false;
-  errorMessage = "";
+  myShops: any = [];
+  hasShops: boolean = false;
+  error: boolean = false;
+  errorMessage: string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider) {}
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() : void{
     this.reloadData();
   }
 
-  refresh(refresher){
+  refresh(refresher: any) : void{
     this.reloadData();
 
     setTimeout(() => {
@@ -41,7 +41,7 @@ export class MyShopsPage {
     }, 1000);
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -59,11 +59,11 @@ export class MyShopsPage {
       )
   }
 
-  showMyShopSinglePage(shopID, isLeiter, isAnwesend){
+  showMyShopSinglePage(shopID: number, isLeiter: boolean, isAnwesend: boolean) : void{
     this.navCtrl.push(MyShopSinglePage, {shopID: shopID, isLeiter: isLeiter, isAnwesend: isAnwesend});
   }
 
-  createNewShop(){
+  createNewShop() : void{
     this.navCtrl.push(ShopInfoPage,{newShop: true});
   }
 
