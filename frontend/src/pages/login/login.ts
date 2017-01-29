@@ -26,6 +26,7 @@ export class LoginPage {
   password: string = "";
   error: boolean = false;
   errorMessage: string = "";
+  validationRules: any;
 
 // constructor and lifecycle-events (chronological order)
 
@@ -36,9 +37,6 @@ export class LoginPage {
       email: this.validator.rules.email,
       password: this.validator.rules.password
     }
-
-
-
   }
 
   ionViewDidLoad() : void{

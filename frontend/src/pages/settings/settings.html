@@ -22,23 +22,6 @@
       <ion-item *ngIf="isLoggedIn === false" (click)="showLoginPage()">Log In</ion-item>
       <ion-item *ngIf="isLoggedIn === false" (click)="showSignupPage()">Sign Up</ion-item>
     </ion-list>
-    <p class="sectionName">Notifications</p>
-    <ion-list no-lines>
-      <ion-item>
-        <ion-label>Theme</ion-label>
-        <ion-select [(ngModel)]="theme">
-          <ion-option value="light" selected="true">Light</ion-option>
-          <ion-option value="dark">Dark</ion-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="isLoggedIn">
-        <ion-label>Push Notifications</ion-label>
-        <ion-select [(ngModel)]="notificationSettings">
-          <ion-option value="never" selected="true">Never</ion-option>
-          <ion-option value="always">Always</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
     <p class="sectionName">Application</p>
     <ion-list no-lines>
       <ion-item (click)="showReportProblemPage()">Report A Problem</ion-item>
