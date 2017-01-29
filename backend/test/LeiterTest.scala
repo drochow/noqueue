@@ -18,15 +18,17 @@ import scala.concurrent.duration._
  * Tests for the LeiterEntity
  */
 class LeiterTest extends AsyncWordSpec {
+  
+  val awaitDuration: Duration = 1 seconds
 
   override def withFixture(test: NoArgAsyncTest) = { // Define a shared fixture
     try {
       // Shared setup (run at beginning of each test)
       val fill = new File("./test/fill.sql")
       //Awaiting  to ensure that db is fully cleaned up and filled  before test is started
-      Await.result(db.db.run(db.dal.dropAllObjectsForTestDB()), 10 seconds)
-      Await.result(db.db.run(db.dal.create), 10 seconds)
-      Await.result(db.db.run(db.dal.runScript(fill.getAbsolutePath)), 10 seconds)
+      Await.result(db.db.run(db.dal.dropAllObjectsForTestDB()), awaitDuration)
+      Await.result(db.db.run(db.dal.create), awaitDuration)
+      Await.result(db.db.run(db.dal.runScript(fill.getAbsolutePath)), awaitDuration)
       test()
     } finally {
       // Shared cleanup (run at end of each test)
@@ -45,12 +47,12 @@ class LeiterTest extends AsyncWordSpec {
   "An unauthorized Leiter" should {
     "not be able to call dienstleistungAnbieten" in {
       assertThrows[UnauthorizedException] {
-        Await.result(uaLeiter.dienstleistungAnbieten("Haare Waschen", 3600, "Saubere Haare"), 2 seconds)
+        Await.result(uaLeiter.dienstleistungAnbieten("Haare Waschen", 3600, "Saubere Haare"), awaitDuration)
       }
     }
     "not be able to call dienstLeistungsInformationVeraendern" in {
       assertThrows[UnauthorizedException] {
-        Await.result(uaLeiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](10L), "Haare Waschen", 40, "Haare Waschen"), 2 seconds)
+        Await.result(uaLeiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](10L), "Haare Waschen", 40, "Haare Waschen"), awaitDuration)
       }
     }
     "not be able to call betriebsInformationenVeraendern" in {
@@ -58,7 +60,7 @@ class LeiterTest extends AsyncWordSpec {
         Await.result(uaLeiter.betriebsInformationenVeraendern(
           BetriebEntity("Test", "0162 123 231 0", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
           AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
-        ), 2 seconds)
+        ), awaitDuration)
       }
     }
     "not be able to call mitarbeiterAnstellen" in {
@@ -67,7 +69,7 @@ class LeiterTest extends AsyncWordSpec {
           uaLeiter.mitarbeiterAnstellen(
             MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](1L), None)
           ),
-          2 seconds
+          awaitDuration
         )
       }
     }
@@ -75,7 +77,7 @@ class LeiterTest extends AsyncWordSpec {
       assertThrows[UnauthorizedException] {
         Await.result(
           uaLeiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](1L), PK[BetriebEntity](11L), None)),
-          2 seconds
+          awaitDuration
         )
       }
     }
@@ -85,7 +87,7 @@ class LeiterTest extends AsyncWordSpec {
           uaLeiter.mitarbeiterEntlassen(
             PK[MitarbeiterEntity](9L)
           ),
-          2 seconds
+          awaitDuration
         )
       }
     }
@@ -93,18 +95,18 @@ class LeiterTest extends AsyncWordSpec {
       assertThrows[UnauthorizedException] {
         Await.result(
           uaLeiter.leiterEntlassen(PK[LeiterEntity](5L)),
-          2 seconds
+          awaitDuration
         )
       }
     }
     "not be able to call leiterAnzeigen" in {
       assertThrows[UnauthorizedException] {
-        Await.result(uaLeiter.leiterAnzeigen(0, 10), 2 seconds)
+        Await.result(uaLeiter.leiterAnzeigen(0, 10), awaitDuration)
       }
     }
     "not be able to call dienstleistungEntfernen" in {
       assertThrows[UnauthorizedException] {
-        Await.result(uaLeiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)), 2 seconds)
+        Await.result(uaLeiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)), awaitDuration)
       }
     }
   }
@@ -132,7 +134,7 @@ class LeiterTest extends AsyncWordSpec {
       }
       "not be able to create an already Existing DL" in {
         assertThrows[JdbcSQLException] {
-          Await.result(leiter.dienstleistungAnbieten("Haare Waschen", 40, "Haare Waschen"), 2 seconds)
+          Await.result(leiter.dienstleistungAnbieten("Haare Waschen", 40, "Haare Waschen"), awaitDuration)
         }
       }
     }
@@ -152,7 +154,7 @@ class LeiterTest extends AsyncWordSpec {
         assertThrows[JdbcSQLException] {
           Await.result(
             leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](5L), "Haare Waschen", 40, "Haare Waschen"),
-            2 seconds
+            awaitDuration
           )
         }
       }
@@ -173,7 +175,7 @@ class LeiterTest extends AsyncWordSpec {
         assertThrows[JdbcSQLException] {
           Await.result(
             leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](100L), None)),
-            2 seconds
+            awaitDuration
           )
         }
       }
@@ -181,7 +183,7 @@ class LeiterTest extends AsyncWordSpec {
         assertThrows[JdbcSQLException] {
           Await.result(
             leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](4L), None)),
-            2 seconds
+            awaitDuration
           )
         }
       }
@@ -233,7 +235,7 @@ class LeiterTest extends AsyncWordSpec {
       }
       "not be able to fire the last existing Leiter of this Betrieb" in {
         assertThrows[OneLeiterRequiredException] {
-          Await.result(leiter.leiterEntlassen(PK[LeiterEntity](4L)), 2 seconds)
+          Await.result(leiter.leiterEntlassen(PK[LeiterEntity](4L)), awaitDuration)
         }
       }
       "be able to fire existing Leiter of this Betrieb who is not th last leiter" in {
@@ -250,7 +252,7 @@ class LeiterTest extends AsyncWordSpec {
         assertThrows[JdbcSQLException] {
           Await.result(
             leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](100L), PK[BetriebEntity](11L), None)),
-            2 seconds
+            awaitDuration
           )
         }
       }
@@ -258,7 +260,7 @@ class LeiterTest extends AsyncWordSpec {
         assertThrows[JdbcSQLException] {
           Await.result(
             leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](4L), PK[BetriebEntity](11L), None)),
-            2 seconds
+            awaitDuration
           )
         }
       }
@@ -365,6 +367,13 @@ class LeiterTest extends AsyncWordSpec {
           }
         } yield res
       }
+    }
+    "call dienstleistungEntfernen and" should {
+      
+    }
+    
+    "call betriebInformationenVeraendern and" should {
+
     }
   }
 }

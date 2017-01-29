@@ -136,12 +136,12 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
    * Updates @DienstleistungEntity matching the provided Primary Key with provided data
    *
    * If the parameter name does not match any existing @DienstleistungsTypEntity a new one will get created.
-   * @todo shoud return true/false or the updated entity
+   * @todo shoud return true/false or the updated entity (needs further discussion with team)
    *
    * @param diensleistungPK Primary Key of the @DienstleistungEntity that should get Updated
-   * @param name new Name of the service
+   * @param name new name of the service
    * @param dauer new duration of the service in seconds
-   * @param kommentar comment descriping the service
+   * @param kommentar new comment descriping the service
    * @return by update affected rows
    */
   def dienstleistungsInformationVeraendern(diensleistungPK: PK[DienstleistungEntity], name: String, dauer: Int, kommentar: String): Future[Int] =
