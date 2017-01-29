@@ -49,9 +49,9 @@ export class ServiceInfoPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
   public alertCtrl: AlertController) {
     this.validationRules = {
-      description: "Must be 0-250 characters.",
-      duration: "",
-      type: "Must be 2-40 characters."
+      description: this.validator.rules.serviceDescription,
+      duration: this.validator.rules.duration,
+      type: this.validator.rules.serviceType
     };
     this.newShop = navParams.get('newShop');
     this.newService = navParams.get('newService');

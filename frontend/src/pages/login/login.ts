@@ -30,7 +30,16 @@ export class LoginPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
-  private modalCtrl: ModalController, private alertCtrl: AlertController) {}
+  private modalCtrl: ModalController, private alertCtrl: AlertController) {
+    this.validationRules = {
+      username: this.validator.rules.username,
+      email: this.validator.rules.email,
+      password: this.validator.rules.password
+    }
+
+
+
+  }
 
   ionViewDidLoad() : void{
   }

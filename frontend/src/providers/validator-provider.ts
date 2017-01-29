@@ -14,12 +14,33 @@ export class ValidatorProvider {
   constructor(public http: Http) {
   }
 
+   rules = {
+     username:"Must be 6 to 30 letters, numbers or . - _",
+     password:"Must be 8 to 30 characters long, must contain at least 1 lower case letter, 1 upper case letter, 1 number",
+     newPassword:"Must be at least 8 characters.",
+     samePassword:"New password equals old password.",
+     emptyPassword: "Please fill in this field",
+     passwordMatching:"Passwords do not match",
+     email:"Must be a valid Email",
+     searchTerm:"Must be 1 to 50 characters long",
+     searchName:"Must be 1 to 30 characters long",
+     street:"Must be 2-50 characters long + german symbols",
+     zip:"Must be 5 numbers",
+     streetNumber:"1-5 numeric, followed by 0 or 1 letter",
+     city:"Must be 2-40 letters (including german symbols) long",
+     shopName:"Must be 2-30 alphanumeric, . - _ space",
+     phone:"Phone number is not matching the proper format",
+     openingHours:"Must be 1-50 characters",
+     serviceDescription:"0-250 from any kind",
+     serviceType:"2-40 alphanumeric (including german symbols)",
+     duration: ""
+  }
+
   // 6 to 30 alphanumeric + special characters - _ .
   username = string => /^[a-zA-Z\d\.\-\_]{6,30}$/.test(string);
 
-  // 8 to 30 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number) and
-  // 1 special character
-  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(string);
+  // 8 to 30 alphanumeric, must contain at least 1 lower case letter, 1 upper case letter, 1 digit(number)
+  password = string => /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/.test(string);
 
   passwordsMatching = (string1, string2) => string1 === string2;
 
