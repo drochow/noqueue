@@ -26,8 +26,6 @@ export class SettingsPage {
 
 // declare variables used by the HTML template (ViewModel)
 
-  theme: string;
-  notificationSettings: string;
   isLoggedIn: boolean;
 
 // constructor and lifecycle-events (chronological order)
@@ -44,14 +42,6 @@ export class SettingsPage {
 
 // ViewController logic (reacting to events)
 
-  themeSelection(event : any) : void{
-    this.userConfig.selectTheme(this.theme);
-  }
-
-  notificationSettingsSelection(event) : void{
-    this.userConfig.selectNotificationSettings(this.notificationSettings);
-  }
-
   showEditProfilePage() : void{
     this.navCtrl.push(EditProfilePage);
   }
@@ -61,12 +51,6 @@ export class SettingsPage {
   }
 
   logout() : void{
-    this.auth.logout();
-    this.navCtrl.popToRoot();
-  }
-
-  // @TODO
-  deleteAccount() : void{
     this.auth.logout();
     this.navCtrl.popToRoot();
   }

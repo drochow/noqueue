@@ -56,14 +56,14 @@ export class ShopInfoPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
   public validator: ValidatorProvider) {
     this.validationRules = {
-      shopName: "Must be 2 to 30 letters.",
-      email: "Must be a valid email.",
-      phone: "Must be a valid phone.",
-      openingHours: "Must be 1-50 characters.",
-      street: "Must be 2-50 letters.",
-      streetNr: "Must be 1-5 numbers, followed by an optional letter.",
-      zip: "Must be 5 numbers.",
-      city: "Must be 2-40 letters."
+      shopName: this.validator.rules.shopName,
+      email: this.validator.rules.email,
+      phone: this.validator.rules.phone,
+      openingHours: this.validator.rules.openingHours,
+      street: this.validator.rules.street,
+      streetNr: this.validator.rules.streetNumber,
+      zip: this.validator.rules.zip,
+      city: this.validator.rules.city
     };
 
     this.newShop = navParams.get('newShop');

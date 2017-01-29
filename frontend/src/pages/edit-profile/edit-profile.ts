@@ -44,12 +44,12 @@ export class EditProfilePage {
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
   private validator: ValidatorProvider) {
     this.validationRules = {
-      username: "Must be 6 to 30 letters, numbers or . - _",
-      email: "Must be a valid email.",
-      street: "Must be 2-50 letters.",
-      streetNr: "Must be 1-5 numbers, followed by an optional letter.",
-      zip: "Must be 5 numbers.",
-      city: "Must be 2-40 letters"
+      username: this.validator.rules.username,
+      email: this.validator.rules.email,
+      street: this.validator.rules.street,
+      streetNr: this.validator.rules.streetNumber,
+      zip: this.validator.rules.zip,
+      city: this.validator.rules.city
     };
     this.fetchData();
   }

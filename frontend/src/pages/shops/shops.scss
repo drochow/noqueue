@@ -1,5 +1,68 @@
+@import "../../theme/variables.scss";
+
 page-shops {
-  h3, .info {
-    margin-left: 5%;
+  ion-content{
+    .content {
+      width: 85%;
+      margin: 20px auto;
+
+      ion-searchbar {
+        border: 1px solid map-get($colors, divider);
+      }
+
+      .sectionName{
+        margin-bottom: 10px;
+      }
+
+      .radiusSelect {
+        border: none;
+        border-bottom: 1px solid map-get($colors, divider);
+        //-webkit-box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+        //-moz-box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+        //box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+        margin-bottom: 25px;
+        padding-left: 0;
+      }
+
+      .shop {
+        width: 100%;
+        padding: 10px 0 5px 0;
+        border-bottom: 1px solid map-get($colors, divider);
+
+        .first-line {
+          margin-top: 0;
+
+          .name {
+            margin: 0 0 5px 0;
+            box-sizing: border-box;
+            width: 75%;
+            float: left;
+            font-size: map-get($font-sizes, title-2);
+          }
+
+          .distance {
+            padding: 0;
+            box-sizing: border-box;
+            width: 25%;
+            float: right;
+
+            p {
+              margin-top: 2px;
+              margin-bottom: 0;
+              text-align: right;
+              font-size: map-get($font-sizes, footnote);
+              font-weight: bold;
+              text-transform: uppercase;
+              color: map-get($colors, dark-grey);
+            }
+          }
+        }
+        .address, .opening-hours{
+          margin: 5px 0;
+          clear: both;
+          font-size: map-get($font-sizes, subhead);
+        }
+      }
+    }
   }
 }

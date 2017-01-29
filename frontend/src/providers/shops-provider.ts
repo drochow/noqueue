@@ -53,6 +53,11 @@ export class ShopsProvider {
     return this.httpProvider.get(route);
   }
 
+  getQueueFor(shopID: number) : Observable<any>{
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/ws";
+    return this.httpProvider.get(route);
+  }
+
   getManagers(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/leiter";
     return this.httpProvider.get(route);

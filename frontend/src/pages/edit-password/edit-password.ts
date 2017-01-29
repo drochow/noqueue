@@ -39,10 +39,10 @@ export class EditPasswordPage {
 
   constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
     this.validationRules = {
-      emptyPassword: "Please fill in this field.",
-      newPassword: "Must be at least 8 characters.",
-      samePassword: "New password equals old password.",
-      passwordsMatching: "Passwords have to match."
+      emptyPassword: this.validator.rules.emptyPassword,
+      newPassword: this.validator.rules.newPassword,
+      samePassword: this.validator.rules.samePassword,
+      passwordsMatching: this.validator.rules.passwordMatching
     }
   }
 

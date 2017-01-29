@@ -39,10 +39,10 @@ export class SignupPage {
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
     // later - read these from the validator:
     this.validationRules = {
-      username: "Must be 6 to 30 letters, numbers or . - _",
-      email: "Must be a valid email.",
-      password: "Must be at least 8 characters.",
-      passwordsMatching: "Passwords have to match."
+      username: this.validator.rules.username,
+      email: this.validator.rules.email,
+      password: this.validator.rules.password,
+      passwordsMatching: this.validator.rules.passwordMatching
     }
   }
 

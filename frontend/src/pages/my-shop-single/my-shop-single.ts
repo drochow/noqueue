@@ -117,7 +117,7 @@ export class MyShopSinglePage {
           (error) => this.registerError(error.message || "Something went wrong")
         )
     } else {
-      this.servicesProvider.getQueueFor(this.shopID)
+      this.shopsProvider.getQueueFor(this.shopID)
         .subscribe(
           (queue) => {
             console.log("queue: ", queue);
