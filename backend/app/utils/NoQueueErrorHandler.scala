@@ -62,7 +62,7 @@ class NoQueueErrorHandler @Inject() (
       case alue: AnwenderAlreadyLinedUpException => jsError(errorBadRequest("This Anwender already lined up somewhere")(request2Messages(request)), request)
       case dlie: DLInvalidException => jsError(errorBadRequest("This DL is not provided by this Mitarbeiter")(request2Messages(request)), request)
       case nse: WspDoesNotExistException => jsError(errorItemNotFound(request2Messages(request)), request)
-      case nwowe: NotWorkingOnAWSPEXception => jsError(errorBadRequest("You need to start working on this WSP first.")(request2Messages(request)), request)
+      case nwowe: NotWorkingOnTisWSPException => jsError(errorBadRequest("You need to start working on this WSP first.")(request2Messages(request)), request)
       case aibe: AlreadWorkingOnAWspException => jsError(errorBadRequest("You need to finish all WSPs first.")(request2Messages(request)), request)
       case nfwspe: NotFirstWspException => jsError(errorBadRequest("You have to start with the first WSP.")(request2Messages(request)), request)
       case e: CredentialException => jsError(errorBadRequest("Invalid Credentials.")(request2Messages(request)), request)

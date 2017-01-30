@@ -227,8 +227,8 @@ trait WarteschlangenPlatzComponent {
     for {
       isAnyInBearbeitung <- warteschlangenplaetze.filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
       isAnyBefore <- warteschlangenplaetze.filter(_.folgePlatzId === id).exists.result
-      res <- if (isAnyBefore) throw new NotFirstWspException else if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException
-      else warteschlangenplaetze.filter(_.id === id).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
+      res <- if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException else if (isAnyBefore) throw new NotFirstWspException
+      else warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
     } yield res
   }
 
@@ -236,9 +236,9 @@ trait WarteschlangenPlatzComponent {
     for {
       isInBearbeitung <- warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
       res <- if (isInBearbeitung) {
-        warteschlangenplaetze.filter(_.id === id).delete
+        warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).delete
       } else {
-        throw new AlreadWorkingOnAWspException
+        throw new NotWorkingOnTisWSPException
       }
     } yield res
   }

@@ -56,21 +56,21 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
     //persAnwenders map (_ map println(_))
     succeed
   }
-  it should "permit full-on-changing but still respect uniqueness" in {
-    val s = "Update010"
-    val anwenderEntity = anwenderize(s)
-    for {
-      anwender <- anwenderModels(1)
-      updated <- anwender.anwenderInformationenAustauschen(anwenderEntity, None)
-      test <- Future.successful(if (!updated) Failed)
-      profil <- anwender.profilAnzeigen()
-      updatedAnw <- Future.successful {
-        profil match {
-          case (anw: AnwenderEntity, _) => anw
-        }
-      }
-    } yield (updatedAnw.nutzerName should ===(anwenderEntity.nutzerName))
-  }
+  //  it should "permit full-on-changing but still respect uniqueness" in {
+  //    val s = "Update010"
+  //    val anwenderEntity = anwenderize(s)
+  //    for {
+  //      anwender <- anwenderModels(1)
+  //      updated <- anwender.anwenderInformationenAustauschen(anwenderEntity, None)
+  //      test <- Future.successful(if (!updated) Failed)
+  //      profil <- anwender.profilAnzeigen()
+  //      updatedAnw <- Future.successful {
+  //        profil match {
+  //          case (anw: AnwenderEntity, _) => anw
+  //        }
+  //      }
+  //    } yield (updatedAnw.nutzerName should ===(anwenderEntity.nutzerName))
+  //  }
   /*an [NoSuchElementException] should be thrownBy {
   }*/
 }
