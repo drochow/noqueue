@@ -135,8 +135,9 @@ class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: Me
     }
   }
 
-  def listDienstleistung(betriebId: Long, page: Int, size: Int) = SecuredApiAction { implicit request =>
-    request.anwender.dienstleistungAnzeigen(betriebId, page, size) flatMap {
+  def listDienstleistung(betriebId: Long, page: Int, size: Int) = ApiAction { implicit request =>
+    val uAnwender = new UnregistrierterAnwender(dbD)
+    uAnwender.dienstleistungAnzeigen(betriebId, page, size) flatMap {
       dientleistung => ok(dientleistung)
     }
   }

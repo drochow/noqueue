@@ -20,7 +20,7 @@ import scala.concurrent.duration._
  */
 class LeiterTest extends AsyncWordSpec {
 
-  val awaitDuration: Duration = 20 seconds
+  val awaitDuration: Duration = 1 seconds
 
   override def withFixture(test: NoArgAsyncTest) = { // Define a shared fixture
     try {
