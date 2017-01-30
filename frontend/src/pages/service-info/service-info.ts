@@ -29,18 +29,18 @@ export class ServiceInfoPage {
   newShop: boolean = false;
   shopID: number;
   service = {
-    type: string = "",
-    duration: number = 0,
-    description: string =""
+    type:  "",
+    duration: 0,
+    description: ""
   };
   types: any = [];
   customType: boolean = false;
   selectedType: string  = "";
   validationRules: any;
   isValid = {
-    description: boolean = true,
-    duration: boolean = true,
-    type: boolean = true
+    description: true,
+    duration:  true,
+    type: true
   };
   allFieldsValid: boolean = false;
 
