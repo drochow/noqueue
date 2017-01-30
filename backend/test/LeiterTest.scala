@@ -1,11 +1,12 @@
 import java.io.{ BufferedReader, File, FileReader }
 
 import models.db.{ DienstleistungEntity, _ }
-import models.{ DB, H2DB, Leiter, UnregistrierterAnwender }
+import models._
 import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers._
 import org.scalatest._
 import Assertions._
+import osm.AdressNotFoundException
 
 import scala.concurrent.{ Await, Future }
 import play.api.{ Environment, Mode }
@@ -19,7 +20,7 @@ import scala.concurrent.duration._
  */
 class LeiterTest extends AsyncWordSpec {
 
-  val awaitDuration: Duration = 1 seconds
+  val awaitDuration: Duration = 20 seconds
 
   override def withFixture(test: NoArgAsyncTest) = { // Define a shared fixture
     try {
@@ -43,6 +44,7 @@ class LeiterTest extends AsyncWordSpec {
 
   val uaLeiter = new Leiter(db.dal.getLeiterOfById(PK[BetriebEntity](11L), PK[AnwenderEntity](1L)), db)
   val leiter = new Leiter(db.dal.getLeiterOfById(PK[BetriebEntity](11L), PK[AnwenderEntity](4L)), db)
+  val anw = new Anwender(db.dal.getAnwenderWithAdress(PK[AnwenderEntity](16L)), db)
 
   "An unauthorized Leiter" should {
     "not be able to call dienstleistungAnbieten" in {
@@ -112,7 +114,27 @@ class LeiterTest extends AsyncWordSpec {
   }
 
   "An authorized Leiter" can {
-
+    "access betrieb and" should {
+      "get the correct betrieb returned" in {
+        leiter.betrieb map {
+          b => b.id.get should equal(PK[BetriebEntity](11L))
+        }
+      }
+    }
+    "access anwender and" should {
+      "get the correct anwender returned" in {
+        leiter.anwender map {
+          a => a.id.get should equal(PK[AnwenderEntity](4L))
+        }
+      }
+    }
+    "access leiter and" should {
+      "get the correct leiter returned" in {
+        leiter.leiter map {
+          l => l.id.get should equal(PK[LeiterEntity](5L))
+        }
+      }
+    }
     "call dienstleistungAnbieten and " should {
       "be able to create DL with an existing DLTypeEntity with same Name and get the DL returned" in {
         val expectedResult = DienstleistungEntity("Saubere Haare", 3600, PK[BetriebEntity](11L), PK[DienstleistungsTypEntity](5L), Some(PK[DienstleistungEntity](10L)))
@@ -369,11 +391,71 @@ class LeiterTest extends AsyncWordSpec {
       }
     }
     "call dienstleistungEntfernen and" should {
-
+      "not be able to remove a not existing Dienstleistung" in {
+        leiter.dienstleistungEntfernen(PK[DienstleistungEntity](100L)) map {
+          l => l should be(false)
+        }
+      }
+      "not be able to remove a not owned Dienstleistung" in {
+        leiter.dienstleistungEntfernen(PK[DienstleistungEntity](1L)) map {
+          l => l should be(false)
+        }
+      }
+      "not be able to remove a owned Dienstleistung with  WSP subscriptions" in {
+        //should throw sql exception because of referential integrity
+        assertThrows[JdbcSQLException] {
+          Await.result(anw.wsFuerBestimmtenMitarbeiterBeitreten(4L, 14L), awaitDuration)
+          Await.result(leiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)), awaitDuration)
+        }
+      }
+      "be able to remove a owned Dienstleistung with no WSP subscriptions" in {
+        leiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)) map {
+          l => l should be(true)
+        }
+      }
     }
 
     "call betriebInformationenVeraendern and" should {
-
+      "not be able to change name to an already used name" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(leiter.betriebsInformationenVeraendern(
+            BetriebEntity("Alfredos", "0162 123 231 0", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
+            AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
+          ), awaitDuration)
+        }
+      }
+      "not be able change tel to an already used tel" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(leiter.betriebsInformationenVeraendern(
+            BetriebEntity("Tester", "0176 2222222", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
+            AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
+          ), awaitDuration)
+        }
+      }
+      "not be able change to invalid Adress" in {
+        assertThrows[JdbcSQLException] {
+          Await.result(leiter.betriebsInformationenVeraendern(
+            BetriebEntity("Tester", "0176 33333333", "Mo-Fr 10-16", "tester@test.de", PK[AdresseEntity](0L), Some(PK[BetriebEntity](11L))),
+            AdresseEntity("Ostfriesens Straße", "130", "13353", "Berlin", None, None, None)
+          ), awaitDuration)
+        }
+      }
+      "be able change to valid Adress" in {
+        leiter.betriebsInformationenVeraendern(
+          BetriebEntity("Alibaba3", "0176 2571639", "Mo-So 10:00 - 22:00 Uhr", "alibaba2@gmail.conm", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
+          AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
+        ) map {
+            s => s should be(true)
+          }
+      }
+      "be able change to valid Data" in {
+        leiter.betriebsInformationenVeraendern(
+          BetriebEntity("Alibaba4", "0176 25716394", "Mo-So 10:00 - 16:00 Uhr", "alibaba4@gmail.conm", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
+          AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
+        ) map {
+            s => s should be(true)
+          }
+      }
     }
   }
 }

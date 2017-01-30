@@ -81,12 +81,10 @@ trait WarteschlangenPlatzComponent {
       checkIsValidDL <- if (!isValidDL) throw new DLInvalidException else DBIO.successful()
       anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
       anwenderHasWspCheck <- {
-        System.out.println("Anwender has wsp? " + anwenderHasWsp)
         if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
       }
       mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
       mitarbeiterIsAnwesendCheck <- {
-        System.out.println("Mitarbeiter is Anwesend? " + mitarbeiterIsAnwesend)
         if (!mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
       }
       persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
