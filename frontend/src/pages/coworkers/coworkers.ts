@@ -54,6 +54,7 @@ export class CoworkersPage {
   }
 
   search(event: any) : void{
+    this.resetError();
     if(!this.validator.searchName(this.searchName)){
       this.registerError("Search name not valid");
       this.users = [];

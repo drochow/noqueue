@@ -45,8 +45,10 @@ class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: Me
       case btrAndAdr: BetriebAndAdresse => {
         (for {
           geo: GeoCoords <- as.getCoordsOfAdress(btrAndAdr.adresseEntity)
-          apiResult <- request.leiter.betriebsInformationenVeraendern(PK[BetriebEntity](id), btrAndAdr.betriebEntity,
-            btrAndAdr.adresseEntity.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude)))
+          apiResult <- request.leiter.betriebsInformationenVeraendern(
+            btrAndAdr.betriebEntity,
+            btrAndAdr.adresseEntity.copy(latitude = Some(geo.latitude), longitude = Some(geo.longitude))
+          )
             .flatMap {
               case updated: Boolean => if (updated) accepted() else ApiError.errorItemNotFound
             }
@@ -88,7 +90,7 @@ class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: Me
   def addLeiter(betriebId: Long) = SecuredLeiterApiActionWithBody(PK[BetriebEntity](betriebId)) { implicit request =>
     readFromRequest[LeiterEntity] {
       case leiter: LeiterEntity => {
-        request.leiter.leiterEinstellen(leiter, PK[BetriebEntity](betriebId)) flatMap {
+        request.leiter.leiterEinstellen(leiter) flatMap {
           leiter => ok(leiter)
         }
       }
@@ -96,7 +98,7 @@ class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: Me
   }
 
   def removeLeiter(betriebId: Long, leiterId: Long) = SecuredLeiterApiAction(PK[BetriebEntity](betriebId)) { implicit request =>
-    request.leiter.leiterEntlassen(PK[LeiterEntity](leiterId), PK[BetriebEntity](betriebId)) flatMap {
+    request.leiter.leiterEntlassen(PK[LeiterEntity](leiterId)) flatMap {
       affectedRows: Int => if (affectedRows < 1) ApiError.errorItemNotFound else accepted()
     }
   }

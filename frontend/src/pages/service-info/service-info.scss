@@ -1,3 +1,26 @@
-page-service-info {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-service-info {
+    ion-content{
+      .progress{
+        font-size: map-get($font-sizes, subhead);
+      }
+
+      ion-textarea{
+        padding-left: 10px;
+        border: 1px solid map-get($colors, light-grey);
+        color: map-get($colors, lighter-text);
+      }
+
+
+      ion-item{
+        padding-left: 0;
+        padding-right: 0;
+
+      }
+    }
+  }
 }
+
+

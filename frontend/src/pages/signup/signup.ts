@@ -26,11 +26,11 @@ export class SignupPage {
   errorMessage: string = "";
   validationRules: any;
   isValid = {
-    username: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-    passwordsMatching: true
+    username: boolean = true,
+    email: boolean = true,
+    password: boolean = true,
+    confirmPassword: boolean = true,
+    passwordsMatching: boolean = true
   };
   allFieldsValid: boolean = false;
 
@@ -39,10 +39,10 @@ export class SignupPage {
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
     // later - read these from the validator:
     this.validationRules = {
-      username: "Must be 6 to 30 letters, numbers or . - _",
-      email: "Must be a valid email.",
-      password: "Must be at least 8 characters.",
-      passwordsMatching: "Passwords have to match."
+      username: this.validator.rules.username,
+      email: this.validator.rules.email,
+      password: this.validator.rules.password,
+      passwordsMatching: this.validator.rules.passwordMatching
     }
   }
 

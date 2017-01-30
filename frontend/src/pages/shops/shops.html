@@ -4,44 +4,53 @@
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar color="primary">
+<ion-header no-border>
+  <ion-navbar color="light">
     <ion-title>Shops</ion-title>
   </ion-navbar>
 </ion-header>
 
 
-<ion-content padding>
-
-  <ion-searchbar (ionInput)="search($event)" [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
-  <ion-item>
-    <ion-label>Radius</ion-label>
-    <ion-select [(ngModel)]="radius">
-      <ion-option value="0" selected="true">None</ion-option>
-      <ion-option value="1000">1 km</ion-option>
-      <ion-option value="2000">2 km</ion-option>
-      <ion-option value="5000">5 km</ion-option>
-      <ion-option value="10000">10 km</ion-option>
-      <ion-option value="20000">20 km</ion-option>
-    </ion-select>
-  </ion-item>
-
-  <p *ngIf="error" color="danger">{{errorMessage}}</p>
-
-  <h3>Results:</h3>
-  <p class="info" *ngIf="noShops">No shops found.</p>
-  <ion-list *ngIf="shouldShowShops" [virtualScroll]="shops">
-    <!--<ion-list-header>-->
-      <!--<p>Results:</p>-->
-    <!--</ion-list-header>-->
-    <ion-item *virtualItem="let shop">
-      <p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>
-      <p (click)="showShopSinglePage(shop.id)">{{shop.tel}}</p>
+<ion-content>
+  <div class="content">
+    <ion-searchbar (ionInput)="search($event)" [(ngModel)]="searchTerm" placeholder="Search Shops" animated="true"></ion-searchbar>
+    <ion-item class="radiusSelect">
+      <ion-label>Radius</ion-label>
+      <ion-select [(ngModel)]="radius" (ionChange)="search($event)">
+        <ion-option value="20000000" selected="true">None</ion-option>
+        <ion-option value="1000">1 km</ion-option>
+        <ion-option value="2000">2 km</ion-option>
+        <ion-option value="5000">5 km</ion-option>
+        <ion-option value="10000">10 km</ion-option>
+        <ion-option value="20000">20 km</ion-option>
+      </ion-select>
     </ion-item>
-  </ion-list>
+
+    <p *ngIf="error" color="danger">{{errorMessage}}</p>
+
+    <p class="sectionName">Results</p>
+    <p class="info" *ngIf="noShops">No shops found.</p>
+
+    <ion-list *ngIf="shouldShowShops" [virtualScroll]="shops">
+      <!--<ion-item *virtualItem="let shop">-->
+        <!--<p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>-->
+        <!--<p (click)="showShopSinglePage(shop.id)">{{shop.tel}}</p>-->
+      <!--</ion-item>-->
+      <div class="shop" *virtualItem="let shop" (click)="showShopSinglePage(shop.id)">
+        <div class="first-line">
+          <p class="name">{{shop.name}}</p>
+          <div class="distance">
+            <p>{{shop.distance}} km</p>
+          </div>
+        </div>
+        <p class="address">{{shop.adresse.strasse}} {{shop.adresse.hausNummer}}</p>
+        <p class="opening-hours">{{shop.oeffnungszeiten}}</p>
+      </div>
+    </ion-list>
 
   <ion-infinite-scroll *ngIf="allShopsFetched === false" (ionInfinite)="infiniteScroll($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
+  </div>
 
 </ion-content>

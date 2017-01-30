@@ -24,27 +24,27 @@ export class MyShopSinglePage {
 
 // declare variables used by the HTML template (ViewModel)
 
-  isAnwesend = false;
+  isAnwesend: boolean = false;
   shopID: number;
-  isLeiter = false;
+  isLeiter: boolean = false;
   shop = {
-    name: "",
-    address: "",
-    phone: "",
-    email: "",
-    openingHours: ""
+    name: string = "",
+    address: string = "",
+    phone: string = "",
+    email: string = "",
+    openingHours: string = ""
   };
-  managers = [];
-  employees = [];
-  currentManagerWorking = false;
-  hasOwnQueueToggle = false;
-  services = [];
-  error = false;
-  errorMessage = "";
-  queue = [];
-  clients = [];
-  firstClient = "";
-  firstStarted = false;
+  managers: any = [];
+  employees: any = [];
+  currentManagerWorking: boolean = false;
+  hasOwnQueueToggle: boolean = false;
+  services: any = [];
+  error: boolean = false;
+  errorMessage: string = "";
+  queue: any = [];
+  clients: any = [];
+  firstClient: string = "";
+  firstStarted: boolean = false;
 
 // constructor and lifecycle-events (chronological order)
 
@@ -55,11 +55,11 @@ export class MyShopSinglePage {
     this.isAnwesend = this.navParams.get('isAnwesend');
   }
 
-  ionViewDidLoad() {
+  ionViewDidLoad() : void{
     this.reloadData();
   }
 
-  ionViewWillLeave(){
+  ionViewWillLeave() : void{
     // send changes of the toggle only when leaving the page
     if(this.hasOwnQueueToggle !== this.currentManagerWorking){
       // this.shopsProvider.managerWorking(userID, shopID, bool)..
@@ -68,12 +68,12 @@ export class MyShopSinglePage {
 
 // ViewModel logic (working with the data)
 
-  registerError(message){
+  registerError(message: string) : void{
     this.error = true;
     this.errorMessage = message;
   }
 
-  reloadData(){
+  reloadData() : void{
     this.error = false;
     this.errorMessage = "";
 
@@ -117,7 +117,7 @@ export class MyShopSinglePage {
           (error) => this.registerError(error.message || "Something went wrong")
         )
     } else {
-      this.servicesProvider.getQueueFor(this.shopID)
+      this.shopsProvider.getQueueFor(this.shopID)
         .subscribe(
           (queue) => {
             console.log("queue: ", queue);
@@ -143,32 +143,15 @@ export class MyShopSinglePage {
 
 // ViewController logic (reacting to events)
 
-  switchAttendance() {
+  switchAttendance() : void{
     this.queuesProvider.changeAttendance(this.shopID, !this.isAnwesend).subscribe(
       () => { this.isAnwesend = !this.isAnwesend},
       (error) => this.registerError(error || "Couldn't change attendance!")
     )
   }
 
-  demoteManager(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.demoteManager(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
 
-  promoteEmployee(slidingItem, userID){
-    slidingItem.close();
-    this.shopsProvider.promoteEmployee(userID, this.shopID)
-      .then(
-        () => {},
-        (error) => this.registerError(error || "Couldn't promote employee")
-      );
-  }
-
-  fireManager(slidingItem, userID){
+  fireManager(slidingItem: any, userID: number) : void{
     slidingItem.close();
     this.shopsProvider.fireManager(userID, this.shopID)
       .subscribe(
@@ -181,7 +164,7 @@ export class MyShopSinglePage {
       )
   }
 
-  fireEmployee(slidingItem, userID){
+  fireEmployee(slidingItem: any, userID: number) : void{
     slidingItem.close();
     this.shopsProvider.fireEmployee(userID, this.shopID)
       .subscribe(
@@ -194,7 +177,7 @@ export class MyShopSinglePage {
       )
   }
 
-  startWorkOn(wspId) {
+  startWorkOn(wspId: number) : void{
     this.queuesProvider.startWorkOn(this.shopID, wspId)
       .subscribe(
         () => this.reloadData(),
@@ -206,7 +189,7 @@ export class MyShopSinglePage {
       )
   }
 
-  finishWorkOn(wspId) {
+  finishWorkOn(wspId: number) : void{
     this.queuesProvider.finishWorkOn(this.shopID, wspId)
       .subscribe(
         () => this.reloadData(),
@@ -218,27 +201,28 @@ export class MyShopSinglePage {
       )
   }
 
-  editShopInfo(){
+  editShopInfo() : void{
     if(this.isLeiter)
       this.navCtrl.push(ShopInfoPage, {newShop: false, shopID: this.shopID});
   }
 
-  showService(serviceID){
-    console.log("will show: " + serviceID);
+  showService(serviceID: number) : void{
     let service = this.services.filter(s => s.id == serviceID)[0];
+    console.log("will show: ", service);
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
-  deleteService(serviceID){
+  deleteService(serviceID: number) : void{
     console.log("will delete: " + serviceID);
     //
   }
 
-  createService(){
-    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true});
+  createService() : void{
+    console.log("will create");
+    this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true, serviceID: -1, service: undefined});
   }
 
-  addCoworkers(){
+  addCoworkers() : void{
     this.navCtrl.push(CoworkersPage, {newShop: false, shopID: this.shopID});
   }
 

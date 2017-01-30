@@ -15,26 +15,10 @@ export class ServicesProvider {
 
   constructor(public http: Http, private httpProvider: HttpProvider) {
   }
-
-  getQueueFor(shopID: number) : Observable<any>{
-    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/ws";
-    return this.httpProvider.get(route);
-  }
-
+  
   getServicesFor(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
     return this.httpProvider.get(route);
-  }
-
-  // @TODO obsolete method
-  getService(serviceID: number, shopID: number) : Observable<any>{
-    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
-    return this.httpProvider.get(route);
-  }
-
-  // @TODO
-  getNextTimeSlots(serviceID: number, shopID: number){
-    // ...
   }
 
   getAllServiceTypes() : Observable<any>{
