@@ -48,10 +48,10 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
   val anwenderModels = persAnwenders.map(modelFromPersistedAnw)
 
   "An Anwender" should "return his profile" in {
-    /*for {
+    for {
       profil <- anwenderModels(0).map(_.profilAnzeigen())
       persistedAnwender <- persAnwenders(0)
-    } yield (profil should ===(persistedAnwender, None))*/
+    } yield (profil should ===(persistedAnwender, None))
     anwenderModels map (_ map (_.profilAnzeigen().map(println(_))))
     //persAnwenders map (_ map println(_))
     succeed
@@ -70,7 +70,6 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
         }
       }
     } yield (updatedAnw.nutzerName should ===(anwenderEntity.nutzerName))
-    succeed
   }
   /*an [NoSuchElementException] should be thrownBy {
   }*/
