@@ -17,6 +17,8 @@ resolvers += "jitpack" at "https://jitpack.io"
 
 resolvers += Resolver.url("Typesafe Ivy releases", url("https://repo.typesafe.com/typesafe/ivy-releases"))(Resolver.ivyStylePatterns)
 
+
+
 scalariformSettings
 
 libraryDependencies ++= Seq(
@@ -44,6 +46,15 @@ routesGenerator := InjectedRoutesGenerator
 
 // setting a maintainer which is used for all packaging types
 maintainer := "David Kaatz"
+
+
+coverageMinimum := 70
+
+coverageFailOnMinimum := false
+
+coverageHighlighting := true
+
+coverageExcludedPackages := "api\\..*;controllers\\..*;modules\\.*;utils\\.*;router;osm\\.*;views\\..*;.*ApiLog;.*DB;.*H2DB;.*PostgresDB"
 
 // exposing the play ports
 //dockerExposedPorts in Docker := Seq(9000, 9443)

@@ -18,7 +18,7 @@ import scala.concurrent.duration._
  * Tests for the LeiterEntity
  */
 class LeiterTest extends AsyncWordSpec {
-  
+
   val awaitDuration: Duration = 1 seconds
 
   override def withFixture(test: NoArgAsyncTest) = { // Define a shared fixture
@@ -369,9 +369,9 @@ class LeiterTest extends AsyncWordSpec {
       }
     }
     "call dienstleistungEntfernen and" should {
-      
+
     }
-    
+
     "call betriebInformationenVeraendern and" should {
 
     }
