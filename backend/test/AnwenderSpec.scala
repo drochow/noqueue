@@ -26,13 +26,15 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
   } recover {
     case err: Throwable => test = "after failed creation of the DAL"
   }
+
+  anwenderModels map (_ map (_.profilAnzeigen().map(println(_))))
   //val al: ApplicationLifecycle = application.injector.instanceOf[ApplicationLifecycle]
   //val addrE: AdresseEntity = AdresseEntity("", "", "", "", None, None)
 
   def anwenderize(x: Any) = {
     AnwenderEntity(x + "@example.com", "password" + x, "User" + x)
   }
-  val anwenderEs = (1 to 10).toList.map(anwenderize)
+  val anwenderEs = (1 to 31).toList.map(anwenderize)
 
   val uA = new UnregistrierterAnwender(db);
   def persist(anwenderEntity: AnwenderEntity) = {
@@ -47,14 +49,16 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
   }
   val anwenderModels = persAnwenders.map(modelFromPersistedAnw)
 
+  anwenderModels map (_ map (_.profilAnzeigen().map(println(_))))
+
   "An Anwender" should "return his profile" in {
     for {
-      profil <- anwenderModels(0).map(_.profilAnzeigen())
+      profil <- Future.successful(2) //anwenderModels(0).map(_.profilAnzeigen())
       persistedAnwender <- persAnwenders(0)
     } yield (profil should ===(persistedAnwender, None))
-    anwenderModels map (_ map (_.profilAnzeigen().map(println(_))))
+    //anwenderModels map (_ map (_.profilAnzeigen().map(println(_))))
     //persAnwenders map (_ map println(_))
-    succeed
+    //succeed
   }
   it should "permit full-on-changing but still respect uniqueness" in {
     val s = "Update010"
@@ -69,7 +73,7 @@ class AnwenderSpec extends AsyncFlatSpec with ParallelTestExecution {
           case (anw: AnwenderEntity, _) => anw
         }
       }
-    } yield (updatedAnw.nutzerName should ===(anwenderEntity.nutzerName))
+    } yield (updatedAnw.nutzerName should ===(anwenderEntity.nutzerName + "aaaaa"))
   }
   /*an [NoSuchElementException] should be thrownBy {
   }*/
