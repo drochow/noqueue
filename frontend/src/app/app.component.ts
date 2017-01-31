@@ -3,6 +3,7 @@ import { Platform } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 import '../app/rxjs-operators.ts';
 import { DashboardPage } from '../pages/dashboard/dashboard';
+import { SplashScreenPage } from '../pages/splash-screen/splash-screen';
 import { AuthenticationProvider } from '../providers/authentication-provider';
 import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { HttpProvider } from '../providers/http-provider';
@@ -17,7 +18,7 @@ export class MyApp {
 
   constructor(platform: Platform) {
 
-    this.rootPage = DashboardPage;
+    this.rootPage = SplashScreenPage;
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

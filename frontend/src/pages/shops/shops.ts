@@ -47,7 +47,8 @@ export class ShopsPage {
         (location) => {
           this.location = location;
           if(this.searchTerm.length > 0) this.search(undefined);
-        }
+        },
+        (error) => console.log(error)
       )
   }
 
@@ -72,8 +73,10 @@ export class ShopsPage {
       .then(
         () => console.log("shops loaded"),
         (error) => {
+          console.log("Error 1");
           let jsonError = JSON.parse(error._body);
           console.log("Error while fetching shops: ", jsonError);
+          console.log("Error while fetching shops: ", error);
         }
       )
   }
@@ -84,7 +87,6 @@ export class ShopsPage {
     let size = 10;
     let self = this;
     return new Promise(function(resolve, reject){
-
       self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius : "", self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
@@ -94,19 +96,20 @@ export class ShopsPage {
               }
               for(var item of shops){
                 if(self.shops){
-                  item.distance = (Number(item.distanz)/1000).toFixed(1);
+                  item.dist = (Number(item.distanz)/1000).toFixed(1);
                   self.shops.push(item);
                 }
               }
               if (self.shops.length === 0) {
                 self.noShops = true;
-                // self.shouldShowShops = false;
+                self.shouldShowShops = false;
               }
-              console.log("Should show shops 2: " + this.shouldShowShops);
+              console.log("Should show shops 2: " + self.shouldShowShops);
               resolve();
             },
               (error) => {
-                // self.shouldShowShops = false;
+                console.log("Error 2");
+                self.shouldShowShops = false;
                 self.error = true;
                 self.errorMessage = error.message || "Something went wrong";
                 console.log("error: ", JSON.parse(error._body));
@@ -125,6 +128,7 @@ export class ShopsPage {
           console.log("whats up");
         },
         (error) => {
+          console.log("Error 3");
           this.error = true;
           this.errorMessage = error.message || "something went wrong";
           scroll.complete();

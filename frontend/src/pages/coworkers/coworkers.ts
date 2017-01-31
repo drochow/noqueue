@@ -76,6 +76,9 @@ export class CoworkersPage {
         (employees) => {
           console.log("Employees for this shop: ", employees);
           this.employees = employees;
+          // this users - for each:
+          //     this.employees - for each:
+          //       if user.id === employee.anwender.id -> user.employee = true
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
@@ -88,6 +91,9 @@ export class CoworkersPage {
         (managers) => {
           console.log("Managers for this shop: ", managers);
           this.managers = managers;
+          // this users - for each:
+          //     this.managers - for each:
+          //       if user.id === manager.anwender.id -> user.manager = true
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
