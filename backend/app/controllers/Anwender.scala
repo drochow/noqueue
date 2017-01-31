@@ -7,7 +7,7 @@ import javax.security.auth.login.CredentialException
 import api.ApiError
 import api.JsonCombinators._
 import api.auth.Credentials
-import api.jwt.{ JwtUtil, TokenPayload }
+import api.jwt.{ JwtUtil, TokenExpiration, TokenPayload }
 import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import models.{ Anwender => AnwenderModel, _ }
 import org.joda.time.DateTime
@@ -34,7 +34,7 @@ class Anwender @Inject() (val dbD: DB, val as: AdressService, val messagesApi: M
         val uAnwender = new UnregistrierterAnwender(dbD)
         uAnwender.registrieren(anw) flatMap {
           //success
-          anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))));
+          anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1))));
         }
       }
     }
@@ -45,7 +45,7 @@ class Anwender @Inject() (val dbD: DB, val as: AdressService, val messagesApi: M
       case credentials: Credentials => {
         val uAnwender = new UnregistrierterAnwender(dbD)
         uAnwender.anmelden(credentials.nutzerName, credentials.password) flatMap {
-          case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(1200L, 1))))
+          case anw: AnwenderEntity => ok(JwtUtil.signJwtPayload(TokenPayload(anw.id.get.value, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1))))
         }
       }
     }
