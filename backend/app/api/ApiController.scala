@@ -151,6 +151,16 @@ trait ApiController extends Controller with I18nSupport {
     action(apiRequest)
   }
 
+  private def payloadExtractor[A](apiRequest: ApiRequest[A], action: (TokenPayload, UnregistrierterAnwender) => Future[ApiResult]): Future[ApiResult] = {
+    apiRequest.tokenOpt match {
+      case None => errorTokenNotFound
+      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
+        case None => errorTokenUnknown
+        case Some(payload) => action(payload, new UnregistrierterAnwender(dbD))
+      }
+    }
+  }
+
   /**
    * Secured API action that verifies an Anwender
    *
@@ -160,16 +170,12 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def SecuredApiActionWithParser[A](parser: BodyParser[A])(action: SecuredAnwenderApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
-    apiRequest.tokenOpt match {
-      case None => errorTokenNotFound
-      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
-        case None => errorTokenUnknown
-        case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(dbD)
-          action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
-        }
+    payloadExtractor(
+      apiRequest,
+      (payload, uAnw) => {
+        action(SecuredAnwenderApiRequest(apiRequest.request, uAnw.anmeldenMitPayload(payload)))
       }
-    }
+    )
   }
 
   //  private def ActionWithPayload[A](action: ApiRequest[A] => Future[ApiResult])
@@ -183,16 +189,12 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def SecuredLeiterApiActionWithParser[A](betriebId: PK[BetriebEntity])(parser: BodyParser[A])(action: SecuredLeiterApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
-    apiRequest.tokenOpt match {
-      case None => errorTokenNotFound
-      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
-        case None => errorTokenUnknown
-        case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(dbD)
-          action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
-        }
+    payloadExtractor(
+      apiRequest,
+      (payload, uAnw) => {
+        action(SecuredLeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsLeiterVon(payload, betriebId)))
       }
-    }
+    )
   }
 
   /**
@@ -204,16 +206,12 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   private def SecuredMitarbeiterApiActionWithParser[A](betriebId: PK[BetriebEntity])(parser: BodyParser[A])(action: SecuredMitarbeiterApiRequest[A] => Future[ApiResult]) = ApiActionCommon(parser) { (apiRequest) =>
-    apiRequest.tokenOpt match {
-      case None => errorTokenNotFound
-      case Some(token) => JwtUtil.getPayloadIfValidToken[TokenPayload](token).flatMap {
-        case None => errorTokenUnknown
-        case Some(payload) => {
-          val uAnw = new UnregistrierterAnwender(dbD)
-          action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
-        }
+    payloadExtractor(
+      apiRequest,
+      (payload, uAnw) => {
+        action(SecuredMitarbeiterApiRequest(apiRequest.request, uAnw.anmeldenMitPayloadAlsMitarbeiterVon(payload, betriebId)))
       }
-    }
+    )
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -304,33 +302,6 @@ trait ApiController extends Controller with I18nSupport {
   def page[A](futP: Future[Page[A]], headers: (String, String)*)(implicit w: Writes[A]): Future[ApiResult] = futP.map(p => ApiResponse.ok(p.items, p, headers: _*))
 
   /**
-   * Helper to handle sorted page results
-   *
-   * @param sortBy the key to sort for
-   * @param allowedFields the allowed fields
-   * @param default the default sort
-   * @param name name of sort (optional)
-   * @param headers headers to be send
-   * @param p page object
-   * @param w json serialization object
-   * @param req request headers
-   * @tparam A type of response object
-   * @return
-   */
-  def sortedPage[A](
-    sortBy: Option[String],
-    allowedFields: Seq[String],
-    default: String,
-    name: String = "sort",
-    headers: Seq[(String, String)] = Seq()
-  )(p: Seq[(String, Boolean)] => Future[Page[A]])(implicit w: Writes[A], req: RequestHeader): Future[ApiResult] = {
-    processSortByParam(sortBy, allowedFields, default, name).fold(
-      error => error,
-      sortFields => page(p(sortFields), headers: _*)
-    )
-  }
-
-  /**
    *
    *
    * @param obj response object
@@ -409,33 +380,6 @@ trait ApiController extends Controller with I18nSupport {
       errors => errorBodyMalformed(errors),
       readValue => f(readValue)
     )
-  }
-
-  /**
-   * Process a "sort" URL GET param with a specific format. Returns the corresponding description as a list of pairs field-order,
-   * where field is the field to sort by, and order indicates if the sorting has an ascendent or descendent order.
-   * The input format is a string with a list of sorting fields separated by commas and with preference order. Each field has a
-   * sign that indicates if the sorting has an ascendent or descendent order.
-   * Example: "-done,order,+id"  Seq(("done", DESC), ("priority", ASC), ("id", ASC))   where ASC=false and DESC=true
-   *
-   * @param sortBy optional String with the input sorting description.
-   * @param allowedFields a list of available allowed fields to sort.
-   * @param default String with the default input sorting description.
-   * @param name the name of the param.
-   * @param req request header
-   * @return
-   */
-  def processSortByParam(sortBy: Option[String], allowedFields: Seq[String], default: String, name: String = "sort")(implicit req: RequestHeader): Either[ApiError, Seq[(String, Boolean)]] = {
-    val signedFieldPattern = """([+-]?)(\w+)""".r
-    val fieldsWithOrder = signedFieldPattern.findAllIn(sortBy.getOrElse(default)).toList.map {
-      case signedFieldPattern("-", field) => (field, DESC)
-      case signedFieldPattern(_, field) => (field, ASC)
-    }
-    // Checks if every field is within the available allowed ones
-    if ((fieldsWithOrder.map(_._1) diff allowedFields).isEmpty)
-      Right(fieldsWithOrder)
-    else
-      Left(errorParamMalformed(name))
   }
 
 }

@@ -1,27 +1,19 @@
 package models
 
 import java.sql.SQLException
-import java.time.format.DateTimeFormatter
 import java.util.NoSuchElementException
-import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
 import api.jwt.TokenPayload
 import models.db._
-import org.joda.time.DateTime
-import org.joda.time.format.{ DateTimeFormat, ISODateTimeFormat }
 import org.mindrot.jbcrypt.BCrypt
-import play.api.inject.ApplicationLifecycle
 import utils.{ EmailAlreadyInUseException, NutzerNameAlreadyInUseException, TokenExpiredException, UnauthorizedException }
-
 import scala.concurrent.Future
-
+import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by David on 29.11.16.
  */
 class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
 
   /**
    * Signin for @Anwender
@@ -46,9 +38,7 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
    * @param payload Payload of a JWToken
    */
   private def tokenExpirationCheck(payload: TokenPayload) =
-    // $COVERAGE-OFF$
     if (payload.expiration isBeforeNow) throw new TokenExpiredException
-  // $COVERAGE-ON$
 
   /**
    * Authenticates user as a @Anwender if the token payload is valid
@@ -116,10 +106,10 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
   def registrieren(anwender: AnwenderEntity) = {
     db.run(dal.insert(AnwenderEntity(anwender.nutzerEmail, BCrypt.hashpw(anwender.password, BCrypt.gensalt()), anwender.nutzerName))) recover {
       case sqle: SQLException => {
+        //we dont cover this since we cant get 100% branch coverage here
+        // $COVERAGE-OFF$
         if (sqle.getMessage.contains("emailUnique")) throw new EmailAlreadyInUseException
         if (sqle.getMessage.contains("nameUnique")) throw new NutzerNameAlreadyInUseException
-        //this should only happen when we encounter db connection failures
-        // $COVERAGE-OFF$
         throw sqle;
         // $COVERAGE-ON$
       }

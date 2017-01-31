@@ -54,7 +54,7 @@ coverageFailOnMinimum := false
 
 coverageHighlighting := true
 
-coverageExcludedPackages := "api\\..*;controllers\\..*;modules\\.*;utils\\.*;router;osm\\.*;views\\..*;.*ApiLog;.*DB;.*H2DB;.*PostgresDB"
+coverageExcludedPackages := "api\\..*;controllers\\..*;modules\\.*;utils\\.*;router;osm\\.*;views\\..*;.*ApiLog;.*DB;.*H2DB;.*PostgresDB;.*Base"
 
 // exposing the play ports
 //dockerExposedPorts in Docker := Seq(9000, 9443)
