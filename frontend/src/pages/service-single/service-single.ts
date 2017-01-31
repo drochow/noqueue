@@ -5,6 +5,8 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the ServiceSingle page.
@@ -15,7 +17,7 @@ import { AuthenticationProvider } from '../../providers/authentication-provider'
 @Component({
   selector: 'page-service-single',
   templateUrl: 'service-single.html',
-  providers: [ ShopsProvider, QueuesProvider, ServicesProvider ],
+  providers: [ ShopsProvider, QueuesProvider, ServicesProvider, ConnectivityProvider ],
   entryComponents: [ MyQueuePositionPage ]
 })
 export class ServiceSinglePage {
@@ -35,12 +37,13 @@ export class ServiceSinglePage {
   errorMessage: string = "";
   queueActive: boolean = false;
   isLoggedIn: boolean = false;
-  isLignedUp: boolean = false;
+  isLignedUp: boolean = true;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider, public auth: AuthenticationProvider) {
+  public servicesProvider: ServicesProvider, public auth: AuthenticationProvider, public connectivity: ConnectivityProvider,
+  public toast: ToastController) {
     this.shopID = this.navParams.get('shopID');
     this.serviceID = this.navParams.get('serviceID');
     let navService = this.navParams.get('service');
@@ -56,6 +59,7 @@ export class ServiceSinglePage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.isLoggedIn = this.auth.isLoggedIn();
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
@@ -73,6 +77,15 @@ export class ServiceSinglePage {
     setTimeout(() => {
       refresher.complete();
     }, 1000);
+  }
+
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   reloadData() : void{
@@ -113,7 +126,8 @@ export class ServiceSinglePage {
           console.log("Employees ns: ", employees);
           this.employees = employees;
           this.queueActive = this.employees.length > 0;
-        }
+        },
+        (error) => this.registerError("Couldn't fetch data from server.")
       );
   }
 
@@ -134,9 +148,7 @@ export class ServiceSinglePage {
           this.navCtrl.push(MyQueuePositionPage);
         },
         (error) => {
-          console.log("error when lining up: ", error);
-          this.error = true;
-          this.errorMessage = error.message || "Couldn't line up in the queue."
+          this.registerError("Couldn't line up for this service.")
         }
       )
   }

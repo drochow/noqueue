@@ -5,6 +5,9 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 import { ModalController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { SignupPage } from '../../pages/signup/signup';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
+
 
 /*
   Generated class for the Login page.
@@ -15,7 +18,7 @@ import { SignupPage } from '../../pages/signup/signup';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-  providers: [ValidatorProvider],
+  providers: [ValidatorProvider, ConnectivityProvider],
   entryComponents: [SignupPage]
 })
 export class LoginPage {
@@ -25,13 +28,13 @@ export class LoginPage {
   username: string = "";
   password: string = "";
   error: boolean = false;
-  errorMessage: string = "";
   validationRules: any;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
-  private modalCtrl: ModalController, private alertCtrl: AlertController) {
+  private modalCtrl: ModalController, private alertCtrl: AlertController, public connectivity: ConnectivityProvider,
+  public toast: ToastController) {
     this.validationRules = {
       username: this.validator.rules.username,
       email: this.validator.rules.email,
@@ -42,11 +45,14 @@ export class LoginPage {
   ionViewDidLoad() : void{
   }
 
+  ionViewWillEnter() : void {
+    this.connectivity.checkNetworkConnection();
+  }
+
 // ViewController logic (reacting to events)
 
     login() : void{
     this.error = false;
-    this.errorMessage = "";
 
     if(this.validator.empty(this.username, this.password)) return;
 
@@ -58,9 +64,9 @@ export class LoginPage {
           console.log("Error: ", error);
           let jsonError = JSON.parse(error._body);
           if(jsonError.code != 400){
-            this.errorMessage = "Couldn't log in. Please try again later."
+            this.registerError("Couldn't log in. Please try again later.");
           } else {
-            this.errorMessage = "Wrong username or password.";
+            this.registerError("Wrong username or password.");
           }
         }
       )
@@ -84,6 +90,15 @@ export class LoginPage {
       ]
     });
     confirm.present();
+  }
+
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   showSignupPage() : void{

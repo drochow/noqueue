@@ -1,3 +1,11 @@
-page-privacy-policy {
-
+.ios, .md, .wp{
+  page-privacy-policy {
+    ion-content{
+      .page-content{
+        width: 85%;
+        margin: auto;
+      }
+    }
+  }
 }
+
