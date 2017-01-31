@@ -56,6 +56,9 @@ export class MyShopSinglePage {
   }
 
   ionViewDidLoad() : void{
+  }
+
+  ionViewWillEnter(): void {
     this.reloadData();
   }
 

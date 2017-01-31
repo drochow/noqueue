@@ -35,7 +35,7 @@ export class ServiceSinglePage {
   errorMessage: string = "";
   queueActive: boolean = false;
   isLoggedIn: boolean = false;
-  isLignedUp: boolean = false;
+  isLignedUp: boolean = true;
 
 // constructor and lifecycle-events (chronological order)
 

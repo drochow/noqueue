@@ -65,6 +65,7 @@ export class CoworkersPage {
         (users) => {
           console.log("GET users with name: ", users);
           this.users = users;
+          this.reloadCoworkers();
         },
         (error) => this.registerError(error.message || "Couldn't get users from server")
       )
@@ -79,6 +80,13 @@ export class CoworkersPage {
           // this users - for each:
           //     this.employees - for each:
           //       if user.id === employee.anwender.id -> user.employee = true
+          this.users.forEach(u => {
+            employees.forEach(e => {
+              if(u.id === e.anwender.id){
+                u.employee = true;
+              }
+            });
+          });
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
@@ -94,6 +102,13 @@ export class CoworkersPage {
           // this users - for each:
           //     this.managers - for each:
           //       if user.id === manager.anwender.id -> user.manager = true
+          this.users.forEach(u => {
+            managers.forEach(m => {
+              if(u.id === m.anwender.id){
+                u.manager = true;
+              }
+            });
+          });
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
@@ -114,7 +129,8 @@ export class CoworkersPage {
             if(u.id === id){
               u.employee = true;
             }
-          })
+          });
+          this.reloadCoworkers();
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
@@ -133,7 +149,8 @@ export class CoworkersPage {
             if(u.id === id){
               u.manager = true;
             }
-          })
+          });
+          this.reloadCoworkers();
         },
         (error) => this.registerError(error.message || "Couldn't hire manager")
       )
@@ -148,7 +165,8 @@ export class CoworkersPage {
             if(u.id === id){
               u.employee = false;
             }
-          })
+          });
+          this.reloadCoworkers();
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
@@ -167,7 +185,8 @@ export class CoworkersPage {
             if(u.id === id){
               u.manager = false;
             }
-          })
+          });
+          this.reloadCoworkers();
         },
         (error) => {
           let jsonError = JSON.parse(error._body);
