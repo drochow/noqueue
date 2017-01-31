@@ -5,6 +5,7 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyQueuePosition page.
@@ -36,7 +37,7 @@ export class MyQueuePositionPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public maps: GoogleMapsProvider, public connectivity: ConnectivityProvider) {}
+  public maps: GoogleMapsProvider, public connectivity: ConnectivityProvider, public toast: ToastController) {}
 
   ionViewDidLoad() : void{
     this.reloadData();
@@ -56,6 +57,14 @@ export class MyQueuePositionPage {
     }, 1000);
   }
 
+  registerError(message: string) : void{
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
+  }
+
   reloadData() : void{
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
@@ -65,14 +74,15 @@ export class MyQueuePositionPage {
           if(position.shopID){
             this.shopsProvider.getShop(position.shopID)
               .subscribe(
-                (shop) => this.shop = shop
+                (shop) => this.shop = shop,
+                (error) => this.registerError("Error while fetching data from the server.")
               );
           }
           let mapLoaded = this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
           console.log(mapLoaded);
         },
         (error) => {
-          console.log(error);
+          this.registerError("Error while fetching data from the server.");
         }
       );
   }
@@ -83,7 +93,7 @@ export class MyQueuePositionPage {
     this.queuesProvider.leave()
       .subscribe(
         () => this.navCtrl.popToRoot(),
-        (error) => console.log(error)
+        (error) => this.registerError("Error while leaving the queue.")
       )
   }
 

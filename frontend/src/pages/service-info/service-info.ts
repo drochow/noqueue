@@ -5,6 +5,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { CoworkersPage } from '../coworkers/coworkers';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 
 /*
@@ -24,7 +25,6 @@ export class ServiceInfoPage {
 // declare variables used by the HTML template (ViewModel)
 
   error: boolean = false;
-  errorMessage: string = "";
   newService: boolean  = false;
   serviceID: number;
   newShop: boolean = false;
@@ -48,7 +48,7 @@ export class ServiceInfoPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
-  public alertCtrl: AlertController, public connectivity: ConnectivityProvider) {
+  public alertCtrl: AlertController, public connectivity: ConnectivityProvider, public toast : ToastController) {
     this.validationRules = {
       description: this.validator.rules.serviceDescription,
       duration: this.validator.rules.duration,
@@ -85,7 +85,8 @@ export class ServiceInfoPage {
           data.forEach(function(type){
             self.types.push(type.name);
           });
-        }
+        },
+        (error) => this.registerError("Couldn't fetch data from server.")
       )
   }
 
@@ -93,12 +94,15 @@ export class ServiceInfoPage {
 
   resetError() : void{
     this.error = false;
-    this.errorMessage = "";
   }
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   // only if editing existing service
@@ -175,9 +179,7 @@ export class ServiceInfoPage {
       .subscribe(
         () => this.navCtrl.pop(),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while editing service: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't edit the service.")
         }
       );
   }
@@ -195,9 +197,7 @@ export class ServiceInfoPage {
           }
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while creating new service: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't save the service.")
         }
       );
   }

@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { UsersProvider } from '../../providers/users-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Coworkers page.
@@ -21,7 +22,6 @@ export class CoworkersPage {
 // declare variables used by the HTML template (ViewModel)
 
   error: boolean = false;
-  errorMessage: string  = "";
   searchName: string = "";
   users: any = [];
   newShop: boolean = false;
@@ -33,35 +33,37 @@ export class CoworkersPage {
 // constructor and lifecycle-events
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public usersProvider: UsersProvider,
-  public validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
+  public validator: ValidatorProvider, public connectivity: ConnectivityProvider, public toast: ToastController) {
     this.shopID = navParams.get('shopID');
     this.newShop = navParams.get('newShop');
   }
 
   ionViewDidLoad() : void{
   }
-  
+
   ionViewWillEnter() : void{
     this.connectivity.checkNetworkConnection();
   }
-
 
 // ViewModel logic (working with the data)
 
   resetError() : void{
     this.error = false;
-    this.errorMessage = "";
   }
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   search(event: any) : void{
     this.resetError();
     if(!this.validator.searchName(this.searchName)){
-      this.registerError("Search name not valid");
+      this.registerError("Search name not valid.");
       this.users = [];
       return;
     }
@@ -72,7 +74,7 @@ export class CoworkersPage {
           this.users = users;
           this.reloadCoworkers();
         },
-        (error) => this.registerError(error.message || "Couldn't get users from server")
+        (error) => this.registerError("Couldn't get users from server.")
       )
   }
 
@@ -82,9 +84,6 @@ export class CoworkersPage {
         (employees) => {
           console.log("Employees for this shop: ", employees);
           this.employees = employees;
-          // this users - for each:
-          //     this.employees - for each:
-          //       if user.id === employee.anwender.id -> user.employee = true
           this.users.forEach(u => {
             employees.forEach(e => {
               if(u.id === e.anwender.id){
@@ -94,8 +93,7 @@ export class CoworkersPage {
           });
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while hiring employee: ", jsonError);
+          this.registerError("Error while fetching employees.");
         }
       );
 
@@ -116,8 +114,7 @@ export class CoworkersPage {
           });
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while hiring employee: ", jsonError);
+          this.registerError("Error while fetching managers.");
         }
       )
   }
@@ -138,9 +135,7 @@ export class CoworkersPage {
           this.reloadCoworkers();
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while hiring employee: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Error while hiring employee.");
         }
       );
   }
@@ -157,7 +152,7 @@ export class CoworkersPage {
           });
           this.reloadCoworkers();
         },
-        (error) => this.registerError(error.message || "Couldn't hire manager")
+        (error) => this.registerError("Error while hiring manager.")
       )
   }
 
@@ -174,9 +169,7 @@ export class CoworkersPage {
           this.reloadCoworkers();
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing employee: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Error while firing employee.");
         }
       );
   }
@@ -194,9 +187,7 @@ export class CoworkersPage {
           this.reloadCoworkers();
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing manager: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Error while firing manager.");
         }
       );
   }

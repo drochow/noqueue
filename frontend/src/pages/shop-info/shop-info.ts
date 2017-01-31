@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the ShopInfo page.
@@ -22,7 +23,6 @@ export class ShopInfoPage {
 // declare variables used by the HTML template (ViewModel)
 
   error: boolean = false;
-  errorMessage: string = "";
   shop = {
     name: "",
     phone:  "",
@@ -55,7 +55,7 @@ export class ShopInfoPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
-  public validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
+  public validator: ValidatorProvider, public connectivity: ConnectivityProvider, public toast : ToastController) {
     this.validationRules = {
       shopName: this.validator.rules.shopName,
       email: this.validator.rules.email,
@@ -182,18 +182,21 @@ export class ShopInfoPage {
           };
           this.checkInput();
         },
-        (error) => this.registerError(error.message || "Couldn't retrieve data from server")
+        (error) => this.registerError("Couldn't fetch data from server.")
       );
   }
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   resetError() : void{
     this.error = false;
-    this.errorMessage = "";
   }
 
 
@@ -210,9 +213,7 @@ export class ShopInfoPage {
           this.navCtrl.pop();
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while saving shop: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't edit this shop.")
         }
       )
   }
@@ -229,9 +230,7 @@ export class ShopInfoPage {
           this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: shop.id, newService: true});
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while saving new shop: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't create a new shop.")
         }
       )
   }

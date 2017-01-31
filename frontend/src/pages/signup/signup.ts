@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Signup page.
@@ -24,7 +25,6 @@ export class SignupPage {
   password: string;
   confirmPassword: string;
   error: boolean = false;
-  errorMessage: string = "";
   validationRules: any;
   isValid = {
     username: true,
@@ -38,7 +38,7 @@ export class SignupPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
-  public connectivity: ConnectivityProvider) {
+  public connectivity: ConnectivityProvider, public toast : ToastController) {
     // later - read these from the validator:
     this.validationRules = {
       username: this.validator.rules.username,
@@ -102,11 +102,19 @@ export class SignupPage {
     this.checkPasswordsMatching();
   }
 
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
+  }
+
 // ViewController logic (reacting to events)
 
   signup() : void{
     this.error = false;
-    this.errorMessage = "";
 
     this.checkInput();
     if(!this.allFieldsValid) return;
@@ -117,8 +125,7 @@ export class SignupPage {
           this.navCtrl.popToRoot()
         },
             (error) => {
-              this.error = true;
-              this.errorMessage = "Couldn't sign up. Please try again later."
+              this.registerError("Couldn't sign up.");
             }
       );
   }

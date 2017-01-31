@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyShops page.
@@ -22,10 +23,9 @@ export class MyShopsPage {
   myShops: any = [];
   hasShops: boolean = false;
   error: boolean = false;
-  errorMessage: string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
-  public connectivity: ConnectivityProvider) {}
+  public connectivity: ConnectivityProvider, public toast : ToastController) {}
 
   ionViewDidLoad() : void{
     this.reloadData();
@@ -46,7 +46,6 @@ export class MyShopsPage {
 
   reloadData() : void{
     this.error = false;
-    this.errorMessage = "";
 
     this.shopsProvider.getMyShops()
       .subscribe(
@@ -56,10 +55,18 @@ export class MyShopsPage {
           this.hasShops = this.myShops.length > 0;
         },
         (error) => {
-          this.error = true;
-          this.errorMessage = error.message || "Couldn't get shops from server";
+          this.registerError("Couldn't fetch data from server.")
         }
       )
+  }
+
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   showMyShopSinglePage(shopID: number, isLeiter: boolean, isAnwesend: boolean) : void{
