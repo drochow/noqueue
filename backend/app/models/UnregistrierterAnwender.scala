@@ -46,8 +46,6 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
    * @param payload Payload of a JWToken
    */
   private def tokenExpirationCheck(payload: TokenPayload) = {
-    val fmt = ISODateTimeFormat.dateTime();
-    System.out.println(payload.expiration.toString(fmt))
     if (payload.expiration isBeforeNow) throw new TokenExpiredException
   }
 
