@@ -4,15 +4,14 @@ import java.sql.SQLException
 import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
-import api.ApiError
+import api.{ ApiError, Credentials }
 import api.JsonCombinators._
-import api.auth.Credentials
 import api.jwt.{ JwtUtil, TokenExpiration, TokenPayload }
 import models.db.{ AdresseEntity, AnwenderEntity, PK }
 import models.{ Anwender => AnwenderModel, _ }
 import org.joda.time.DateTime
 import org.postgresql.util.PSQLException
-import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
+import services.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.inject.ApplicationLifecycle

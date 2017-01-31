@@ -4,7 +4,7 @@ import java.sql.Timestamp
 
 /**
  *  WarteschlangenPlatzEntity Representation
-  *
+ *
  * @param beginnZeitpunkt
  * @param anwenderId
  * @param mitarbeiterId

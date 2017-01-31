@@ -25,8 +25,6 @@ import play.api.inject.ApplicationLifecycle
  * Controller trait for API controllers
  */
 trait ApiController extends Controller with I18nSupport {
-  //  val db = PostgresDB.db;
-  //  val dal = PostgresDB.dal;
   val dbD: DB;
   val config: Configuration;
   val messagesApi: MessagesApi
@@ -236,70 +234,6 @@ trait ApiController extends Controller with I18nSupport {
    * @return
    */
   def okF[A](futObj: Future[A], headers: (String, String)*)(implicit w: Writes[A]): Future[ApiResult] = futObj.map(obj => ApiResponse.ok(obj, headers: _*))
-
-  /**
-   * Returns api response with item or an error, this helper is usefull to send out on searches when we are not sure if any
-   * result will be returned
-   *
-   * @param opt optiona of type A
-   * @param headers headers to bes end
-   * @param w json serialization object
-   * @param req request header
-   * @tparam A type of object to be serialized
-   * @return
-   */
-  private def itemOrError[A](opt: Option[A], headers: (String, String)*)(implicit w: Writes[A], req: RequestHeader): ApiResult = opt match {
-    case Some(i) => ApiResponse.ok(i, headers: _*)
-    case None => ApiError.errorItemNotFound
-  }
-
-  /**
-   * Returns future with item or an error, this helper is usefull to send out on searches when we are not sure if any
-   * result will be returned
-   *
-   * @param opt optional object
-   * @param headers headers to be send
-   * @param w json serialization object
-   * @param req request headers
-   * @tparam A type of optional object to be serialized
-   * @return
-   */
-  def maybeItem[A](opt: Option[A], headers: (String, String)*)(implicit w: Writes[A], req: RequestHeader): Future[ApiResult] = Future.successful(itemOrError(opt, headers: _*))
-
-  /**
-   * Returns future with item or an error, this helper is usefull to send out on searches when we are not sure if any
-   * result will be returned
-   *
-   * @param futOpt future object
-   * @param headers headerts to be send
-   * @param w json serialization object
-   * @param req request headers
-   * @tparam A type of future object to be serialized
-   * @return
-   */
-  def maybeItem[A](futOpt: Future[Option[A]], headers: (String, String)*)(implicit w: Writes[A], req: RequestHeader): Future[ApiResult] = futOpt.map(opt => itemOrError(opt, headers: _*))
-
-  /**
-   * Pagination helper to send back paged results
-   *
-   * @param p page of object
-   * @param headers heders to be send
-   * @param w json serialization object
-   * @tparam A type of page object
-   * @return
-   */
-  def page[A](p: Page[A], headers: (String, String)*)(implicit w: Writes[A]): Future[ApiResult] = Future.successful(ApiResponse.ok(p.items, p, headers: _*))
-
-  /**
-   * Pagination helper to send back paged results
-   *
-   * @param futP future page object
-   * @param headers heders to be send
-   * @param w json serialization object
-   * @tparam A type of page object
-   * @return
-   */
-  def page[A](futP: Future[Page[A]], headers: (String, String)*)(implicit w: Writes[A]): Future[ApiResult] = futP.map(p => ApiResponse.ok(p.items, p, headers: _*))
 
   /**
    *

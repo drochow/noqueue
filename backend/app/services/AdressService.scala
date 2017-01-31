@@ -1,4 +1,4 @@
-package osm
+package services
 
 import javax.inject.Inject
 
