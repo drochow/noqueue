@@ -6,6 +6,7 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { ServiceSinglePage } from '../service-single/service-single';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the ShopSingle page.
@@ -16,7 +17,7 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 @Component({
   selector: 'page-shop-single',
   templateUrl: 'shop-single.html',
-  providers: [ QueuesProvider, ShopsProvider, ServicesProvider, GoogleMapsProvider ],
+  providers: [ QueuesProvider, ShopsProvider, ServicesProvider, GoogleMapsProvider, ConnectivityProvider ],
   entryComponents: [ ServiceSinglePage ]
 })
 export class ShopSinglePage {
@@ -42,12 +43,16 @@ export class ShopSinglePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider) {
+  public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider, public connectivity: ConnectivityProvider) {
     this.shopID = this.navParams.get('shopID');
   }
 
   ionViewDidLoad() : void{
     this.reloadData();
+  }
+
+  ionViewWillEnter() : void {
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)

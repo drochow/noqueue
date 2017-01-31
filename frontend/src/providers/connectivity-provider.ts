@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Network } from 'ionic-native';
 import { Platform } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the ConnectivityProvider provider.
@@ -19,7 +20,7 @@ export class ConnectivityProvider {
 
   onDevice: boolean;
 
-  constructor(public http: Http, public platform: Platform) {
+  constructor(public http: Http, public platform: Platform, private toast: ToastController) {
     this.onDevice = this.platform.is('cordova');
   }
 
@@ -28,6 +29,16 @@ export class ConnectivityProvider {
       return Network.type.toLowerCase() !== "none";
     } else {
       return navigator.onLine;
+    }
+  }
+
+  checkNetworkConnection(): void{
+    if(!this.isOnline()){
+      let toast = this.toast.create({
+        message: 'Please check your network connection.',
+        duration: 3000
+      });
+      toast.present();
     }
   }
 

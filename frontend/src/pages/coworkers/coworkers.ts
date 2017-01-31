@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { UsersProvider } from '../../providers/users-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the Coworkers page.
@@ -13,7 +14,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-coworkers',
   templateUrl: 'coworkers.html',
-  providers: [ ShopsProvider, UsersProvider, ValidatorProvider ]
+  providers: [ ShopsProvider, UsersProvider, ValidatorProvider, ConnectivityProvider ]
 })
 export class CoworkersPage {
 
@@ -32,12 +33,16 @@ export class CoworkersPage {
 // constructor and lifecycle-events
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public usersProvider: UsersProvider,
-  public validator: ValidatorProvider) {
+  public validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
     this.shopID = navParams.get('shopID');
     this.newShop = navParams.get('newShop');
   }
 
   ionViewDidLoad() : void{
+  }
+  
+  ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
   }
 
 

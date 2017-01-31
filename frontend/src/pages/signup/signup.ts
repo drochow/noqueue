@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the Signup page.
@@ -12,7 +13,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-signup',
   templateUrl: 'signup.html',
-  providers: [ValidatorProvider]
+  providers: [ValidatorProvider, ConnectivityProvider]
 })
 export class SignupPage {
 
@@ -36,7 +37,8 @@ export class SignupPage {
 
 // constructor and lifecycle-events (chronological order)
 
-  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider) {
+  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
+  public connectivity: ConnectivityProvider) {
     // later - read these from the validator:
     this.validationRules = {
       username: this.validator.rules.username,
@@ -47,6 +49,10 @@ export class SignupPage {
   }
 
   ionViewDidLoad() : void{
+  }
+
+  ionViewWillEnter() : void {
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)

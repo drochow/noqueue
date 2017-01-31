@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { UsersProvider } from '../../providers/users-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+
 
 /*
   Generated class for the EditProfile page.
@@ -13,7 +15,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-edit-profile',
   templateUrl: 'edit-profile.html',
-  providers: [ValidatorProvider, UsersProvider]
+  providers: [ValidatorProvider, UsersProvider, ConnectivityProvider]
 })
 export class EditProfilePage {
 
@@ -42,7 +44,7 @@ export class EditProfilePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
-  private validator: ValidatorProvider) {
+  private validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
     this.validationRules = {
       username: this.validator.rules.username,
       email: this.validator.rules.email,
@@ -55,6 +57,7 @@ export class EditProfilePage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.fetchData();
   }
 

@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 import { ShopInfoPage } from '../shop-info/shop-info';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the MyShops page.
@@ -13,7 +14,7 @@ import { ShopInfoPage } from '../shop-info/shop-info';
 @Component({
   selector: 'page-my-shops',
   templateUrl: 'my-shops.html',
-  providers: [ShopsProvider],
+  providers: [ShopsProvider, ConnectivityProvider],
   entryComponents: [ MyShopSinglePage, ShopInfoPage ]
 })
 export class MyShopsPage {
@@ -23,13 +24,15 @@ export class MyShopsPage {
   error: boolean = false;
   errorMessage: string = "";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
+  public connectivity: ConnectivityProvider) {}
 
   ionViewDidLoad() : void{
     this.reloadData();
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.reloadData();
   }
 

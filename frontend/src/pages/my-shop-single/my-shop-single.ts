@@ -7,6 +7,7 @@ import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { CoworkersPage } from '../coworkers/coworkers';
 import {QueuesProvider} from "../../providers/queues-provider";
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the MyShopSingle page.
@@ -17,7 +18,7 @@ import {QueuesProvider} from "../../providers/queues-provider";
 @Component({
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
-  providers: [ShopsProvider, ServicesProvider, QueuesProvider],
+  providers: [ShopsProvider, ServicesProvider, QueuesProvider, ConnectivityProvider],
   entryComponents: [ ShopInfoPage, ServiceInfoPage, CoworkersPage ]
 })
 export class MyShopSinglePage {
@@ -49,7 +50,7 @@ export class MyShopSinglePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
-  public auth: AuthenticationProvider, public queuesProvider: QueuesProvider) {
+  public auth: AuthenticationProvider, public queuesProvider: QueuesProvider, public connectivity: ConnectivityProvider) {
     this.shopID = this.navParams.get('shopID');
     this.isLeiter = this.navParams.get('isLeiter');
     this.isAnwesend = this.navParams.get('isAnwesend');
@@ -59,6 +60,7 @@ export class MyShopSinglePage {
   }
 
   ionViewWillEnter(): void {
+    this.connectivity.checkNetworkConnection();
     this.reloadData();
   }
 

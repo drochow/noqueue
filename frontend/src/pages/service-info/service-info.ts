@@ -4,6 +4,7 @@ import { AlertController } from 'ionic-angular';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { CoworkersPage } from '../coworkers/coworkers';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 
 /*
@@ -15,7 +16,7 @@ import { CoworkersPage } from '../coworkers/coworkers';
 @Component({
   selector: 'page-service-info',
   templateUrl: 'service-info.html',
-  providers: [ServicesProvider],
+  providers: [ServicesProvider, ConnectivityProvider],
   entryComponents: [CoworkersPage]
 })
 export class ServiceInfoPage {
@@ -47,7 +48,7 @@ export class ServiceInfoPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public validator: ValidatorProvider, public servicesProvider: ServicesProvider,
-  public alertCtrl: AlertController) {
+  public alertCtrl: AlertController, public connectivity: ConnectivityProvider) {
     this.validationRules = {
       description: this.validator.rules.serviceDescription,
       duration: this.validator.rules.duration,
@@ -74,6 +75,7 @@ export class ServiceInfoPage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.servicesProvider.getAllServiceTypes()
       .subscribe(
         (data) => {

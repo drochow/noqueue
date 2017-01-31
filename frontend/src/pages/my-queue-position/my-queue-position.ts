@@ -4,6 +4,7 @@ import { ElementRef, ViewChild } from '@angular/core';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the MyQueuePosition page.
@@ -14,7 +15,7 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 @Component({
   selector: 'page-my-queue-position',
   templateUrl: 'my-queue-position.html',
-  providers: [QueuesProvider, ShopsProvider, GoogleMapsProvider]
+  providers: [QueuesProvider, ShopsProvider, GoogleMapsProvider, ConnectivityProvider]
 })
 export class MyQueuePositionPage {
 
@@ -35,10 +36,14 @@ export class MyQueuePositionPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public maps: GoogleMapsProvider) {}
+  public maps: GoogleMapsProvider, public connectivity: ConnectivityProvider) {}
 
   ionViewDidLoad() : void{
     this.reloadData();
+  }
+
+  ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)

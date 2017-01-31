@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UsersProvider } from '../../providers/users-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+
 
 /*
   Generated class for the EditPassword page.
@@ -12,7 +14,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-edit-password',
   templateUrl: 'edit-password.html',
-  providers: [ ValidatorProvider, UsersProvider ]
+  providers: [ ValidatorProvider, UsersProvider, ConnectivityProvider ]
 })
 export class EditPasswordPage {
 
@@ -37,7 +39,7 @@ export class EditPasswordPage {
 
 // constructor and lifecycle-events (chronological order)
 
-  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
+  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
     this.validationRules = {
       emptyPassword: this.validator.rules.emptyPassword,
       newPassword: this.validator.rules.newPassword,
@@ -64,6 +66,7 @@ export class EditPasswordPage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)

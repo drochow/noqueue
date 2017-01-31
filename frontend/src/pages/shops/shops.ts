@@ -4,6 +4,7 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ShopSinglePage } from '../shop-single/shop-single';
 import { LocationsProvider } from '../../providers/locations-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the Shops page.
@@ -14,7 +15,7 @@ import { LocationsProvider } from '../../providers/locations-provider';
 @Component({
   selector: 'page-shops',
   templateUrl: 'shops.html',
-  providers: [ShopsProvider, LocationsProvider],
+  providers: [ShopsProvider, LocationsProvider, ConnectivityProvider],
   entryComponents: [ ShopSinglePage ]
 })
 export class ShopsPage {
@@ -34,7 +35,7 @@ export class ShopsPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
-  public locations: LocationsProvider) {
+  public locations: LocationsProvider, public connectivity: ConnectivityProvider) {
     if(this.navParams.get('preparedSearch')){
       this.searchTerm = this.navParams.get('searchTerm');
       this.radius = this.navParams.get('radius');
@@ -42,6 +43,7 @@ export class ShopsPage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.locations.getUserLocation()
       .then(
         (location) => {
@@ -74,8 +76,6 @@ export class ShopsPage {
         () => console.log("shops loaded"),
         (error) => {
           console.log("Error 1");
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while fetching shops: ", jsonError);
           console.log("Error while fetching shops: ", error);
         }
       )

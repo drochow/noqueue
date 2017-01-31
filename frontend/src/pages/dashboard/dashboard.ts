@@ -54,6 +54,8 @@ export class DashboardPage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
+    
     let loading = this.loadingCtrl.create({
       content: 'Fetching data ...'
     });

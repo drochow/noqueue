@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServiceInfoPage } from '../service-info/service-info';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the ShopInfo page.
@@ -13,7 +14,7 @@ import { ServiceInfoPage } from '../service-info/service-info';
 @Component({
   selector: 'page-shop-info',
   templateUrl: 'shop-info.html',
-  providers: [ShopsProvider],
+  providers: [ShopsProvider, ConnectivityProvider],
   entryComponents: [ ServiceInfoPage ]
 })
 export class ShopInfoPage {
@@ -54,7 +55,7 @@ export class ShopInfoPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider,
-  public validator: ValidatorProvider) {
+  public validator: ValidatorProvider, public connectivity: ConnectivityProvider) {
     this.validationRules = {
       shopName: this.validator.rules.shopName,
       email: this.validator.rules.email,
@@ -74,6 +75,10 @@ export class ShopInfoPage {
   }
 
   ionViewDidLoad() : void{
+  }
+
+  ionViewWillEnter(): void{
+    this.connectivity.checkNetworkConnection();
   }
 
   checkShopName() : void{

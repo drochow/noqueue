@@ -5,6 +5,8 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 import { ModalController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { SignupPage } from '../../pages/signup/signup';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+
 
 /*
   Generated class for the Login page.
@@ -15,7 +17,7 @@ import { SignupPage } from '../../pages/signup/signup';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-  providers: [ValidatorProvider],
+  providers: [ValidatorProvider, ConnectivityProvider],
   entryComponents: [SignupPage]
 })
 export class LoginPage {
@@ -31,7 +33,7 @@ export class LoginPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, private validator: ValidatorProvider,
-  private modalCtrl: ModalController, private alertCtrl: AlertController) {
+  private modalCtrl: ModalController, private alertCtrl: AlertController, public connectivity: ConnectivityProvider) {
     this.validationRules = {
       username: this.validator.rules.username,
       email: this.validator.rules.email,
@@ -40,6 +42,10 @@ export class LoginPage {
   }
 
   ionViewDidLoad() : void{
+  }
+
+  ionViewWillEnter() : void {
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewController logic (reacting to events)

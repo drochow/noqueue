@@ -5,6 +5,7 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
 
 /*
   Generated class for the ServiceSingle page.
@@ -15,7 +16,7 @@ import { AuthenticationProvider } from '../../providers/authentication-provider'
 @Component({
   selector: 'page-service-single',
   templateUrl: 'service-single.html',
-  providers: [ ShopsProvider, QueuesProvider, ServicesProvider ],
+  providers: [ ShopsProvider, QueuesProvider, ServicesProvider, ConnectivityProvider ],
   entryComponents: [ MyQueuePositionPage ]
 })
 export class ServiceSinglePage {
@@ -40,7 +41,7 @@ export class ServiceSinglePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider, public auth: AuthenticationProvider) {
+  public servicesProvider: ServicesProvider, public auth: AuthenticationProvider, public connectivity: ConnectivityProvider) {
     this.shopID = this.navParams.get('shopID');
     this.serviceID = this.navParams.get('serviceID');
     let navService = this.navParams.get('service');
@@ -56,6 +57,7 @@ export class ServiceSinglePage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.isLoggedIn = this.auth.isLoggedIn();
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
