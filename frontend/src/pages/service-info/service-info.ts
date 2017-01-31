@@ -213,12 +213,14 @@ export class ServiceInfoPage {
       buttons: [
         {
           text: 'Cancel',
-          handler: data => {}
+          handler: data => {
+          }
         },
         {
           text: 'OK',
           handler: data => {
             this.types.push(data.customtype);
+            this.selectedType = data.customtype;
           }
         }
       ]

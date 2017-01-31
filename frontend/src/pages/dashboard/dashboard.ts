@@ -59,21 +59,10 @@ export class DashboardPage {
     });
 
     loading.present();
-    if(!this.auth.getToken()) {
-      this.auth.asyncSetup().then(
-        () => {
-          console.log("Auth AsynSetup...")
-          this.reloadData();
-          loading.dismiss();
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } else {
-      this.reloadData();
+    this.reloadData();
+    setTimeout(() => {
       loading.dismiss()
-    }
+    },1000);
   }
 
 // ViewModel logic (working with the data)
@@ -133,8 +122,8 @@ export class DashboardPage {
           (shops) => {
             console.log("my shops: ", shops);
             this.myShops = shops;
-            this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length
-            this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length
+            this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length;
+            this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length;
             this.hasShops = true;
           }
         );

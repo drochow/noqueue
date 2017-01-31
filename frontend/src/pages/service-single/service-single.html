@@ -35,6 +35,7 @@
     </ion-list>
   </div>
   <div class="group">
-    <button ion-button full [disabled]="!isLoggedIn" (click)="lineUp()">Line up</button>
+    <button ion-button full [disabled]="isLoggedIn === false || isLignedUp" (click)="lineUp()">Line up</button>
+    <p class="info" *ngIf="isLignedUp">You can only be lined up in one queue at a time.</p>
   </div>
 </ion-content>

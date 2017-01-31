@@ -34,7 +34,8 @@ export class ServiceSinglePage {
   error: boolean = false;
   errorMessage: string = "";
   queueActive: boolean = false;
-  isLoggedIn: boolean;
+  isLoggedIn: boolean = false;
+  isLignedUp: boolean = false;
 
 // constructor and lifecycle-events (chronological order)
 
@@ -56,6 +57,11 @@ export class ServiceSinglePage {
 
   ionViewWillEnter() : void{
     this.isLoggedIn = this.auth.isLoggedIn();
+    this.queuesProvider.getMyQueuePosition()
+      .subscribe(
+        (position) => this.isLignedUp = true,
+        (error) => this.isLignedUp = false
+      )
   }
 
 // ViewModel logic (working with the data)
