@@ -1,9 +1,8 @@
-package osm;
+package osm
 
 import javax.inject.Inject
 
-import models.db.{ AdresseEntity, DienstleistungsTypEntity, PK }
-import play.api.Play
+import models.db.{ AdresseEntity }
 import play.api.libs.json._
 import play.api.libs.ws._
 

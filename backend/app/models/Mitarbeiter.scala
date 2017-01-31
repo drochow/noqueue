@@ -77,7 +77,7 @@ class Mitarbeiter(
    * This is done to ensure that we have only one "inProgress" @WarteschlangenPlatzEntity at a time.
    * In addition all Duration will be agregated to calculate time when we expect all @WarteschlangenPlatzEntity to be done.
    *
-   * @returna tuple wich contains a Sequence of @WarteschlangenPlatzEntity relevant information and the time when all entites should be finished
+   * @return tuple wich contains a Sequence of @WarteschlangenPlatzEntity relevant information and the time when all entites should be finished
    */
   def warteSchlangeAnzeigen(): Future[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] =
     authorizedAction((b, a, m) =>
