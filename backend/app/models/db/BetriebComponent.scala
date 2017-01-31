@@ -68,13 +68,6 @@ trait BetriebComponent {
    * @param id
    * @return
    */
-  def getBetriebById(id: PK[BetriebEntity]): DBIO[BetriebEntity] = betriebe.filter(_.id === id).result.head
-
-  /**
-   *
-   * @param id
-   * @return
-   */
   def getBetriebWithAdresseById(id: PK[BetriebEntity]): DBIO[(BetriebEntity, AdresseEntity)] =
     (betriebe join adresses on (_.adresseId === _.id)).filter {
       case (betrieb, adresse) => betrieb.id === id
@@ -92,15 +85,6 @@ trait BetriebComponent {
       adr: AdresseEntity <- findOrInsert(adresse)
       count: Int <- betriebe.filter(_.id === id).update(betrieb.copy(adresseId = adr.id.get, id = Option(id)))
     } yield count == 1).transactionally
-
-  /**
-   *
-   * @param betriebId
-   * @param anwenderId
-   * @return
-   */
-  def addMitarbeiter(betriebId: PK[BetriebEntity], anwenderId: PK[AnwenderEntity]): DBIO[MitarbeiterEntity] =
-    insert(MitarbeiterEntity(anwesend = false, betriebId = betriebId, anwenderId = anwenderId))
 
   /**
    *

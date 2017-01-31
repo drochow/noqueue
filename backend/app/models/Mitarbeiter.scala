@@ -11,12 +11,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
-  * The Mitarbeiter role is a usal Employee that is able to mange  @WarteschlangenPlatzEntity as well as
-  * showing a list of @WarteschlangenPlatzEntity wich together are his personal queue and to change his attendance status
-  *
-  * @param mitarbeiterAction action that resolves aligned information of this @Mitarbeiter
-  * @param dbD database drivers used to perform queries
-  */
+ * The Mitarbeiter role is a usal Employee that is able to mange  @WarteschlangenPlatzEntity as well as
+ * showing a list of @WarteschlangenPlatzEntity wich together are his personal queue and to change his attendance status
+ *
+ * @param mitarbeiterAction action that resolves aligned information of this @Mitarbeiter
+ * @param dbD database drivers used to perform queries
+ */
 class Mitarbeiter(
     mitarbeiterAction: DBIO[(BetriebEntity, AnwenderEntity, MitarbeiterEntity)],
     dbD: DB
@@ -71,14 +71,14 @@ class Mitarbeiter(
     authorizedAction((b, a, m) => db.run(dal.finishWorkOn(wspId, m.id.get)).map(_ == 1))
 
   /**
-    * Searches for all @WarteschlangenPlatzEntity that are connected to the @MitarbeiterEntity of this @Mitarbeiter
-    * and returns them ordered by the folgePlatzId of the @WarteschlangenPlatzEntity all entities who have a
-    * Beginnzeitpunkt set get filtered out expect the one with the largest time.
-    * This is done to ensure that we have only one "inProgress" @WarteschlangenPlatzEntity at a time.
-    * In addition all Duration will be agregated to calculate time when we expect all @WarteschlangenPlatzEntity to be done.
-    *
-    * @returna tuple wich contains a Sequence of @WarteschlangenPlatzEntity relevant information and the time when all entites should be finished
-    */
+   * Searches for all @WarteschlangenPlatzEntity that are connected to the @MitarbeiterEntity of this @Mitarbeiter
+   * and returns them ordered by the folgePlatzId of the @WarteschlangenPlatzEntity all entities who have a
+   * Beginnzeitpunkt set get filtered out expect the one with the largest time.
+   * This is done to ensure that we have only one "inProgress" @WarteschlangenPlatzEntity at a time.
+   * In addition all Duration will be agregated to calculate time when we expect all @WarteschlangenPlatzEntity to be done.
+   *
+   * @returna tuple wich contains a Sequence of @WarteschlangenPlatzEntity relevant information and the time when all entites should be finished
+   */
   def warteSchlangeAnzeigen(): Future[(Seq[(PK[WarteschlangenPlatzEntity], Option[Timestamp], Option[PK[WarteschlangenPlatzEntity]], AnwenderEntity, Int, String, PK[DienstleistungEntity])], Timestamp)] =
     authorizedAction((b, a, m) =>
       for {

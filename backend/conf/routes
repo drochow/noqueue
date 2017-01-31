@@ -4,7 +4,6 @@
 
 # TEST PAGE
 GET           /setup                               controllers.Application.setup
-GET             /testdlts                           controllers.Application.insertTestDlTs
 
 # SETUP OF DATABASE
 GET           /setup                              controllers.Application.setup
@@ -69,7 +68,9 @@ GET          /betrieb/leitertest/:id                           controllers.Betri
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
 POST          /auth                               controllers.Anwender.auth
-GET           /dlts                              controllers.Application.getDienstleistungsTypen( page: Int ?=0, size: Int ?= 10)
+
+#check if used in frontend, outcommented for now...
+#GET           /dlts                              controllers.Application.getDienstleistungsTypen( page: Int ?=0, size: Int ?= 10)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
