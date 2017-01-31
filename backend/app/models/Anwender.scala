@@ -80,7 +80,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
           Future.successful(Some(Some(seq(1).asInstanceOf[AdresseEntity].id.get))) //asInstance is typecasting
         }
       }
-      updated <- db.run(dal.partialUpdate(seq(0).asInstanceOf[PK[AnwenderEntity]], nutzerName, nutzerEmail, adrIdOptOpt)) //Future.failed(new Exception("too few or too many rows where updated"))
+      updated <- db.run(dal.partialUpdate(seq(0).asInstanceOf[AnwenderEntity].id.get, nutzerName, nutzerEmail, adrIdOptOpt)) //Future.failed(new Exception("too few or too many rows where updated"))
       /*db.run(dal.partialUpdate(x)) == 1*/
     } yield (updated == 1)
   }

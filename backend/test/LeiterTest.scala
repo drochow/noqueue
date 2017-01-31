@@ -1,7 +1,7 @@
 import java.io.{ BufferedReader, File, FileReader }
 
 import models.db.{ DienstleistungEntity, _ }
-import models.{ DB, H2DB, Leiter, UnregistrierterAnwender }
+import models.{ DB, Leiter, UnregistrierterAnwender }
 import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers._
 import org.scalatest._

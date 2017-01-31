@@ -76,6 +76,13 @@ trait AnwenderComponent {
   private implicit val setPK = SetParameter[PK[_]](
     (pk, pp) => pp.setLong(pk.value)
   )
+  //this helps sqlu undestand what it maps the Option[PK[_]] to
+  private implicit val setOption = SetParameter[Option[PK[_]]](
+    (pk, pp) => {
+      pp.setLongOption(if (pk.isEmpty) None else Some(pk.get.value))
+    }
+  )
+
   def partialUpdate(
     id: PK[AnwenderEntity],
     nutzerNameOpt: Option[String],
@@ -89,7 +96,7 @@ trait AnwenderComponent {
                 NUTZEREMAIL = (CASE WHEN ${!nutzerEmailOpt.isEmpty}
                  THEN ${nutzerEmailOpt.getOrElse("Whoops")} ELSE NUTZEREMAIL END),
                 ADRESSE_ID = (CASE WHEN ${!adresseOpt.isEmpty}
-                  THEN ${adresseOpt.getOrElse(Some(PK[AdresseEntity](9001))).get} ELSE ADRESSE_ID END)
+                  THEN ${adresseOpt.getOrElse(None)} ELSE ADRESSE_ID END)
             WHERE ID = $id"""
   }
 
