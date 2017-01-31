@@ -23,15 +23,15 @@ export class ShopInfoPage {
   error: boolean = false;
   errorMessage: string = "";
   shop = {
-    name: string = "",
-    phone: string = "",
-    email: string = "",
-    openingHours: string = "",
+    name: "",
+    phone:  "",
+    email: "",
+    openingHours: "",
     address: {
-      city: string = "",
-      zip: string = "",
-      streetNr: string = "",
-      street: string = ""
+      city:  "",
+      zip: "",
+      streetNr: "",
+      street: ""
     }
   };
   newShop: boolean;
@@ -39,15 +39,15 @@ export class ShopInfoPage {
   shopID: number;
   validationRules: any;
   isValid = {
-    shopName: boolean = true,
-    email: boolean = true,
-    phone: boolean = true,
-    openingHours: boolean = true,
-    street: boolean = true,
-    streetNr: boolean = true,
-    zip: boolean = true,
-    city: boolean = true,
-    address: boolean = true
+    shopName: true,
+    email: true,
+    phone: true,
+    openingHours: true,
+    street: true,
+    streetNr: true,
+    zip:  true,
+    city: true,
+    address: true
   };
   allFieldsValid: boolean = false;
 

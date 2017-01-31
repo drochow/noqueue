@@ -66,7 +66,6 @@ GET             /dlt                                 controllers.Betrieb.searchD
 GET          /betrieb/mitarbeitertest/:id                       controllers.Betrieb.mitarbeiterOnlyTest(id: Long)
 GET          /betrieb/leitertest/:id                           controllers.Betrieb.leiterOnlyTest(id: Long)
 
-
 # UNREGISTRIERTERANWENDER
 POST          /anwender                           controllers.Anwender.create
 POST          /auth                               controllers.Anwender.auth

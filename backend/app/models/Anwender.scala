@@ -196,12 +196,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     } yield (wsp.get._1, wsp.get._3, wsp.get._4, addr.get, wsp.get._6, wsp.get._7, wsp.get._8, res)
     // wspId,  mitarbeiterName, BetriebName, Adresse, dlId, dldauer, dlname, schaetzZeitpunkt
   }
-
-  def dienstleistungAnzeigen(betriebId: Long, page: Int, size: Int): Future[Seq[(DienstleistungEntity, DienstleistungsTypEntity)]] =
-    for {
-      dls <- db.run(dal.listDienstleistungOfBetrieb(PK[BetriebEntity](betriebId), page, size))
-    } yield dls
-
   //[
   //  ...
   // (mitarbeiterID,  mitarbeiterName, schaetzZeitpunkt)

@@ -25,9 +25,9 @@ export class ServiceSinglePage {
   employees: any  = [];
   selectedEmployee: number = 0;
   service = {
-    type: string = "",
-    description: string = "",
-    duration: number = 0
+    type: "",
+    description: "",
+    duration:  0
   };
   shopID: any;
   serviceID: number;
@@ -39,7 +39,7 @@ export class ServiceSinglePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider, public auth: AuthProvider) {
+  public servicesProvider: ServicesProvider, public auth: AuthenticationProvider) {
     this.shopID = this.navParams.get('shopID');
     this.serviceID = this.navParams.get('serviceID');
     let navService = this.navParams.get('service');

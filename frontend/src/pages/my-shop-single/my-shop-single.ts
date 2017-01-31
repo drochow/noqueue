@@ -28,11 +28,11 @@ export class MyShopSinglePage {
   shopID: number;
   isLeiter: boolean = false;
   shop = {
-    name: string = "",
-    address: string = "",
-    phone: string = "",
-    email: string = "",
-    openingHours: string = ""
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+    openingHours: ""
   };
   managers: any = [];
   employees: any = [];

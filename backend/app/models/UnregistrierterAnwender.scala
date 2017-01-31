@@ -89,4 +89,8 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
     }
   }
 
+  def dienstleistungAnzeigen(betriebId: Long, page: Int, size: Int): Future[Seq[(DienstleistungEntity, DienstleistungsTypEntity)]] =
+    for {
+      dls <- db.run(dal.listDienstleistungOfBetrieb(PK[BetriebEntity](betriebId), page, size))
+    } yield dls
 }

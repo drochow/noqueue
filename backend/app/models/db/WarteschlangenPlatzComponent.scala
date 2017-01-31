@@ -81,12 +81,10 @@ trait WarteschlangenPlatzComponent {
       checkIsValidDL <- if (!isValidDL) throw new DLInvalidException else DBIO.successful()
       anwenderHasWsp <- warteschlangenplaetze.filter(_.anwenderId === wsp.anwenderId).exists.result
       anwenderHasWspCheck <- {
-        System.out.println("Anwender has wsp? " + anwenderHasWsp)
         if (anwenderHasWsp) throw new AnwenderAlreadyLinedUpException else DBIO.successful()
       }
       mitarbeiterIsAnwesend <- mitarbeiters.filter(_.id === wsp.mitarbeiterId).filter(_.anwesend === true).exists.result
       mitarbeiterIsAnwesendCheck <- {
-        System.out.println("Mitarbeiter is Anwesend? " + mitarbeiterIsAnwesend)
         if (!mitarbeiterIsAnwesend) throw new MitarbeiterNotAnwesendException else DBIO.successful()
       }
       persistedWsp <- (warteschlangenplaetzeAutoInc += wsp).map(id => wsp.copy(id = Some(id)))
@@ -229,8 +227,8 @@ trait WarteschlangenPlatzComponent {
     for {
       isAnyInBearbeitung <- warteschlangenplaetze.filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
       isAnyBefore <- warteschlangenplaetze.filter(_.folgePlatzId === id).exists.result
-      res <- if (isAnyBefore) throw new NotFirstWspException else if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException
-      else warteschlangenplaetze.filter(_.id === id).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
+      res <- if (isAnyInBearbeitung) throw new AlreadWorkingOnAWspException else if (isAnyBefore) throw new NotFirstWspException
+      else warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).map(_.beginnZeitpunkt).update(Some(new Timestamp(System.currentTimeMillis() / 1000)))
     } yield res
   }
 
@@ -238,9 +236,9 @@ trait WarteschlangenPlatzComponent {
     for {
       isInBearbeitung <- warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).filterNot(_.beginnZeitpunkt.isEmpty).exists.result
       res <- if (isInBearbeitung) {
-        warteschlangenplaetze.filter(_.id === id).delete
+        warteschlangenplaetze.filter(_.id === id).filter(_.mitarbeiterId === mid).delete
       } else {
-        throw new AlreadWorkingOnAWspException
+        throw new NotWorkingOnTisWSPException
       }
     } yield res
   }
