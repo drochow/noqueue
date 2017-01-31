@@ -45,9 +45,10 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
    *
    * @param payload Payload of a JWToken
    */
-  private def tokenExpirationCheck(payload: TokenPayload) = {
+  private def tokenExpirationCheck(payload: TokenPayload) =
+    // $COVERAGE-OFF$
     if (payload.expiration isBeforeNow) throw new TokenExpiredException
-  }
+  // $COVERAGE-ON$
 
   /**
    * Authenticates user as a @Anwender if the token payload is valid
@@ -104,9 +105,7 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
     latitude: Double,
     page: Int,
     size: Int
-  ): Future[Seq[(BetriebAndAdresse, String)]] = {
-    db.run(dal.searchBetrieb(suchBegriff, umkreisM, longitude, latitude, page, size));
-  }
+  ): Future[Seq[(BetriebAndAdresse, String)]] = db.run(dal.searchBetrieb(suchBegriff, umkreisM, longitude, latitude, page, size))
 
   /**
    * Signup as a @Anwender
@@ -163,13 +162,4 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
       dls <- db.run(dal.listDienstleistungOfBetrieb(PK[BetriebEntity](betriebId), page, size))
     } yield dls
 
-  //no idea where this goes so i'll put it here for now
-  //@todo seems not be used, check if that is correct
-  //  def getDienstleistungsTypen(limit: Long, offset: Long): Future[Seq[DienstleistungsTypEntity]] = {
-  //    try {
-  //      db.run(dal.getAllDlTs(limit, offset))
-  //    } finally {
-  //      db.close()
-  //    }
-  //  }
 }
