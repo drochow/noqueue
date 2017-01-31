@@ -76,6 +76,7 @@ export class ShopsPage {
           console.log("Error 1");
           let jsonError = JSON.parse(error._body);
           console.log("Error while fetching shops: ", jsonError);
+          console.log("Error while fetching shops: ", error);
         }
       )
   }
@@ -95,7 +96,7 @@ export class ShopsPage {
               }
               for(var item of shops){
                 if(self.shops){
-                  item.distance = (Number(item.distanz)/1000).toFixed(1);
+                  item.dist = (Number(item.distanz)/1000).toFixed(1);
                   self.shops.push(item);
                 }
               }
