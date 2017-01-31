@@ -1,7 +1,7 @@
 import java.io.File
 import javax.security.auth.login.CredentialException
 
-import api.jwt.{ JwtUtil, TokenPayload }
+import api.jwt.{ JwtUtil, TokenExpiration, TokenPayload }
 import models._
 import models.db._
 import org.apache.http.auth.InvalidCredentialsException
@@ -158,7 +158,7 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
     "call anmeldenMitPayload and" should {
       "not be able to authenticate with a payload of a deleted user" in {
         assertThrows[NoSuchElementException] {
-          Await.result(ua.anmeldenMitPayload(TokenPayload(100L, DateTime.now().withDurationAdded(1200L, 1))).anwender, awaitDuration)
+          Await.result(ua.anmeldenMitPayload(TokenPayload(100L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1))).anwender, awaitDuration)
         }
       }
       "not be able to authenticate with a expired payload" in {
@@ -167,7 +167,7 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         }
       }
       "be able to authenticate with a valid payload" in {
-        ua.anmeldenMitPayload(TokenPayload(1L, DateTime.now().withDurationAdded(1200L, 1))).anwender map {
+        ua.anmeldenMitPayload(TokenPayload(1L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1))).anwender map {
           a => a.id.get.value should be(1L)
         }
       }
@@ -177,7 +177,7 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         assertThrows[NoSuchElementException] {
           Await.result(
             ua.anmeldenMitPayloadAlsMitarbeiterVon(
-            TokenPayload(100L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)
+            TokenPayload(100L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)
           ).anwender,
             awaitDuration
           )
@@ -192,14 +192,14 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         assertThrows[NoSuchElementException] {
           Await.result(
             ua.anmeldenMitPayloadAlsMitarbeiterVon(
-            TokenPayload(1L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)
+            TokenPayload(1L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)
           ).mitarbeiter,
             awaitDuration
           )
         }
       }
       "be able to authenticate with a valid payload" in {
-        ua.anmeldenMitPayloadAlsMitarbeiterVon(TokenPayload(4L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)).mitarbeiter map {
+        ua.anmeldenMitPayloadAlsMitarbeiterVon(TokenPayload(4L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)).mitarbeiter map {
           m => m.anwenderId.value should be(4L)
         }
       }
@@ -209,7 +209,7 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         assertThrows[NoSuchElementException] {
           Await.result(
             ua.anmeldenMitPayloadAlsLeiterVon(
-            TokenPayload(100L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)
+            TokenPayload(100L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)
           ).anwender,
             awaitDuration
           )
@@ -224,14 +224,14 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         assertThrows[NoSuchElementException] {
           Await.result(
             ua.anmeldenMitPayloadAlsLeiterVon(
-            TokenPayload(1L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)
+            TokenPayload(1L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)
           ).leiter,
             awaitDuration
           )
         }
       }
       "be able to authenticate with a valid payload" in {
-        ua.anmeldenMitPayloadAlsLeiterVon(TokenPayload(4L, DateTime.now().withDurationAdded(1200L, 1)), PK[BetriebEntity](11L)).leiter map {
+        ua.anmeldenMitPayloadAlsLeiterVon(TokenPayload(4L, DateTime.now().withDurationAdded(TokenExpiration.expirationDuration, 1)), PK[BetriebEntity](11L)).leiter map {
           m => m.anwenderId.value should be(4L)
         }
       }

@@ -1,6 +1,7 @@
 package models
 
 import java.sql.SQLException
+import java.time.format.DateTimeFormatter
 import java.util.NoSuchElementException
 import javax.inject.Inject
 import javax.security.auth.login.CredentialException
@@ -8,6 +9,7 @@ import javax.security.auth.login.CredentialException
 import api.jwt.TokenPayload
 import models.db._
 import org.joda.time.DateTime
+import org.joda.time.format.{ DateTimeFormat, ISODateTimeFormat }
 import org.mindrot.jbcrypt.BCrypt
 import play.api.inject.ApplicationLifecycle
 import utils.{ EmailAlreadyInUseException, NutzerNameAlreadyInUseException, TokenExpiredException, UnauthorizedException }
@@ -43,7 +45,11 @@ class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
    *
    * @param payload Payload of a JWToken
    */
-  private def tokenExpirationCheck(payload: TokenPayload) = if (payload.expiration isBeforeNow) throw new TokenExpiredException
+  private def tokenExpirationCheck(payload: TokenPayload) = {
+    val fmt = ISODateTimeFormat.dateTime();
+    System.out.println(payload.expiration.toString(fmt))
+    if (payload.expiration isBeforeNow) throw new TokenExpiredException
+  }
 
   /**
    * Authenticates user as a @Anwender if the token payload is valid
