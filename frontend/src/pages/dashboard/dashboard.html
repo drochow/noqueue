@@ -69,8 +69,8 @@
     <p class="sectionName" *ngIf="isLoggedIn">My Shops</p>
 
     <div class="my-shops" *ngIf="isLoggedIn">
-      <p (click)="showMyShopsPage()" *ngIf="managerCount && managerCount.length > 0"><ion-badge item-left >{{managerCount}}</ion-badge> shops you manage.</p>
-      <p (click)="showMyShopsPage()" *ngIf="employeeCount && employeeCount.length > 0"><ion-badge item-left >{{employeeCount}}</ion-badge> shops you work for.</p>
+      <p (click)="showMyShopsPage()" *ngIf="managerCount > 0"><ion-badge item-left >{{managerCount}}</ion-badge> shops you manage.</p>
+      <p (click)="showMyShopsPage()" *ngIf="employeeCount > 0"><ion-badge item-left >{{employeeCount}}</ion-badge> shops you work for.</p>
       <p (click)="showCreateShopPage()" color="primary">Register a new shop</p>
     </div>
   </div>

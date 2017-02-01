@@ -15,12 +15,12 @@ import play.api.libs.json.Reads._
 import play.api.libs.json._
 import utils.{ OneLeiterRequiredException, UnauthorizedException }
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 /**
  * Created by anwender on 06.11.2016.
  */
 class Betrieb @Inject() (val dbD: DB, val as: AdressService, val messagesApi: MessagesApi, val config: Configuration) extends api.ApiController {
+
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   def create = SecuredApiActionWithBody { implicit request =>
 
