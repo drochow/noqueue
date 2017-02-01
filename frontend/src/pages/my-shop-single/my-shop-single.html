@@ -59,7 +59,7 @@
     <ion-list no-lines>
       <ion-item *ngIf="!isLeiter">
         <ion-label>Currently working</ion-label>
-        <ion-toggle class="toggle-element" (click)="switchAttendance()" [checked]="isAnwesend" color="primary" item-right></ion-toggle>
+        <ion-toggle class="toggle-element" (ionChange)="switchAttendance()"  [checked]="isAnwesend" color="primary" item-right></ion-toggle>
       </ion-item>
       <ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>
       <ion-item *ngIf="queue.length < 1">Nobody in the line!</ion-item>
