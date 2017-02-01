@@ -199,7 +199,30 @@ class AnwenderSpec extends AsyncWordSpec {
           }
       }
     }
-    "be able to" in {
+    "be able to create a Betrieb" in {
+      val betriebE = BetriebEntity("Laden", "030-1234567", "first cry of the rooster-sundown", "Laden@example.com", PK[AdresseEntity](8))
+      for {
+        (betrieb, adresse) <- anwender.betriebErstellen(betriebE, expectedAdresse)
+        persistedBetrieb <- anwender.betriebAnzeigen(betrieb.id.get) map (_._1)
+      } yield (persistedBetrieb shouldEqual (betriebE.copy(id = persistedBetrieb.id)))
+    }
+    "be able to book WsPs" in {
+      val pw = "1234"
+      val anw = anwenderize("newAnwenderComingIn")
+      val unregistrierterAnwender = new UnregistrierterAnwender(db)
+      for {
+        newAnwenderE <- unregistrierterAnwender.registrieren(anw)
+        newAnwender <- Future.successful(new Anwender(db.dal.getAnwenderWithAdress(newAnwenderE.id.get), db))
+        wsp <- newAnwender.wsFuerBestimmtenMitarbeiterBeitreten(expectedWsP.dienstLeistungId.value, expectedWsP.mitarbeiterId.value)
+      } yield (wsp should equal(WarteschlangenPlatzEntity(None, newAnwenderE.id.get, expectedWsP.mitarbeiterId, expectedWsP.dienstLeistungId, None, None).copy(id = wsp.id)))
+    }
+    "be able to get next time of a Betrieb" in {
+      /*INSERT INTO "MITARBEITER" ("ANWESEND", "BETR_ID", "ANW_ID", "MIT_ID") VALUES (true, 8, 3, 3);
+INSERT INTO "MITARBEITER" ("ANWESEND", "BETR_ID", "ANW_ID", "MIT_ID") VALUES (true, 8, 1, 4);
+INSERT INTO "MITARBEITER" ("ANWESEND", "BETR_ID", "ANW_ID", "MIT_ID") VALUES (true, 8, 4, 5);*/
+      for {
+        seq <- anwender.getNextTimeSlotsForBetrieb(PK[BetriebEntity](8).value)
+      } yield (2) //@todo
       succeed
     }
   }
