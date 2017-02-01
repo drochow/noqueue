@@ -89,7 +89,6 @@ export class MyShopSinglePage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
-          console.log("GET Shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -105,7 +104,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getEmployees(this.shopID)
         .subscribe(
           (employees) => {
-            console.log("GET Employees: ", employees);
             this.employees = employees;
           },
           (error) => this.registerError("Error while fetching data from the server.")
@@ -114,7 +112,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getManagers(this.shopID)
         .subscribe(
           (managers) => {
-            console.log("GET Managers: ", managers);
             this.managers = managers;
           },
           (error) => this.registerError("Error while fetching data from the server.")
@@ -129,7 +126,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getQueueFor(this.shopID)
         .subscribe(
           (queue) => {
-            console.log("queue: ", queue);
             this.queue = queue;
             this.clients = queue.wsps;
             if(this.clients.length > 0){
@@ -141,14 +137,6 @@ export class MyShopSinglePage {
     }
   }
 
-  // start(){
-  //   this.firstStarted = true;
-  // }
-  //
-  // end(){
-  //   this.firstStarted = false;
-  //   this.reloadData();
-  // }
 
 // ViewController logic (reacting to events)
 
@@ -209,17 +197,14 @@ export class MyShopSinglePage {
 
   showService(serviceID: number) : void{
     let service = this.services.filter(s => s.id == serviceID)[0];
-    console.log("will show: ", service);
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
   deleteService(serviceID: number) : void{
-    console.log("will delete: " + serviceID);
-    //
+
   }
 
   createService() : void{
-    console.log("will create");
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true, serviceID: -1, service: undefined});
   }
 

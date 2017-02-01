@@ -59,18 +59,15 @@ export class ShopsPage {
   search(event: any) : void{
     this.error = false;
 
-
     if(!this.validator.searchTerm(this.searchTerm)){
       this.registerError("Search term not valid.");
       return;
     }
 
-    console.log("searching for: " + this.searchTerm + " with radius: " + this.radius);
-
     this.shops = [];
     this.loadShops()
       .then(
-        () => console.log("shops loaded"),
+        () => {},
         (error) => {
           this.registerError("Couldn't fetch data from server.")
         }
@@ -86,7 +83,6 @@ export class ShopsPage {
       self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius : "", self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
-              console.log("GET Shops in shops.ts :", shops);
               if(shops.length < size){
                 self.allShopsFetched = true;
               }
@@ -100,7 +96,6 @@ export class ShopsPage {
                 self.noShops = true;
                 self.shouldShowShops = false;
               }
-              console.log("Should show shops 2: " + self.shouldShowShops);
               resolve();
             },
               (error) => {
@@ -113,12 +108,10 @@ export class ShopsPage {
   }
 
   infiniteScroll(scroll: any) : void{
-    console.log("to infinity and beyond");
     this.loadShops()
       .then(
         () => {
           scroll.complete();
-          console.log("whats up");
         },
         (error) => {
           this.registerError("Couldn't fetch data from server.");
@@ -137,7 +130,6 @@ export class ShopsPage {
   }
 
   showShopSinglePage(id: number) : void{
-    console.log("shop id: ", id);
     this.navCtrl.push(ShopSinglePage, {shopID: id});
   }
 

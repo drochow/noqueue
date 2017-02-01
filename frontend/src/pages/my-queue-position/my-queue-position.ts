@@ -69,7 +69,6 @@ export class MyQueuePositionPage {
     this.queuesProvider.getMyQueuePosition()
       .subscribe(
         (position) => {
-          console.log(position);
           this.queuePosition = position;
           if(position.shopID){
             this.shopsProvider.getShop(position.shopID)
@@ -79,7 +78,6 @@ export class MyQueuePositionPage {
               );
           }
           let mapLoaded = this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
-          console.log(mapLoaded);
         },
         (error) => {
           this.registerError("Error while fetching data from the server.");

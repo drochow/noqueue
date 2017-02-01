@@ -32,12 +32,10 @@ export class SettingsPage {
 
   constructor(public navCtrl: NavController, public auth: AuthenticationProvider, public userConfig: UserConfigurationProvider) {
     this.isLoggedIn = this.auth.isLoggedIn();
-    console.log("constructor: ", this.auth.isLoggedIn());
   }
 
   ionViewDidLoad() : void{
     this.isLoggedIn = this.auth.isLoggedIn();
-    console.log("constructor: ", this.auth.isLoggedIn());
   }
 
 // ViewController logic (reacting to events)

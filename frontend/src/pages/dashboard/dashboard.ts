@@ -99,21 +99,15 @@ export class DashboardPage {
   }
 
   reloadData() : void{
-    console.log("token: ", this.auth.getToken());
-    console.log("Internet connection: ", this.connectivity.isOnline());
-
     this.resetData();
-
     this.locations.getUserLocation()
       .then(
         (location) => {
-          console.log("Got User Location:", location)
           let lat = location.latitude;
           let long = location.longitude;
           this.shops.getShops(3,0,"",100000000,lat,long)
             .subscribe(
               (shops) => {
-                console.log("nearby shops: ", shops);
                 this.shopsNearby = shops;
                 this.hasShopsNearby = true;
               },
@@ -130,7 +124,6 @@ export class DashboardPage {
       this.shops.getMyShops()
         .subscribe(
           (shops) => {
-            console.log("my shops: ", shops);
             this.myShops = shops;
             this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length;
             this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length;
@@ -139,19 +132,10 @@ export class DashboardPage {
           (error) => {
           }
         );
-      //@TODO - use getMyShops() instead
-      // this.queues.getMyQueues()
-      //   .subscribe(
-      //     (queues) => {
-      //       console.log("my queues: ", queues);
-      //       this.myQueues = queues;
-      //       this.hasQueues = true;
-      //     }
-      // );
+
       this.queues.getMyQueuePosition()
         .subscribe(
           (queuePosition) => {
-            console.log("my queue position: ", queuePosition);
             this.myQueuePosition = queuePosition;
             this.isInQueue = true;
           },
@@ -179,7 +163,6 @@ export class DashboardPage {
   }
 
   showSignupPage() : void{
-    console.log("Why are you not working...");
     this.navCtrl.push(SignupPage);
   }
 

@@ -61,7 +61,6 @@ export class LoginPage {
         () => this.navCtrl.pop(),
         (error) => {
           this.error = true;
-          console.log("Error: ", error);
           let jsonError = JSON.parse(error._body);
           if(jsonError.code != 400){
             this.registerError("Couldn't log in. Please try again later.");

@@ -167,7 +167,6 @@ export class ShopInfoPage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
-          console.log("Get shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -226,7 +225,6 @@ export class ShopInfoPage {
     this.shopsProvider.createShop(this.shop)
       .subscribe(
         (shop) => {
-          console.log("will push to service info page with new shop ID: ", shop.id);
           this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: shop.id, newService: true});
         },
         (error) => {

@@ -31,7 +31,6 @@ export class SplashScreenPage {
           }, 2000);
         },
         (error) => {
-          console.log("Couldn't reed from Storage.");
         }
       )
   }

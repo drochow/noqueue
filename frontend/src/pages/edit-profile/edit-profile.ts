@@ -87,7 +87,6 @@ export class EditProfilePage {
 
   checkZip() : void{
     this.isValid.zip = this.validator.zip(this.zip);
-    console.log("Testing the validator - zip 12345a, 123456: " + this.validator.zip("12345a") + " " + this.validator.zip("123456"));
     this.checkAddress();
     this.checkAllFields();
   }
@@ -164,7 +163,6 @@ export class EditProfilePage {
     this.users.changeProfileInfo(data)
       .subscribe(
         () => {
-          console.log("Changed data");
           this.navCtrl.pop();
         },
         (error) => {

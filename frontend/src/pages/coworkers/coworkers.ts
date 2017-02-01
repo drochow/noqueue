@@ -70,7 +70,6 @@ export class CoworkersPage {
     this.usersProvider.getUsersWithName(this.searchName)
       .subscribe(
         (users) => {
-          console.log("GET users with name: ", users);
           this.users = users;
           this.reloadCoworkers();
         },
@@ -82,7 +81,6 @@ export class CoworkersPage {
     this.shopsProvider.getEmployees(this.shopID)
       .subscribe(
         (employees) => {
-          console.log("Employees for this shop: ", employees);
           this.employees = employees;
           this.users.forEach(u => {
             employees.forEach(e => {
@@ -100,7 +98,6 @@ export class CoworkersPage {
     this.shopsProvider.getManagers(this.shopID)
       .subscribe(
         (managers) => {
-          console.log("Managers for this shop: ", managers);
           this.managers = managers;
           // this users - for each:
           //     this.managers - for each:

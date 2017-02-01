@@ -27,7 +27,6 @@ export class UsersProvider {
   }
 
   getMe() : Observable<any>{
-    // return this.httpProvider.get(this.httpProvider.ROUTES.users + "/" + this.auth.getUserId());
     return this.httpProvider.get(this.httpProvider.ROUTES.users);
   }
 
