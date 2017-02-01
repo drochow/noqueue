@@ -102,23 +102,6 @@ export class DashboardPage {
 
   reloadData() : void{
     this.resetData();
-    this.locations.getUserLocation()
-      .then(
-        (location) => {
-          let lat = location.latitude;
-          let long = location.longitude;
-          this.shops.getShops(3,0,"",100000000,lat,long)
-            .subscribe(
-              (shops) => {
-                this.shopsNearby = shops;
-                this.hasShopsNearby = true;
-              },
-              (error) => {
-                this.registerError("Error while fetching shops.");
-              }
-            )
-        }
-      );
 
     this.isLoggedIn = this.auth.isLoggedIn();
 
@@ -141,7 +124,12 @@ export class DashboardPage {
             this.myQueuePosition = queuePosition;
             this.isInQueue = true;
           },
-          (error) => {}
+          (error) => {
+            let jsonError = JSON.parse(error._body);
+            if(jsonError.code !== 404){
+              this.registerError("Couldn't get info from server.");
+            }
+          }
         );
     }
   }
@@ -151,7 +139,7 @@ export class DashboardPage {
   searchShops() : void{
     this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
-  
+
   showMyQueuePositionPage() : void{
     this.navCtrl.push(MyQueuePositionPage);
   }
