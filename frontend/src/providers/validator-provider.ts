@@ -16,23 +16,23 @@ export class ValidatorProvider {
 
    rules = {
      username:"Must be 6 to 30 letters, numbers or . - _",
-     password:"Must be at least 6 characters.",
-     newPassword:"Must be at least 6 characters.",
+     password:"Must be at least 6 character long.",
+     newPassword:"Must be at least 6 characters long.",
      samePassword:"New password equals old password.",
      emptyPassword: "Please fill in this field.",
      passwordMatching:"Passwords do not match.",
      email:"Must be a valid email.",
-     searchTerm:"Must be 1 to 50 characters.",
-     searchName:"Must be 1 to 30 characters.",
-     street:"Must be 2-50 letters.",
-     zip:"Must be 5 numbers.",
+     searchTerm:"Must be 1 to 50 characters long.",
+     searchName:"Must be 1 to 30 characters long.",
+     street:"Must be 2-50 letters long.",
+     zip:"Must be 5 numbers long.",
      streetNumber:"Must be 1-5 numbers, followed by an optional letter.",
-     city:"Must be 2-40 letters.",
+     city:"Must be 2-40 letters long.",
      shopName:"Must be 2-30 alphanumeric, . - _ space.",
      phone: "Phone number is not matching the proper format.",
-     openingHours: "Must be 1-50 characters.",
-     serviceDescription: "Must be 0-250 characters.",
-     serviceType:"Must be 2-40 letters or numbers.",
+     openingHours: "Must be 1-50 characters long.",
+     serviceDescription: "Must be 0-200 characters long.",
+     serviceType:"Must be 2-40 letters or numbers long.",
      duration: "Must be a numeric value."
   };
 

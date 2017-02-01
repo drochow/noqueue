@@ -18,7 +18,6 @@ export class GoogleMapsProvider {
   mapElement: any;
   map: any;
   mapInitialised: boolean = false;
-  mapLoaded: any;
   markers: any = [];
   latitude: number;
   longitude: number;
@@ -85,13 +84,4 @@ export class GoogleMapsProvider {
     this.markers.push(marker);
   }
 
-  disableMap() : void{
-    // if needed
-    // ... change css to display: none
-  }
-
-  enableMap() : void{
-    // if needed
-    // ... change css to display: block
-  }
 }
