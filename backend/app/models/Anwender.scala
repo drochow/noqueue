@@ -33,26 +33,7 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     adrO <- if (anw.adresseId.isEmpty) Future.successful(None) else db.run(dal.getAdresseById(anw.adresseId.get))
   } yield (anw, adrO)
 */
-  //@todo implement lazy val mitarbeiterVon wich is a Future of a Sequence of MitarbeiterEntities
-
-  //@todo implement lazy val leiterVon wich is a Future of a Sequence of LeiterEntities
-
-  //@todo implement lazy val warteSchlangenPlaetze wich is a Future of a Sequence of WartesSchlangenPlatzEntities
-
-  def leitet(betriebId: PK[BetriebEntity]): Future[Leiter] =
-    anwender map ((anw: AnwenderEntity) => new Leiter(dal.getLeiterOfById(betriebId = betriebId, anwenderId = anw.id.get), dbD))
-
   def profilAnzeigen(): Future[(AnwenderEntity, Option[AdresseEntity])] = db.run(anwenderAction)
-
-  def abmelden() = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
-
-  def accountLoeschen() = {
-    //@todo implement me
-    throw new NotImplementedError("Not implemented yet, implement it")
-  }
 
   def anwenderInformationenAustauschen(anwenderEntity: AnwenderEntity, adrO: Option[AdresseEntity]): Future[Boolean] = {
     for {
@@ -107,11 +88,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     db.run(dal.searchDienstleistung(query, page, size))
   }
 
-  def wsBeitreten(dlPrimaryKey: PK[DienstleistungEntity]) = {
-    //@todo maybe implement me
-    throw new NotImplementedError("Not implemented yet, may implement it")
-  }
-
   def wsVerlassen() = {
     for {
       anw <- anwender
@@ -125,7 +101,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
       leiter <- db.run(dal.getBetriebeWhereAnwenderIsLeiter(anw.id.get)) map {
         case (ll: Seq[(BetriebEntity, AdresseEntity, LeiterEntity)]) => ll.map(
           (l: (BetriebEntity, AdresseEntity, LeiterEntity)) => {
-            System.out.println(l._1.name)
             (BetriebAndAdresse(l._1, l._2), true, false)
           }
         )
@@ -155,12 +130,6 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     db.run(dal.insert(
       betrieb = betriebEntity, adresse = adresseEntity, anwender = DBIO.from(anwender)
     ))
-
-  def getLeiterFor(betriebId: PK[BetriebEntity]): Future[(BetriebEntity, AnwenderEntity, LeiterEntity)] =
-    for {
-      anw <- anwender
-      leiter <- db.run(dal.getLeiterOfById(betriebId, anw.id.get))
-    } yield (leiter)
 
   def wsFuerBestimmtenMitarbeiterBeitreten(dlId: Long, mitarbeiterId: Long): Future[WarteschlangenPlatzEntity] = {
     for {

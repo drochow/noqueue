@@ -6,6 +6,7 @@ import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers._
 import org.scalatest._
 import Assertions._
+import org.mindrot.jbcrypt.BCrypt
 
 import scala.concurrent.{ Await, Future }
 import play.api.{ Environment, Mode }
@@ -67,6 +68,8 @@ class AnwenderSpec extends AsyncWordSpec {
     val expectedAnwender = AnwenderEntity("dummy1@gmail.com", "$2a$10$p3ckLWcp7jUMaPkZP85vkOmrPunxBhjebLyDTAIeGNhQ7y4R64e.G", "dummy1", Some(PK[AdresseEntity](8)), Some(PK[AnwenderEntity](4)))
     //Bollestraße', '1020', '13509', 'Berlin', 52.591225399999999, 13.2978073999999999, 8
     val expectedAdresse = AdresseEntity("Bollestraße", "1020", "13509", "Berlin", Some(52.591225399999999), Some(13.2978073999999999), Some(PK[AdresseEntity](8)))
+    //NULL, 4, 9, 6, NULL, 13
+    val expectedWsP = WarteschlangenPlatzEntity(None, PK[AnwenderEntity](4), PK[MitarbeiterEntity](9), PK[DienstleistungEntity](6), None, Some(PK[WarteschlangenPlatzEntity](13)))
     "return his profile" in {
       for {
         profil <- anwender.profilAnzeigen()
@@ -115,7 +118,89 @@ class AnwenderSpec extends AsyncWordSpec {
           updateHappened => assert(!updateHappened)
         }
       )
-
+    }
+    "be able to search for DiensleistungsTyps" in {
+      anwender.dienstleistungsTypSuchen("Haare", 0, 10) map {
+        seq =>
+          {
+            //assert(seq contains())
+            seq.length should equal(2)
+          }
+      }
+    }
+    "be able to change the password" in {
+      val pw = "1234"
+      val anw = anwenderize("newAnwenderComingIn")
+      val unregistrierterAnwender = new UnregistrierterAnwender(db)
+      for {
+        newAnwenderE <- unregistrierterAnwender.registrieren(anw)
+        newAnwender <- Future.successful(new Anwender(db.dal.getAnwenderWithAdress(newAnwenderE.id.get), db))
+        pwChanged <- newAnwender.passwordVeraendern(anw.password, pw)
+        throwAway <- Future.successful(if (!pwChanged) Failed)
+        profil <- newAnwender.profilAnzeigen()
+      } yield (assert(BCrypt.checkpw(pw, profil._1.password)))
+    }
+    "not be able to if old password is not given" in {
+      val pw = "password1234"
+      anwender.passwordVeraendern("notTheRealPassword", pw) map {
+        changerPW => assert(!changerPW)
+      }
+    }
+    "be able to search Anwender with a query relating to email" in {
+      anwender.anwenderSuchen(Some("davidkaatz"), 0, 100) map {
+        seq =>
+          {
+            assert(seq.exists(_.id.get == PK[AnwenderEntity](3L)))
+            seq.length should equal(2)
+          }
+      }
+    }
+    "be able to search Anwender with a query relating to nutzerName" in {
+      anwender.anwenderSuchen(Some("dkaatz"), 0, 100) map {
+        seq =>
+          {
+            assert(seq.exists(_.id.get == PK[AnwenderEntity](3L)))
+            seq.length should equal(2)
+          }
+      }
+    }
+    "be able to search Anwender without a query" in {
+      anwender.anwenderSuchen(None, 0, 100) map {
+        seq =>
+          {
+            assert(seq.exists(_.id.get == PK[AnwenderEntity](3L)))
+            seq.length should equal(18)
+          }
+      }
+    }
+    "return someone else's profile" in {
+      for {
+        profil <- anwender.anwenderAnzeigen(PK[AnwenderEntity](1L))
+      } yield (profil should equal(AnwenderEntity("davidkaatz5@gmx.de", "$2a$10$LdM4yf7zgmjS8Pb5rGyeeeiUXFFc/wEJfeZloUPbjo8MD/CLA0B0S", "dkaatz5", None, Some(PK[AnwenderEntity](1)))))
+    }
+    "be able to show a WarteschlangePlatz" in {
+      for {
+        wsp <- anwender.wspAnzeigen()
+      } yield (wsp._1 shouldEqual (expectedWsP.id.get))
+    }
+    "be able to cancel a WarteschlangePlatz" in {
+      for {
+        a <- anwender.wsVerlassen()
+        b <- anwender.wspAnzeigen() //@ todo FIX
+      } yield (b._1)
+      succeed
+    }
+    "be able to see every Betrieb Anwender is in relation with" in {
+      anwender.meineBetriebe() map {
+        seq =>
+          {
+            assert(seq.exists(_._1.betriebEntity.id.get == PK[BetriebEntity](8)))
+            seq.length should equal(5)
+          }
+      }
+    }
+    "be able to" in {
+      succeed
     }
   }
   /*an [NoSuchElementException] should be thrownBy {
