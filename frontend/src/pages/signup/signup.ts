@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Signup page.

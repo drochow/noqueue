@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { ElementRef, ViewChild } from '@angular/core';
+import { ToastController } from 'ionic-angular';
 import { NavController, NavParams, Platform } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { ServiceSinglePage } from '../service-single/service-single';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { ServiceSinglePage } from '../service-single/service-single';
+
 
 /*
   Generated class for the ShopSingle page.

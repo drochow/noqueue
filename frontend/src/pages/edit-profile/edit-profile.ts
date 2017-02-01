@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { UsersProvider } from '../../providers/users-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
 
 
 /*

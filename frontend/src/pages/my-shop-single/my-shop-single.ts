@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import {QueuesProvider} from "../../providers/queues-provider";
+// custom pages
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { CoworkersPage } from '../coworkers/coworkers';
-import {QueuesProvider} from "../../providers/queues-provider";
-import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyShopSingle page.

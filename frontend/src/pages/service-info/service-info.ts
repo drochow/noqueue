@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { CoworkersPage } from '../coworkers/coworkers';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { CoworkersPage } from '../coworkers/coworkers';
+
 
 
 /*

@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { LocationsProvider } from '../../providers/locations-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
+// custom pages
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 import { SettingsPage } from '../settings/settings';
@@ -13,9 +18,6 @@ import { MyShopsPage } from '../my-shops/my-shops';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
-import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { LocationsProvider } from '../../providers/locations-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Dashboard page.
@@ -149,7 +151,7 @@ export class DashboardPage {
   searchShops() : void{
     this.navCtrl.push(ShopsPage, {preparedSearch: true, searchTerm: this.searchTerm, radius: this.radius});
   }
-
+  
   showMyQueuePositionPage() : void{
     this.navCtrl.push(MyQueuePositionPage);
   }
@@ -180,15 +182,6 @@ export class DashboardPage {
 
   showCreateShopPage() : void{
     this.navCtrl.push(ShopInfoPage, {newShop: true});
-  }
-
-
-  leave() : void{
-    this.queues.leave()
-      .subscribe(
-        () => this.refresh(undefined),
-        (error) => this.registerError("Error while leaving the queue.")
-      )
   }
 
 }

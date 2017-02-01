@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ElementRef, ViewChild } from '@angular/core';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyQueuePosition page.
@@ -22,6 +23,7 @@ export class MyQueuePositionPage {
 
   // declare variables used by the HTML template (ViewModel)
 
+  // reference to the map DOM Element (div)
   @ViewChild('map') mapElement: ElementRef;
 
   shop: any = {};
