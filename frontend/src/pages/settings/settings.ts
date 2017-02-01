@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+// custom providers
 import { AuthenticationProvider } from '../../providers/authentication-provider';
-import { UserConfigurationProvider } from '../../providers/user-configuration-provider';
+// custom pages
 import { LoginPage } from '../../pages/login/login';
 import { SignupPage } from '../../pages/signup/signup';
 import { EditProfilePage } from '../../pages/edit-profile/edit-profile';
@@ -30,7 +31,7 @@ export class SettingsPage {
 
 // constructor and lifecycle-events (chronological order)
 
-  constructor(public navCtrl: NavController, public auth: AuthenticationProvider, public userConfig: UserConfigurationProvider) {
+  constructor(public navCtrl: NavController, public auth: AuthenticationProvider) {
     this.isLoggedIn = this.auth.isLoggedIn();
   }
 

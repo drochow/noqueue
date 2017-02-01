@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { LocationsProvider } from '../../providers/locations-provider';
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
+// custom pages
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 import { SettingsPage } from '../settings/settings';
@@ -13,9 +18,6 @@ import { MyShopsPage } from '../my-shops/my-shops';
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
-import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { LocationsProvider } from '../../providers/locations-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Dashboard page.
@@ -100,23 +102,6 @@ export class DashboardPage {
 
   reloadData() : void{
     this.resetData();
-    this.locations.getUserLocation()
-      .then(
-        (location) => {
-          let lat = location.latitude;
-          let long = location.longitude;
-          this.shops.getShops(3,0,"",100000000,lat,long)
-            .subscribe(
-              (shops) => {
-                this.shopsNearby = shops;
-                this.hasShopsNearby = true;
-              },
-              (error) => {
-                this.registerError("Error while fetching shops.");
-              }
-            )
-        }
-      );
 
     this.isLoggedIn = this.auth.isLoggedIn();
 
@@ -139,7 +124,12 @@ export class DashboardPage {
             this.myQueuePosition = queuePosition;
             this.isInQueue = true;
           },
-          (error) => {}
+          (error) => {
+            let jsonError = JSON.parse(error._body);
+            if(jsonError.code !== 404){
+              this.registerError("Couldn't get info from server.");
+            }
+          }
         );
     }
   }
@@ -180,15 +170,6 @@ export class DashboardPage {
 
   showCreateShopPage() : void{
     this.navCtrl.push(ShopInfoPage, {newShop: true});
-  }
-
-
-  leave() : void{
-    this.queues.leave()
-      .subscribe(
-        () => this.refresh(undefined),
-        (error) => this.registerError("Error while leaving the queue.")
-      )
   }
 
 }

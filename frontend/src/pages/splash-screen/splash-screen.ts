@@ -16,6 +16,8 @@ import { DashboardPage } from '../dashboard/dashboard';
 })
 export class SplashScreenPage {
 
+  // constructor and lifecycle events
+  
   constructor(public navCtrl: NavController, public navParams: NavParams, public auth: AuthenticationProvider) {}
 
   ionViewDidLoad() {

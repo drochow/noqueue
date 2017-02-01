@@ -9,11 +9,19 @@ import 'rxjs/add/operator/map';
   for more info on providers and Angular 2 DI.
 */
 @Injectable()
+/**
+ * Validates the user input
+ */
 export class ValidatorProvider {
 
   constructor(public http: Http) {
   }
 
+  /**
+   * validation rules -
+   * these informations will be shown to the user if he enters something invalid
+   * @type {{username: string, password: string, newPassword: string, samePassword: string, emptyPassword: string, passwordMatching: string, email: string, searchTerm: string, searchName: string, street: string, zip: string, streetNumber: string, city: string, shopName: string, phone: string, openingHours: string, serviceDescription: string, serviceType: string, duration: string}}
+     */
    rules = {
      username:"Must be 6 to 30 letters, numbers or . - _",
      password:"Must be at least 6 character long.",
@@ -35,6 +43,8 @@ export class ValidatorProvider {
      serviceType:"Must be 2-40 letters or numbers long.",
      duration: "Must be a numeric value."
   };
+
+  // REGULAR EXPRESSIONS for the corresponding fields:
 
   // 6 to 30 alphanumeric + special characters - _ .
   username = string => /^[a-zA-Z\d\.\-\_]{6,30}$/.test(string);
@@ -81,6 +91,11 @@ export class ValidatorProvider {
   // 2-40 alphanumeric (including german symbols)
   serviceType = string => /[a-zA-ZüäöÄÖÜß\d\s]{2,40}/.test(string);
 
+  /**
+   * checks if some of the given strings are empty
+   * @param strings
+   * @returns {boolean} - at least one of them empty
+     */
   empty = (...strings) : boolean => {
     for(let value of strings){
       if (!value || value === ""){
@@ -90,6 +105,11 @@ export class ValidatorProvider {
     return false;
   }
 
+  /**
+   * checks if all of the given strings are empty
+   * @param strings
+   * @returns {boolean} - all of them empty
+     */
   allEmpty = (...strings) : boolean => {
     var empty = true;
     for(let value of strings){

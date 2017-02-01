@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
+
 
 /*
   Generated class for the ServiceSingle page.
