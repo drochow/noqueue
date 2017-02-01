@@ -12,8 +12,17 @@ import { AuthenticationProvider } from '../providers/authentication-provider';
   for more info on providers and Angular 2 DI.
 */
 @Injectable()
+/**
+ * Prepares HTTP Request for the Users functionality
+ */
 export class UsersProvider {
 
+  /**
+   * Dependency Injection
+   * @param http - angular2 standart http module
+   * @param httpProvider - the http provider that actually sends the requests
+   * @param auth - authentication provider
+     */
   constructor(public http: Http, private httpProvider: HttpProvider, private auth: AuthenticationProvider) {
   }
 

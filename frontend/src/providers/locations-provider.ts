@@ -9,12 +9,25 @@ import { Geolocation } from 'ionic-native';
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
+/**
+ * Gives information about the users geolocation
+ */
 @Injectable()
 export class LocationsProvider {
 
+  /**
+   * Dependency injection
+   * @param http - Angular2 Http Module, standard
+     */
   constructor(public http: Http) {
   }
 
+  /**
+   * Tries to get the users location from the device
+   * if this is not permitted, returns a default values
+   * from one of the University's buildings
+   * @returns {Promise<T>}
+     */
   getUserLocation() : Promise<any>{
     let latitude: number;
     let longitude: number;

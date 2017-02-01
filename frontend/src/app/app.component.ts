@@ -2,15 +2,17 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 import '../app/rxjs-operators.ts';
-import { SplashScreenPage } from '../pages/splash-screen/splash-screen';
+// custom providers:
 import { AuthenticationProvider } from '../providers/authentication-provider';
-import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { HttpProvider } from '../providers/http-provider';
 import { ValidatorProvider } from '../providers/validator-provider';
+// custom pages:
+import { SplashScreenPage } from '../pages/splash-screen/splash-screen';
+
 
 @Component({
   template: `<ion-nav [root]="rootPage"></ion-nav>`,
-  providers: [AuthenticationProvider, UserConfigurationProvider, HttpProvider, ValidatorProvider]
+  providers: [AuthenticationProvider, HttpProvider, ValidatorProvider]
 })
 export class MyApp {
   rootPage: any;
