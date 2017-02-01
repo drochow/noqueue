@@ -13,6 +13,17 @@ module.exports = function (config) {
       require('angular-cli/plugins/karma')
     ],
     files: [
+      'node_modules/es6-shim/es6-shim.js',        // TypeError: undefined is not a constructor (evaluating 'new exports.Map()')
+      'node_modules/reflect-metadata/Reflect.js', // 'Uncaught reflect-metadata shim is required when using class decorators'
+      'node_modules/zone.js/dist/zone.js',
+      'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/zone.js/dist/async-test.js',
+      'node_modules/zone.js/dist/fake-async-test.js',
+      'node_modules/zone.js/dist/sync-test.js',
+      'node_modules/zone.js/dist/proxy-zone.js',
+      'node_modules/zone.js/dist/proxy.js',
+      'node_modules/zone.js/dist/jasmine-patch.js',
+      'src/**/*.spec.ts',
       { pattern: './src/test.ts', watched: false }
     ],
     preprocessors: {

@@ -77,7 +77,7 @@ export class MyQueuePositionPage {
                 (error) => this.registerError("Error while fetching data from the server.")
               );
           }
-          let mapLoaded = this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
+          this.maps.init(this.mapElement.nativeElement, 52.545433, 13.354636);
         },
         (error) => {
           this.registerError("Error while fetching data from the server.");

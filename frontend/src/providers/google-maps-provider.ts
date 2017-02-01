@@ -37,12 +37,10 @@ export class GoogleMapsProvider {
     return new Promise((resolve) => {
       if(typeof google == "undefined" || typeof google.maps == "undefined"){
         // google maps SDK must be loaded
-        this.disableMap();
 
         if(this.connectivity.isOnline()){
           window['mapInit'] = () => {
             this.initMap();
-            this.enableMap();
           }
 
           let script = document.createElement("script");
@@ -52,11 +50,8 @@ export class GoogleMapsProvider {
           document.body.appendChild(script);
         }
       } else {
-        if(this.connectivity.isOnline()){
+        if (this.connectivity.isOnline()) {
           this.initMap();
-          this.enableMap();
-        } else {
-          this.disableMap();
         }
       }
     })

@@ -75,7 +75,7 @@ export class ShopSinglePage {
             openingHours: shop.oeffnungszeiten,
             addressString: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
           };
-          let mapLoaded = this.maps.init(this.mapElement.nativeElement, shop.adresse.latitude, shop.adresse.longitude);
+          this.maps.init(this.mapElement.nativeElement, shop.adresse.latitude, shop.adresse.longitude);
         },
         (error) => {
           this.registerError("Couldn't fetch data from server.")
