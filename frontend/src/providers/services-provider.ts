@@ -15,7 +15,7 @@ export class ServicesProvider {
 
   constructor(public http: Http, private httpProvider: HttpProvider) {
   }
-  
+
   getServicesFor(shopID: number) : Observable<any>{
     let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung";
     return this.httpProvider.get(route);
@@ -37,6 +37,11 @@ export class ServicesProvider {
     let body = this.mapToExpectedJson(service);
     service.dauer = service/60; //backend is saving in seconds
     return this.httpProvider.put(route, body);
+  }
+
+  deleteService(shopID: number, serviceID: number) : Observable<any>{
+    let route = this.httpProvider.ROUTES.shops + "/" + shopID + "/dienstleistung/" + serviceID;
+    return this.httpProvider.delete(route);
   }
 
   private mapToExpectedJson(service: any){

@@ -3,6 +3,10 @@
 .ios, .md, .wp{
   page-my-shops {
     ion-content{
+      .info{
+        width: 85%;
+        margin: auto;
+      }
       ion-list{
         width: 85%;
         margin: 10px auto;

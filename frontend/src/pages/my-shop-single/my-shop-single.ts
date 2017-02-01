@@ -201,7 +201,11 @@ export class MyShopSinglePage {
   }
 
   deleteService(serviceID: number) : void{
-
+    this.servicesProvider.deleteService(this.shopID, serviceID)
+      .subscribe(
+        () => this.reloadData(),
+        (error) => this.registerError("Couldn't delete service.")
+      )
   }
 
   createService() : void{
