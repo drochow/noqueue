@@ -140,7 +140,7 @@ trait BetriebComponent {
     val q = "%" + suchBegriff + "%"
     val offset = page * size;
     val result = sql"""
-         SELECT btr.*, adr.*, (sqrt(power(abs((adr."LONGITUDE"-$longitude)*cos($latitude)), 2) + power(abs(adr."LATITUDE"-$latitude), 2))*100000) as "DISTANCE"
+         SELECT DISTINCT btr.*, adr.*, (sqrt(power(abs((adr."LONGITUDE"-$longitude)*cos($latitude)), 2) + power(abs(adr."LATITUDE"-$latitude), 2))*100000) as "DISTANCE"
          FROM "ANBIETER" as btr, "ADRESSE" as adr, "DIENSTLEISTUNG" as dl, "DIENSTLEISTUNGSTYP" as dlt
           WHERE btr."ADRESSE_ID" = adr."ID"
           AND dl."BTR_ID" = btr."ID"
@@ -151,8 +151,6 @@ trait BetriebComponent {
             OR dl."KOMMENTAR" LIKE $q
           )
           AND (sqrt(power(abs((adr."LONGITUDE"-$longitude)*cos($latitude)), 2) + power(abs(adr."LATITUDE"-$latitude), 2))*100000) <= $umkreisDouble
-          GROUP BY btr."ID"
-          ORDER BY (sqrt(power(abs((adr."LONGITUDE"-$longitude)*cos($latitude)), 2) + power(abs(adr."LATITUDE"-$latitude), 2))*100000) ASC
           LIMIT $size
           OFFSET $offset
           """.as[(BetriebAndAdresse, String)]

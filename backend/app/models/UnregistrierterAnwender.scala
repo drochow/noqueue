@@ -9,12 +9,12 @@ import models.db._
 import org.mindrot.jbcrypt.BCrypt
 import utils.{ EmailAlreadyInUseException, NutzerNameAlreadyInUseException, TokenExpiredException, UnauthorizedException }
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+
 /**
  * Created by David on 29.11.16.
  */
 class UnregistrierterAnwender(dbD: DB) extends Base(dbD) {
-
+  import scala.concurrent.ExecutionContext.Implicits.global
   /**
    * Signin for @Anwender
    *
