@@ -2,7 +2,7 @@
  * Created by Sean on 01.02.2017.
  */
 import {TestBed, async, inject} from '@angular/core/testing';
-import {ValidatorProvider} from './validator-provider';
+import {ValidatorProvider} from '../providers/validator-provider';
 
 /**
  * A test class for the validator provider
@@ -13,9 +13,6 @@ describe("Testing Validator Provider", () => {
     TestBed.configureTestingModule({
       providers: [
         ValidatorProvider
-      ],
-      imports: [
-
       ]
     });
   }));
@@ -58,7 +55,7 @@ describe("Testing Validator Provider", () => {
 
   it('Passwords do not match', inject([ValidatorProvider], (validProvider) => {
     let pw = "Ab1abc2";
-    let pw2 = "AB12abc"
+    let pw2 = "AB12abc";
     expect(validProvider.passwordsMatching(pw, pw2).toBeFalsy());
   }));
 
