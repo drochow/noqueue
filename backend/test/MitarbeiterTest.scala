@@ -3,7 +3,6 @@ import java.sql.Timestamp
 
 import models._
 import models.db.{ DienstleistungEntity, _ }
-import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers._
 import org.scalatest._
 import play.api.Mode
