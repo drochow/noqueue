@@ -15,7 +15,6 @@
   <div class="content">
     <ion-searchbar (ionInput)="search($event)" [(ngModel)]="searchName" placeholder="Search Users" animated="true"></ion-searchbar>
     <p *ngIf="newShop" class="progress">Step 3: Adding Coworkers</p>
-    <p *ngIf="error" color="danger">{{errorMessage}}</p>
     <p class="sectionName">Results</p>
     <ion-list>
       <ion-item-sliding *ngFor="let user of users" #item>

@@ -40,8 +40,6 @@
 
     <button *ngIf="newShop" class="button" ion-button full (click)="proceed()" [disabled]="allFieldsValid == false || selectedType.length < 1">Proceed</button>
     <button *ngIf="newShop === false" class="button" ion-button full (click)="save()" [disabled]="allFieldsValid == false || selectedType.length < 1">Save</button>
-
-    <p *ngIf="error" color="danger">{{errorMessage}}</p>
   </div>
 
   <!--<ion-item>-->

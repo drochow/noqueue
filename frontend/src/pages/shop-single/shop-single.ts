@@ -6,6 +6,8 @@ import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { ServiceSinglePage } from '../service-single/service-single';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the ShopSingle page.
@@ -16,7 +18,7 @@ import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 @Component({
   selector: 'page-shop-single',
   templateUrl: 'shop-single.html',
-  providers: [ QueuesProvider, ShopsProvider, ServicesProvider, GoogleMapsProvider ],
+  providers: [ QueuesProvider, ShopsProvider, ServicesProvider, GoogleMapsProvider, ConnectivityProvider ],
   entryComponents: [ ServiceSinglePage ]
 })
 export class ShopSinglePage {
@@ -36,18 +38,22 @@ export class ShopSinglePage {
   services: any = [];
   shopID: any;
   error: boolean = false;
-  errorMessage: string = "";
   shopActive: boolean = true;
 
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public queuesProvider: QueuesProvider,
-  public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider) {
+  public servicesProvider: ServicesProvider, public platform: Platform, public maps: GoogleMapsProvider, public connectivity: ConnectivityProvider,
+  public toast: ToastController) {
     this.shopID = this.navParams.get('shopID');
   }
 
   ionViewDidLoad() : void{
     this.reloadData();
+  }
+
+  ionViewWillEnter() : void {
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)
@@ -58,7 +64,6 @@ export class ShopSinglePage {
 
   reloadData() : void{
     this.error = false;
-    this.errorMessage = "";
 
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
@@ -76,8 +81,7 @@ export class ShopSinglePage {
           console.log("map object: ", this.mapElement);
         },
         (error) => {
-          this.error = true;
-          this.errorMessage = "Can't find shop with this ID"
+          this.registerError("Couldn't fetch data from server.")
         }
       );
 
@@ -88,8 +92,7 @@ export class ShopSinglePage {
           this.services = services;
         },
             (error) => {
-              this.error = true;
-              this.errorMessage = "Cannot find the services for this shop"
+              this.registerError("Couldn't fetch data from server.");
             }
       );
 
@@ -102,8 +105,18 @@ export class ShopSinglePage {
           if(this.employees.length === 0){
             this.shopActive = false;
           }
-        }
+        },
+        (error) => this.registerError("Couldn't fetch data from server.")
       );
+  }
+
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
 // ViewController logic (reacting to events)

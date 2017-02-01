@@ -7,6 +7,8 @@ import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { CoworkersPage } from '../coworkers/coworkers';
 import {QueuesProvider} from "../../providers/queues-provider";
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyShopSingle page.
@@ -17,7 +19,7 @@ import {QueuesProvider} from "../../providers/queues-provider";
 @Component({
   selector: 'page-my-shop-single',
   templateUrl: 'my-shop-single.html',
-  providers: [ShopsProvider, ServicesProvider, QueuesProvider],
+  providers: [ShopsProvider, ServicesProvider, QueuesProvider, ConnectivityProvider],
   entryComponents: [ ShopInfoPage, ServiceInfoPage, CoworkersPage ]
 })
 export class MyShopSinglePage {
@@ -40,7 +42,6 @@ export class MyShopSinglePage {
   hasOwnQueueToggle: boolean = false;
   services: any = [];
   error: boolean = false;
-  errorMessage: string = "";
   queue: any = [];
   clients: any = [];
   firstClient: string = "";
@@ -49,13 +50,18 @@ export class MyShopSinglePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public servicesProvider: ServicesProvider,
-  public auth: AuthenticationProvider, public queuesProvider: QueuesProvider) {
+  public auth: AuthenticationProvider, public queuesProvider: QueuesProvider, public connectivity: ConnectivityProvider,
+  public toast: ToastController) {
     this.shopID = this.navParams.get('shopID');
     this.isLeiter = this.navParams.get('isLeiter');
     this.isAnwesend = this.navParams.get('isAnwesend');
   }
 
   ionViewDidLoad() : void{
+  }
+
+  ionViewWillEnter(): void {
+    this.connectivity.checkNetworkConnection();
     this.reloadData();
   }
 
@@ -70,12 +76,15 @@ export class MyShopSinglePage {
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   reloadData() : void{
     this.error = false;
-    this.errorMessage = "";
 
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
@@ -89,7 +98,7 @@ export class MyShopSinglePage {
             address: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
           }
         },
-        (error) => this.registerError(error.message || "Coulnd't get this shop from the server")
+        (error) => this.registerError("Error while fetching data from the server.")
       );
 
     if(this.isLeiter) {
@@ -99,7 +108,7 @@ export class MyShopSinglePage {
             console.log("GET Employees: ", employees);
             this.employees = employees;
           },
-          (error) => this.registerError(error.message || "Something went wrong")
+          (error) => this.registerError("Error while fetching data from the server.")
         );
 
       this.shopsProvider.getManagers(this.shopID)
@@ -108,13 +117,13 @@ export class MyShopSinglePage {
             console.log("GET Managers: ", managers);
             this.managers = managers;
           },
-          (error) => this.registerError(error.message || "Something went wrong")
+          (error) => this.registerError("Error while fetching data from the server.")
         );
 
       this.servicesProvider.getServicesFor(this.shopID)
         .subscribe(
           (services) => this.services = services,
-          (error) => this.registerError(error.message || "Something went wrong")
+          (error) => this.registerError("Error while fetching data from the server.")
         )
     } else {
       this.shopsProvider.getQueueFor(this.shopID)
@@ -127,7 +136,7 @@ export class MyShopSinglePage {
               this.firstClient = this.clients[0].anwender.nutzerName;
             }
           },
-            (error) => this.registerError(error.message || "Something went wrong")
+            (error) => this.registerError("Error while fetching data from the server.")
         )
     }
   }
@@ -146,7 +155,7 @@ export class MyShopSinglePage {
   switchAttendance() : void{
     this.queuesProvider.changeAttendance(this.shopID, !this.isAnwesend).subscribe(
       () => { this.isAnwesend = !this.isAnwesend},
-      (error) => this.registerError(error || "Couldn't change attendance!")
+      (error) => this.registerError("Error while switching attendance.")
     )
   }
 
@@ -157,9 +166,7 @@ export class MyShopSinglePage {
       .subscribe(
         () => this.reloadData(),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing manager: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't fire the manager.")
         }
       )
   }
@@ -170,9 +177,7 @@ export class MyShopSinglePage {
       .subscribe(
         () => this.reloadData(),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing employee: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't fire the employee.")
         }
       )
   }
@@ -182,9 +187,7 @@ export class MyShopSinglePage {
       .subscribe(
         () => this.reloadData(),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing employee: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't start working on this user.")
         }
       )
   }
@@ -194,9 +197,7 @@ export class MyShopSinglePage {
       .subscribe(
         () => this.reloadData(),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while firing employee: ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Couldn't finish working with on this user.")
         }
       )
   }

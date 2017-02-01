@@ -4,6 +4,8 @@ import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ShopSinglePage } from '../shop-single/shop-single';
 import { LocationsProvider } from '../../providers/locations-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Shops page.
@@ -14,7 +16,7 @@ import { LocationsProvider } from '../../providers/locations-provider';
 @Component({
   selector: 'page-shops',
   templateUrl: 'shops.html',
-  providers: [ShopsProvider, LocationsProvider],
+  providers: [ShopsProvider, LocationsProvider, ConnectivityProvider],
   entryComponents: [ ShopSinglePage ]
 })
 export class ShopsPage {
@@ -26,7 +28,6 @@ export class ShopsPage {
   shops: any = [];
   shouldShowShops: boolean = true;
   error: boolean = false;
-  errorMessage: string = "";
   allShopsFetched: boolean = false;
   noShops: boolean = false;
   location: any;
@@ -34,7 +35,7 @@ export class ShopsPage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public shopsProvider: ShopsProvider, public validator: ValidatorProvider,
-  public locations: LocationsProvider) {
+  public locations: LocationsProvider, public connectivity: ConnectivityProvider, public toast : ToastController) {
     if(this.navParams.get('preparedSearch')){
       this.searchTerm = this.navParams.get('searchTerm');
       this.radius = this.navParams.get('radius');
@@ -42,12 +43,14 @@ export class ShopsPage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.locations.getUserLocation()
       .then(
         (location) => {
           this.location = location;
           if(this.searchTerm.length > 0) this.search(undefined);
-        }
+        },
+        (error) => {}
       )
   }
 
@@ -55,13 +58,10 @@ export class ShopsPage {
 
   search(event: any) : void{
     this.error = false;
-    this.errorMessage = "";
 
 
     if(!this.validator.searchTerm(this.searchTerm)){
-      this.error = true;
-      this.errorMessage = "Search Term not valid";
-      console.log("Search term not valid");
+      this.registerError("Search term not valid.");
       return;
     }
 
@@ -72,8 +72,7 @@ export class ShopsPage {
       .then(
         () => console.log("shops loaded"),
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error while fetching shops: ", jsonError);
+          this.registerError("Couldn't fetch data from server.")
         }
       )
   }
@@ -84,7 +83,6 @@ export class ShopsPage {
     let size = 10;
     let self = this;
     return new Promise(function(resolve, reject){
-
       self.shopsProvider.getShops(size, Number((self.shops.length/size)), self.searchTerm, self.radius > 0 ? self.radius : "", self.location.latitude, self.location.longitude)
         .subscribe(
             (shops) => {
@@ -94,22 +92,20 @@ export class ShopsPage {
               }
               for(var item of shops){
                 if(self.shops){
-                  item.distance = (Number(item.distanz)/1000).toFixed(1);
+                  item.dist = (Number(item.distanz)/1000).toFixed(1);
                   self.shops.push(item);
                 }
               }
               if (self.shops.length === 0) {
                 self.noShops = true;
-                // self.shouldShowShops = false;
+                self.shouldShowShops = false;
               }
-              console.log("Should show shops 2: " + this.shouldShowShops);
+              console.log("Should show shops 2: " + self.shouldShowShops);
               resolve();
             },
               (error) => {
-                // self.shouldShowShops = false;
+                self.shouldShowShops = false;
                 self.error = true;
-                self.errorMessage = error.message || "Something went wrong";
-                console.log("error: ", JSON.parse(error._body));
                 reject(error);
               }
         );
@@ -125,11 +121,19 @@ export class ShopsPage {
           console.log("whats up");
         },
         (error) => {
-          this.error = true;
-          this.errorMessage = error.message || "something went wrong";
+          this.registerError("Couldn't fetch data from server.");
           scroll.complete();
         }
       )
+  }
+
+  registerError(message: string) : void{
+    this.error = true;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   showShopSinglePage(id: number) : void{

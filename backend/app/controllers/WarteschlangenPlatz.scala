@@ -3,9 +3,8 @@ package controllers
 import javax.inject.Inject
 import javax.security.auth.login.CredentialException
 
-import api.ApiError
+import api.{ ApiError, Credentials }
 import api.JsonCombinators._
-import api.auth.Credentials
 import models.DB
 import models.db.{ BetriebEntity, MitarbeiterEntity, PK, WarteschlangenPlatzEntity }
 import play.api.Configuration

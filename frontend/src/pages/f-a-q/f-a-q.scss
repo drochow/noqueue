@@ -1,3 +1,22 @@
-page-f-a-q {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp {
+  page-f-a-q {
+    ion-content {
+      .page-content{
+        width: 85%;
+        margin: auto;
+
+        .question {
+          font-weight: bold;
+          color: map-get($colors, dark-grey);
+          margin-bottom: 10px;
+        }
+        .answer{
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
 }
+

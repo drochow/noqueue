@@ -1,59 +1,138 @@
+@import "../../theme/variables.scss";
+
 .ios, .md{
 
   page-dashboard {
-
-    .search{
-      width: 100%;
+    .fa-cog{
+      color: map-get($colors, primary);
     }
 
-    ion-searchbar{
-      box-sizing: border-box;
-      width: 80%;
-      float: left;
-      height: 32px;
-    }
+    ion-content{
+      border: none;
 
-    .searchbar{
-      box-sizing: border-box;
-      width: 80%;
-      float: left;
-      height: 32px;
-    }
+      ion-refresher{
+        border: none;
+      }
 
-    .search{
-      button{
-        box-sizing: border-box;
-        height: 32px;
-        width: 10%;
-        float: right;
-        background-color: white;
-        border-left: 1px solid rgba(0,0,0,0.1);
+      .page-content{
+        width: 85%;
+        margin: auto;
 
-        ion-icon{
-          color: rgba(0,0,0,0.5);
+        .search-div{
+          margin-top: 15px;
+
+          .searchbar{
+            height: 36px;
+          }
+
+          ion-input{
+            border: 1px solid map-get($colors, divider);
+            padding-left: 15px;
+            padding-top: -20px;
+            box-sizing: border-box;
+            width: 85%;
+            float: left;
+            height: 42px;
+            margin-bottom: 0;
+            margin-top: 4px;
+          }
+
+          button{
+            box-sizing: border-box;
+            height: 42px;
+            width: 10%;
+            float: right;
+            background-color: white;
+            //border: 1px solid map-get($colors, divider);
+
+            ion-icon{
+              color: rgba(0,0,0,0.5);
+            }
+          }
+        }
+
+        .radiusSelect {
+          border: none;
+          border-bottom: 1px solid map-get($colors, divider);
+          //-webkit-box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+          //-moz-box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+          //box-shadow: 0px 7px 9px -5px map-get($colors, divider);
+          margin-bottom: 25px;
+          padding-left: 0;
+        }
+
+        .info {
+          margin: 30px 0 10px 5%;
+        }
+
+        .ticket-wrapper{
+          background-color: map-get($colors, primary);
+        }
+
+        .sectionName{
+          margin-bottom: 20px;
+        }
+
+        .ticket {
+          width: 300px;
+          height: 209px;
+          margin: 20px auto;
+          background: url("../../assets/img/ticket-horizontal3.png");
+          background-size: 300px 209px;
+        }
+
+        .title{
+          padding-top: 35px;
+
+          .serviceName{
+            font-size: 1.7rem;
+            text-transform: uppercase;
+            color: map-get($colors, light-grey);
+            margin-top: 0;
+            margin-bottom: 5px;
+            text-align: center;
+          }
+
+          .shopName{
+            font-size: 2.3rem;
+            font-weight: bold;
+            color: map-get($colors, dark-grey);
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+          }
+        }
+
+        .informations{
+          width: 300px;
+          padding: 5px 20px;
+          margin: 0;
+
+          .key{
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: map-get($colors, dark-grey);
+          }
+
+          .value{
+            text-align: center;
+          }
+
+          .time {
+            float: left;
+            width: 50%;
+            box-sizing: border-box;
+          }
+
+          .employee{
+            float: right;
+            width: 50%;
+            box-sizing: border-box;
+          }
         }
       }
     }
-
-    .radiusSelect{
-      clear:both;
-      border-top: 1px solid rgba(0,0,0,0.1);
-      -webkit-box-shadow: 0px 7px 9px -5px rgba(0,0,0,0.1);
-      -moz-box-shadow: 0px 7px 9px -5px rgba(0,0,0,0.1);
-      box-shadow: 0px 7px 9px -5px rgba(0,0,0,0.1);
-      margin-bottom: 15px;
-      ion-item {
-        clear: both;
-        ion-select{
-          width: 30%;
-        }
-      }
-    }
-
-    .info {
-      margin: 30px 0 10px 5%;
-    }
-
   }
 }
 

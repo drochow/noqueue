@@ -14,7 +14,7 @@ import play.api.routing.Router
 import scala.concurrent._
 import api.{ ApiError, ApiLog, ApiRequestHeaderImpl, ApiResult }
 import api.ApiError._
-import osm.{ AdressNotFoundException, InvalidGeoCoordsException }
+import services.{ AdressNotFoundException, InvalidGeoCoordsException }
 
 @Singleton
 class NoQueueErrorHandler @Inject() (

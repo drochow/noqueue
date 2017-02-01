@@ -3,6 +3,9 @@ import { NavController } from 'ionic-angular';
 import { UsersProvider } from '../../providers/users-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
+
 
 /*
   Generated class for the EditProfile page.
@@ -13,14 +16,13 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-edit-profile',
   templateUrl: 'edit-profile.html',
-  providers: [ValidatorProvider, UsersProvider]
+  providers: [ValidatorProvider, UsersProvider, ConnectivityProvider]
 })
 export class EditProfilePage {
 
 // declare variables used by the HTML template (ViewModel):
 
   error: boolean = false;
-  errorMessage: string = "";
   username: string;
   email: string;
   street: string;
@@ -42,7 +44,7 @@ export class EditProfilePage {
 // constructor and lifecycle-events (chronological order)
 
   constructor(public navCtrl: NavController, private users: UsersProvider, private auth: AuthenticationProvider,
-  private validator: ValidatorProvider) {
+  private validator: ValidatorProvider, public connectivity: ConnectivityProvider, public toast: ToastController) {
     this.validationRules = {
       username: this.validator.rules.username,
       email: this.validator.rules.email,
@@ -55,6 +57,7 @@ export class EditProfilePage {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
     this.fetchData();
   }
 
@@ -127,7 +130,6 @@ export class EditProfilePage {
 
   fetchData() : void{
     this.error = false;
-    this.errorMessage = "";
     this.users.getMe()
       .subscribe(
         (me) => {
@@ -140,14 +142,13 @@ export class EditProfilePage {
             this.checkInput();
         },
         (error) => {
-          this.registerError("Couldn't get data from server. Please try again later.")
+          this.registerError("Couldn't get data from server.")
         }
       )
   }
 
   changeData() : void{
     this.error = false;
-    this.errorMessage = "";
 
     this.checkInput();
     if(!this.allFieldsValid) return;
@@ -171,7 +172,7 @@ export class EditProfilePage {
           if(jsonError.code == 404){
             this.registerError("This address doesn't exist.")
           } else {
-            this.registerError("Couldn't update the information. Please try again later.");
+            this.registerError("Couldn't update the information.");
           }
         }
       )
@@ -179,7 +180,11 @@ export class EditProfilePage {
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
 }

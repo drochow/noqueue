@@ -1,3 +1,24 @@
-page-about-no-queue {
+@import "../../theme/variables.scss";
 
+.ios, .md, .wp{
+  page-about-no-queue {
+    ion-content{
+      .page-content{
+        width: 85%;
+        margin: auto;
+
+        .noqueue{
+          color: map-get($colors, primary);
+        }
+
+        .footnote{
+          margin-top: 25px;
+          color: map-get($colors, lighter-text);
+          font-size: map-get($font-sizes, subhead);
+        }
+      }
+    }
+  }
 }
+
+

@@ -22,6 +22,12 @@
       .fa{
         width: 30px;
       }
+
+      button:disabled{
+        background-color: white;
+        border: 2px solid map-get($colors, dark);
+        color: map-get($colors, dark);
+      }
     }
   }
 }

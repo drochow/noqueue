@@ -23,13 +23,6 @@ object ApiResponse {
 
   def ok(json: JsValue, headers: (String, String)*) = apply(STATUS_OK, json, headers)
 
-  def ok[A](json: JsValue, page: Page[A], headers: (String, String)*) = apply(STATUS_OK, json, headers ++ Seq(
-    HEADER_PAGE -> page.page.toString,
-    HEADER_PAGE_FROM -> page.offset.toString,
-    HEADER_PAGE_SIZE -> page.size.toString,
-    HEADER_PAGE_TOTAL -> page.total.toString
-  ))
-
   def created(json: JsValue, headers: (String, String)*) = apply(STATUS_CREATED, json, headers)
   def created(headers: (String, String)*) = apply(STATUS_CREATED, JsNull, headers)
 

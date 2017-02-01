@@ -33,15 +33,10 @@ class Application @Inject() (val dbD: DB, val messagesApi: MessagesApi, val conf
       (__ \ "offset").read[Long] tupled
   }
 
-  def insertTestDlTs = ApiAction { implicit request =>
-    val unregistrierterAnwender = new UnregistrierterAnwender(dbD)
-    unregistrierterAnwender.testDltinserts
-    ok("inserted")
-  }
-
   //please put this method where it belongs, but for now i will leave it here
-  def getDienstleistungsTypen(page: Int, size: Int) = ApiActionWithBody { implicit request =>
-    okF((new UnregistrierterAnwender(dbD)).getDienstleistungsTypen(page, size))
-  }
+  //@todo seesm to be unused in frontend so please check if that is correct
+  //  def getDienstleistungsTypen(page: Int, size: Int) = ApiActionWithBody { implicit request =>
+  //    okF((new UnregistrierterAnwender(dbD)).getDienstleistungsTypen(page, size))
+  //  }
 
 }

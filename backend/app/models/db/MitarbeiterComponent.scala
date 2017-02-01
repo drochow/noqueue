@@ -27,8 +27,6 @@ trait MitarbeiterComponent {
 
   def mitarbeitersAutoInc = mitarbeiters returning mitarbeiters.map(_.id)
 
-  def getMitarbeiterById(id: PK[MitarbeiterEntity]): DBIO[MitarbeiterEntity] = mitarbeiters.filter(_.id === id).result.head
-
   def insert(mitarbeiter: MitarbeiterEntity): DBIO[MitarbeiterEntity] = (mitarbeitersAutoInc += mitarbeiter).map(id => mitarbeiter.copy(id = Option(id)))
 
   def deleteMitarbeiter(id: PK[MitarbeiterEntity], betriebId: PK[BetriebEntity]): DBIO[Int] = mitarbeiters.filter(_.id === id).filter(_.betriebId === betriebId).delete
@@ -53,8 +51,6 @@ trait MitarbeiterComponent {
       .filter(_.betriebId === betriebId) join anwenders on (_.anwenderId === _.id))
       .drop(page * size).take(size)
       .result
-
-  def addDienstleistung(dienstleistungEntity: DienstleistungEntity): DBIO[DienstleistungEntity] = insert(dienstleistungEntity)
 
   def mitarbeiterAnwesenheitVeraendern(id: PK[MitarbeiterEntity], anwesend: Boolean) = mitarbeiters.filter(_.id === id).map(_.anwesend).update(anwesend)
 }

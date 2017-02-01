@@ -15,6 +15,7 @@ import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { MyShopSinglePage } from '../my-shop-single/my-shop-single';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
 import { LocationsProvider } from '../../providers/locations-provider';
+import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the Dashboard page.
@@ -50,30 +51,21 @@ export class DashboardPage {
 // constructor and lifecycle-events
 
   constructor(public navCtrl: NavController, private loadingCtrl: LoadingController, public auth: AuthenticationProvider, private shops: ShopsProvider, private queues: QueuesProvider,
-  public connectivity: ConnectivityProvider, public locations: LocationsProvider) {
+  public connectivity: ConnectivityProvider, public locations: LocationsProvider, public toast: ToastController) {
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
+
     let loading = this.loadingCtrl.create({
       content: 'Fetching data ...'
     });
 
     loading.present();
-    if(!this.auth.getToken()) {
-      this.auth.asyncSetup().then(
-        () => {
-          console.log("Auth AsynSetup...")
-          this.reloadData();
-          loading.dismiss();
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } else {
-      this.reloadData();
+    this.reloadData();
+    setTimeout(() => {
       loading.dismiss()
-    }
+    },1000);
   }
 
 // ViewModel logic (working with the data)
@@ -98,6 +90,14 @@ export class DashboardPage {
     this.hasQueues = false;
   }
 
+  registerError(message: string) : void{
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
+  }
+
   reloadData() : void{
     console.log("token: ", this.auth.getToken());
     console.log("Internet connection: ", this.connectivity.isOnline());
@@ -118,8 +118,7 @@ export class DashboardPage {
                 this.hasShopsNearby = true;
               },
               (error) => {
-                let jsonError = JSON.parse(error._body);
-                console.log("Error while fetching shops: ", jsonError);
+                this.registerError("Error while fetching shops.");
               }
             )
         }
@@ -133,9 +132,11 @@ export class DashboardPage {
           (shops) => {
             console.log("my shops: ", shops);
             this.myShops = shops;
-            this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length
-            this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length
+            this.managerCount = this.myShops.filter(function(s) { return s.isLeiter}).length;
+            this.employeeCount = this.myShops.filter(function(s) { return !s.isLeiter}).length;
             this.hasShops = true;
+          },
+          (error) => {
           }
         );
       //@TODO - use getMyShops() instead
@@ -153,7 +154,8 @@ export class DashboardPage {
             console.log("my queue position: ", queuePosition);
             this.myQueuePosition = queuePosition;
             this.isInQueue = true;
-          }
+          },
+          (error) => {}
         );
     }
   }
@@ -202,7 +204,7 @@ export class DashboardPage {
     this.queues.leave()
       .subscribe(
         () => this.refresh(undefined),
-        (error) => console.log(error)
+        (error) => this.registerError("Error while leaving the queue.")
       )
   }
 

@@ -6,7 +6,7 @@ import org.h2.jdbc.JdbcSQLException
 import org.scalatest.Matchers._
 import org.scalatest._
 import Assertions._
-import osm.AdressNotFoundException
+import services.AdressNotFoundException
 
 import scala.concurrent.{ Await, Future }
 import play.api.{ Environment, Mode }

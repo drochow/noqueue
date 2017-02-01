@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UsersProvider } from '../../providers/users-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import { ToastController } from 'ionic-angular';
+
 
 /*
   Generated class for the EditPassword page.
@@ -12,7 +15,7 @@ import { ValidatorProvider } from '../../providers/validator-provider';
 @Component({
   selector: 'page-edit-password',
   templateUrl: 'edit-password.html',
-  providers: [ ValidatorProvider, UsersProvider ]
+  providers: [ ValidatorProvider, UsersProvider, ConnectivityProvider ]
 })
 export class EditPasswordPage {
 
@@ -22,7 +25,6 @@ export class EditPasswordPage {
   newPassword: string;
   confirmPassword: string;
   error: boolean = false;
-  errorMessage: string = "";
   email: string = "";
   username: string = "";
   validationRules: any;
@@ -37,7 +39,8 @@ export class EditPasswordPage {
 
 // constructor and lifecycle-events (chronological order)
 
-  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider) {
+  constructor(public navCtrl: NavController, public users: UsersProvider, public validator: ValidatorProvider, public connectivity: ConnectivityProvider,
+  public toast: ToastController) {
     this.validationRules = {
       emptyPassword: this.validator.rules.emptyPassword,
       newPassword: this.validator.rules.newPassword,
@@ -56,14 +59,13 @@ export class EditPasswordPage {
             this.username = user.nutzerName;
         },
         (error) => {
-          let jsonError = JSON.parse(error._body);
-          console.log("Error ", jsonError);
-          this.registerError(jsonError.message);
+          this.registerError("Error while fetching your information.");
         }
       )
   }
 
   ionViewWillEnter() : void{
+    this.connectivity.checkNetworkConnection();
   }
 
 // ViewModel logic (working with the data)
@@ -134,11 +136,14 @@ export class EditPasswordPage {
 
   registerError(message: string) : void{
     this.error = true;
-    this.errorMessage = message;
+    let toast = this.toast.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   resetError() : void{
     this.error = false;
-    this.errorMessage = "";
   }
 }

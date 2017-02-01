@@ -36,8 +36,6 @@
 
     <button ion-button class="button" full (click)="login()" [disabled]="(username && password && username.length > 0 && password.length > 0) == false">Log In</button>
 
-    <p *ngIf="error" color="danger">{{errorMessage}}</p>
-
     <p class="error">You don't have an account? <span (click)="showSignupPage()" color="primary">Click here to create one.</span></p>
 
   </div>
