@@ -4,6 +4,10 @@
 import {TestBed, async, inject} from '@angular/core/testing';
 import {ValidatorProvider} from './validator-provider';
 
+/**
+ * A test class for the validator provider
+ */
+
 describe("Testing Validator Provider", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
