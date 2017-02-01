@@ -23,7 +23,7 @@
   </div>
   <div class="group">
     <p class="sectionName">Employee</p>
-    <ion-list radio-group [(ngModel)]="selectedEmployee" (ionChange)="employeeSelection()">
+    <ion-list radio-group [(ngModel)]="selectedEmployee">
       <ion-item *ngFor="let employee of employees">
         <ion-label>{{employee.mitarbeiter}} - {{employee.schaetzZeitpunkt*1000 | date : 'HH:mm'}}</ion-label>
         <ion-radio checked="false" value="{{employee.id}}"></ion-radio>

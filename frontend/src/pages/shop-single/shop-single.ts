@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { ElementRef, ViewChild } from '@angular/core';
+import { ToastController } from 'ionic-angular';
 import { NavController, NavParams, Platform } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { ServiceSinglePage } from '../service-single/service-single';
 import { GoogleMapsProvider } from '../../providers/google-maps-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { ServiceSinglePage } from '../service-single/service-single';
+
 
 /*
   Generated class for the ShopSingle page.
@@ -68,7 +71,6 @@ export class ShopSinglePage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
-          console.log("Fetched shop for shop-single.ts: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -76,9 +78,7 @@ export class ShopSinglePage {
             openingHours: shop.oeffnungszeiten,
             addressString: shop.adresse.strasse + " " + shop.adresse.hausNummer + ", " + shop.adresse.plz + shop.adresse.stadt
           };
-          let mapLoaded = this.maps.init(this.mapElement.nativeElement, shop.adresse.latitude, shop.adresse.longitude);
-          console.log("loaded map: ", mapLoaded);
-          console.log("map object: ", this.mapElement);
+          this.maps.init(this.mapElement.nativeElement, shop.adresse.latitude, shop.adresse.longitude);
         },
         (error) => {
           this.registerError("Couldn't fetch data from server.")
@@ -88,7 +88,6 @@ export class ShopSinglePage {
     this.servicesProvider.getServicesFor(this.shopID)
       .subscribe(
         (services) => {
-          console.log("services from server ", services);
           this.services = services;
         },
             (error) => {
@@ -122,24 +121,9 @@ export class ShopSinglePage {
 // ViewController logic (reacting to events)
 
   showService(id: number) : void{
-    console.log("From shop-single - service id = " + id);
     let service = this.services.filter(s => s.id == id)[0];
     this.navCtrl.push(ServiceSinglePage, {shopID: this.shopID, serviceID: id, service: service});
   }
 
-  // employeeSelection(event, serviceID, employeeName){
-  //   this.selectedEmployees.set(serviceID, employeeName);
-  // }
-  //
-  // lineUp(serviceID){
-  //   let employeeName = this.selectedEmployees.get(serviceID) || "Any";
-  //   this.queuesProvider.lineup({serviceID, shopID: this.shopID, employeeName})
-  //     .subscribe(
-  //       () =>  console.log("Lined up!"), // this.navCtrl.push(MyQueuePositionPage),
-  //       (error) => {
-  //         console.log("error");
-  //       }
-  //     )
-  // }
 
 }

@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { QueuesProvider } from '../../providers/queues-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { MyQueuePositionPage } from '../my-queue-position/my-queue-position';
+
 
 /*
   Generated class for the ServiceSingle page.
@@ -73,7 +76,6 @@ export class ServiceSinglePage {
   refresh(refresher: any) : void{
     this.reloadData();
 
-    // @TODO - return a promise in reloadData() and complete the refresher when resolved
     setTimeout(() => {
       refresher.complete();
     }, 1000);
@@ -91,35 +93,6 @@ export class ServiceSinglePage {
   reloadData() : void{
     this.error = false;
     this.errorMessage = "";
-
-    console.log("from service page > shopID : serviceID = " + this.shopID + " : " + this.serviceID);
-
-    // this.servicesProvider.getService(this.serviceID, this.shopID)
-    //   .subscribe(
-    //     (service) => {
-    //       console.log("service from server: ", service);
-    //       this.service = {
-    //         type: service.name,
-    //         duration: service.dauer,
-    //         description: service.kommentar
-    //       }
-    //     },
-    //     (error) => console.log(error)
-    //   );
-
-    // this.shopsProvider.getEmployees(this.shopID)
-    //   .subscribe(
-    //     (employees) => {
-    //       console.log("Employees: ", employees);
-    //       this.employees = employees;
-    //       this.queueActive = this.employees.length > 0;
-    //     },
-    //     (error) => {
-    //       let jsonError = JSON.parse(error._body);
-    //       console.log("Error ", jsonError);
-    //     }
-    //   );
-
     this.shopsProvider.getNextAvailableSlots(this.shopID)
       .subscribe(
         (employees) => {
@@ -132,12 +105,6 @@ export class ServiceSinglePage {
   }
 
 // ViewController logic (reacting to events)
-
-  // @TODO
-  employeeSelection() : void{
-    console.log(this.selectedEmployee);
-    // get the next available time slot for this employee
-  }
 
   lineUp() : void{
     console.log("data at this point: ", this.shopID, this.serviceID, this.selectedEmployee);

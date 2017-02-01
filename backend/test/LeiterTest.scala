@@ -11,7 +11,7 @@ import services.AdressNotFoundException
 import scala.concurrent.{ Await, Future }
 import play.api.{ Environment, Mode }
 import play.api.inject.guice.GuiceApplicationBuilder
-import utils.{ OneLeiterRequiredException, UnauthorizedException }
+import utils._
 
 import scala.concurrent.duration._
 
@@ -155,7 +155,7 @@ class LeiterTest extends AsyncWordSpec {
         }
       }
       "not be able to create an already Existing DL" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[DLAlreadyExistsException] {
           Await.result(leiter.dienstleistungAnbieten("Haare Waschen", 40, "Haare Waschen"), awaitDuration)
         }
       }
@@ -172,8 +172,8 @@ class LeiterTest extends AsyncWordSpec {
           affectedRows => affectedRows should be(0)
         }
       }
-      "not  be able to modify an DL to the same Data set as an other existing DL" in {
-        assertThrows[JdbcSQLException] {
+      "not be able to modify an DL to the same Data set as an other existing DL" in {
+        assertThrows[DLAlreadyExistsException] {
           Await.result(
             leiter.dienstleistungsInformationVeraendern(PK[DienstleistungEntity](5L), "Haare Waschen", 40, "Haare Waschen"),
             awaitDuration
@@ -194,7 +194,7 @@ class LeiterTest extends AsyncWordSpec {
 
     "call mitarbeiterAnstellen and " should {
       "not be able to hire a not existing Anwender" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[InvalidMitarbeiterException] {
           Await.result(
             leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](100L), None)),
             awaitDuration
@@ -202,7 +202,7 @@ class LeiterTest extends AsyncWordSpec {
         }
       }
       "not be able to hire a already employed Mitarbeiter" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[MitarbeiterAlreadyExistsException] {
           Await.result(
             leiter.mitarbeiterAnstellen(MitarbeiterEntity(true, PK[BetriebEntity](11L), PK[AnwenderEntity](4L), None)),
             awaitDuration
@@ -271,7 +271,7 @@ class LeiterTest extends AsyncWordSpec {
     }
     "call leiterEinstellen and" should {
       "not be able to hire a not existing Anwender" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[AnwenderNotFoundException] {
           Await.result(
             leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](100L), PK[BetriebEntity](11L), None)),
             awaitDuration
@@ -279,7 +279,7 @@ class LeiterTest extends AsyncWordSpec {
         }
       }
       "not be able to hire a Anwender who already is a Leiter" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[LeiterAlreadyExistsException] {
           Await.result(
             leiter.leiterEinstellen(LeiterEntity(PK[AnwenderEntity](4L), PK[BetriebEntity](11L), None)),
             awaitDuration
@@ -403,7 +403,7 @@ class LeiterTest extends AsyncWordSpec {
       }
       "not be able to remove a owned Dienstleistung with  WSP subscriptions" in {
         //should throw sql exception because of referential integrity
-        assertThrows[JdbcSQLException] {
+        assertThrows[DLStillUsedInAWspException] {
           Await.result(anw.wsFuerBestimmtenMitarbeiterBeitreten(4L, 14L), awaitDuration)
           Await.result(leiter.dienstleistungEntfernen(PK[DienstleistungEntity](4L)), awaitDuration)
         }
@@ -417,7 +417,7 @@ class LeiterTest extends AsyncWordSpec {
 
     "call betriebInformationenVeraendern and" should {
       "not be able to change name to an already used name" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[BetriebNameAlreadyInUseException] {
           Await.result(leiter.betriebsInformationenVeraendern(
             BetriebEntity("Alfredos", "0162 123 231 0", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
             AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))
@@ -425,7 +425,7 @@ class LeiterTest extends AsyncWordSpec {
         }
       }
       "not be able change tel to an already used tel" in {
-        assertThrows[JdbcSQLException] {
+        assertThrows[BetriebTelAlreadyInUseException] {
           Await.result(leiter.betriebsInformationenVeraendern(
             BetriebEntity("Tester", "0176 2222222", "Mo-Fr 10-16", "test@test.com", PK[AdresseEntity](1L), Some(PK[BetriebEntity](11L))),
             AdresseEntity("Ostender Straße", "9", "13353", "berlin", Some(52.5468305), Some(13.3529318), Some(PK[AdresseEntity](1L)))

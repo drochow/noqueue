@@ -7,6 +7,13 @@
         width: 85%;
         margin: auto;
 
+        .banner{
+          width: 250px;
+          height: 100px;
+          background: url("../../assets/img/app-banner.png");
+          margin: auto;
+        }
+
         .noqueue{
           color: map-get($colors, primary);
         }

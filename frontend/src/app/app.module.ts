@@ -15,7 +15,6 @@ import { ShopsProvider } from '../providers/shops-provider';
 import { ServicesProvider } from '../providers/services-provider';
 import { QueuesProvider } from '../providers/queues-provider';
 import { UsersProvider } from '../providers/users-provider';
-import { UserConfigurationProvider } from '../providers/user-configuration-provider';
 import { ValidatorProvider } from '../providers/validator-provider';
 import { ConnectivityProvider } from '../providers/connectivity-provider';
 import { GoogleMapsProvider } from '../providers/google-maps-provider';
@@ -105,8 +104,7 @@ export function getAuthHttp(http) {
     CoworkersPage,
     SplashScreenPage
   ],
-  providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider,
-    UserConfigurationProvider, ValidatorProvider, ConnectivityProvider, GoogleMapsProvider, LocationsProvider, {
+  providers: [Storage, JwtHelper, HttpProvider, AuthenticationProvider, ShopsProvider, ServicesProvider, QueuesProvider, UsersProvider, ValidatorProvider, ConnectivityProvider, GoogleMapsProvider, LocationsProvider, {
     provide: AuthHttp,
     useFactory: getAuthHttp,
     deps: [Http]

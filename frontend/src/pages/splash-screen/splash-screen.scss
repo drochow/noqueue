@@ -1,3 +1,12 @@
-page-splash-screen {
 
+.ios, .md, .wp{
+  page-splash-screen {
+    .logo{
+      width: 200px;
+      height: 200px;
+      background: url("../../assets/img/app-icon.png");
+      margin: 200px auto;
+    }
+  }
 }
+

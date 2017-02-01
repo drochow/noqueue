@@ -66,32 +66,20 @@ class NoQueueErrorHandler @Inject() (
       case aibe: AlreadWorkingOnAWspException => jsError(errorBadRequest("You need to finish all WSPs first.")(request2Messages(request)), request)
       case nfwspe: NotFirstWspException => jsError(errorBadRequest("You have to start with the first WSP.")(request2Messages(request)), request)
       case e: CredentialException => jsError(errorBadRequest("Invalid Credentials.")(request2Messages(request)), request)
-      /**
-       * We are handling SQL exceptions here, espacially uniqueness errors are catched on Persitance level
-       * //@todo  create sepeerated exceptions
-       */
-      case sqlE: SQLException => {
-        //@todo create generic handler to catch and transform unique index sql exceptions
-        val msg = new StringBuilder
-        if (sqlE.getMessage.contains("betriebNameUnique")) {
-          msg ++= "Ein Betrieb mit diesem Namen existiert bereits!"
-        } else if (sqlE.getMessage.contains("betriebTelUnique")) {
-          msg ++= "Ein Betrieb mit dieser Telefonnummer existiert bereits!"
-        } else if (sqlE.getMessage.contains("nameUnique")) {
-          msg ++= "Dieser name wird bereits verwendet"
-        } else if (sqlE.getMessage.contains("emailUnique")) {
-          msg ++= "Diese Email wird bereits verwendet"
-        } else {
-          msg ++= "Unknown SQL exception thrown..."
-        }
-        jsError(errorBadRequest(msg.toString())(request2Messages(request)), request)
-      }
+      case anfe: AnwenderNotFoundException => jsError(errorItemNotFound("Anwender not found"), request)
+      case bnaiue: BetriebNameAlreadyInUseException => jsError(errorBadRequest("Betrieb name already exists"), request)
+      case btaiue: BetriebTelAlreadyInUseException => jsError(errorBadRequest("Betrieb tel already exists"), request)
+      case dlaee: DLAlreadyExistsException => jsError(errorBadRequest("DL already exists"), request)
+      case dlsiu: DLStillUsedInAWspException => jsError(errorBadRequest("DL still in use"), request)
+      case ime: InvalidMitarbeiterException => jsError(errorBadRequest("Invalid Mitarbeiter"), request)
+      case iwse: InvalidWspSubscribtionException => jsError(errorBadRequest("Invalid Subscription"), request)
+      case laee: LeiterAlreadyExistsException => jsError(errorBadRequest("Leiter already exists"), request)
+      case maee: MitarbeiterAlreadyExistsException => jsError(errorBadRequest("Mitarbeiter already exists"), request)
       case igce: InvalidGeoCoordsException => jsError(errorBadRequest(igce.getMessage)(request2Messages(request)), request)
       case anfe: AdressNotFoundException => jsError(errorItemNotFound("This adress does not exist.")(request2Messages(request)), request)
       case olre: OneLeiterRequiredException => jsError(errorBadRequest("Atleast 1 Leiter is required.")(request2Messages(request)), request)
       case ua: UnauthorizedException => jsError(errorUnauthorized(request2Messages(request)), request)
       case nse: NoSuchElementException => jsError(errorItemNotFound(request2Messages(request)), request)
-
       //Unexpected/Unhandled Exception
       case e: Exception => {
         ApiLog.error(exception) // log the exception

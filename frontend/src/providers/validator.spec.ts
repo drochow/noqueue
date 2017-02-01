@@ -4,6 +4,10 @@
 import {TestBed, async, inject} from '@angular/core/testing';
 import {ValidatorProvider} from './validator-provider';
 
+/**
+ * A test class for the validator provider
+ */
+
 describe("Testing Validator Provider", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -20,17 +24,17 @@ describe("Testing Validator Provider", () => {
 
   it('Username too short', inject([ValidatorProvider], (validProvider) => {
     let username = "abcde";
-    expect(validProvider.username(pw).toBeFalsy());
+    expect(validProvider.username(username).toBeFalsy());
   }));
 
   it('Username long enough', inject([ValidatorProvider], (validProvider) => {
     let username = "abcdef";
-    expect(validProvider.username(pw).toBeTruthy());
+    expect(validProvider.username(username).toBeTruthy());
   }));
 
   it('Username too long', inject([ValidatorProvider], (validProvider) => {
     let username = "abcdefabcdefabcdefabcdefabcdefabcdef";
-    expect(validProvider.username(pw).toBeFalsy());
+    expect(validProvider.username(username).toBeFalsy());
   }));
 
 
@@ -316,17 +320,17 @@ describe("Testing Validator Provider", () => {
 
   it('Service tpye is valid 1', inject([ValidatorProvider], (validProvider) => {
     let type = "Haarschneiden";
-    expect(validProvider.serviceDescription(service).toBeTruthy());
+    expect(validProvider.serviceType(type).toBeTruthy());
   }));
 
   it('Service tpye is valid 2', inject([ValidatorProvider], (validProvider) => {
     let type = "Nasenhaarverlängerung";
-    expect(validProvider.serviceDescription(service).toBeTruthy());
+    expect(validProvider.serviceType(type).toBeTruthy());
   }));
 
   it('Service tpye is too long', inject([ValidatorProvider], (validProvider) => {
     let type = "HaarschneidenHaarschneidenHaarschneidenHaarschneidenHaarschneiden";
-    expect(validProvider.serviceDescription(service).toBeFalsy());
+    expect(validProvider.serviceType(type).toBeFalsy());
   }));
 
 

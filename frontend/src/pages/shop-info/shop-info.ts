@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ValidatorProvider } from '../../providers/validator-provider';
-import { ServiceInfoPage } from '../service-info/service-info';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { ServiceInfoPage } from '../service-info/service-info';
+
 
 /*
   Generated class for the ShopInfo page.
@@ -80,6 +83,8 @@ export class ShopInfoPage {
   ionViewWillEnter(): void{
     this.connectivity.checkNetworkConnection();
   }
+
+  // ViewModel logic - working with the data
 
   checkShopName() : void{
     this.isValid.shopName = this.validator.shopName(this.shop.name);
@@ -157,17 +162,12 @@ export class ShopInfoPage {
     this.checkCity();
   }
 
-
-// ViewModel logic (working with the data)
-
-  // call only if editing existing shop
   reloadData() : void{
     this.resetError();
 
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
-          console.log("Get shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -226,7 +226,6 @@ export class ShopInfoPage {
     this.shopsProvider.createShop(this.shop)
       .subscribe(
         (shop) => {
-          console.log("will push to service info page with new shop ID: ", shop.id);
           this.navCtrl.push(ServiceInfoPage, {newShop: true, shopID: shop.id, newService: true});
         },
         (error) => {

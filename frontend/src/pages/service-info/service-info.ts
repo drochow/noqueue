@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ValidatorProvider } from '../../providers/validator-provider';
 import { ServicesProvider } from '../../providers/services-provider';
-import { CoworkersPage } from '../coworkers/coworkers';
 import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
+// custom pages
+import { CoworkersPage } from '../coworkers/coworkers';
+
 
 
 /*
@@ -79,7 +82,6 @@ export class ServiceInfoPage {
     this.servicesProvider.getAllServiceTypes()
       .subscribe(
         (data) => {
-          console.log("Get all service types: ", data);
           this.types = [];
           var self = this;
           data.forEach(function(type){
@@ -105,20 +107,6 @@ export class ServiceInfoPage {
     toast.present();
   }
 
-  // only if editing existing service
-  // reloadData() : void{
-  //    this.servicesProvider.getService(this.serviceID, this.shopID)
-  //      .subscribe(
-  //        (service) => {
-  //          this.service = {
-  //            duration: service.dauer,
-  //            type: service.name,
-  //            description: service.kommentar
-  //          }
-  //        },
-  //        (error) => this.registerError(error.message || "Couldn't retrieve service from server")
-  //      );
-  // }
 
   checkDescription(){
     this.isValid.description = this.validator.serviceDescription(this.service.description);
@@ -126,7 +114,6 @@ export class ServiceInfoPage {
   }
 
   checkType(){
-    console.log("Selected type: ", this.selectedType);
     this.isValid.type = this.validator.serviceType(this.selectedType);
     this.checkAllFields();
   }
@@ -148,11 +135,9 @@ export class ServiceInfoPage {
 
   save() : void{
     this.service.type = this.selectedType;
-
     this.resetError();
     this.checkInput();
     if(!this.allFieldsValid) return;
-    console.log("trying to edit service");
 
     if(this.newService){
       this.createService();
@@ -163,12 +148,9 @@ export class ServiceInfoPage {
 
   proceed() : void{
     this.service.type = this.selectedType;
-
     this.resetError();
     this.checkInput();
     if(!this.allFieldsValid) return;
-
-    console.log("trying to save service");
 
     this.createService();
   }
@@ -189,7 +171,6 @@ export class ServiceInfoPage {
     this.servicesProvider.createService(this.shopID, this.service)
       .subscribe(
         (id) => {
-          console.log("Creating service with ID: ", id);
           if(this.newShop){
             this.navCtrl.push(CoworkersPage, {newShop: true, shopID: this.shopID});
           } else {

@@ -42,29 +42,5 @@
     <button *ngIf="newShop === false" class="button" ion-button full (click)="save()" [disabled]="allFieldsValid == false || selectedType.length < 1">Save</button>
   </div>
 
-  <!--<ion-item>-->
-    <!--<ion-textarea rows="3" placeholder="Description" [(ngModel)]="service.description"></ion-textarea>-->
-  <!--</ion-item>-->
-
-  <!--<ion-item>-->
-  <!--<ion-label>Duration (min)-->
-    <!--<ion-badge item-right>{{service.duration}} min</ion-badge>-->
-  <!--</ion-label>-->
-  <!--</ion-item>-->
-
-  <!--<ion-item>-->
-    <!--<ion-range min="5" max="120" step="5" snaps="true" color="secondary" [(ngModel)]="service.duration"></ion-range>-->
-  <!--</ion-item>-->
-
-  <!--<ion-item>-->
-    <!--<ion-label>Type</ion-label>-->
-    <!--<ion-select [(ngModel)]="selectedType">-->
-      <!--<ion-option *ngFor="let type of types">{{type}}</ion-option>-->
-    <!--</ion-select>-->
-  <!--</ion-item>-->
-  <!--<ion-item (click)="addCustomType()">-->
-    <!--Add Custom Type-->
-  <!--</ion-item>-->
-
 
 </ion-content>

@@ -48,7 +48,7 @@
           {{service.name}}
         </ion-item>
         <ion-item-options side="right">
-          <button ion-button color="danger" (click)="deleteService(service.serviceID)"><ion-icon class="fa fa-minus-circle"></ion-icon>Delete</button>
+          <button ion-button color="danger" (click)="deleteService(service.id)"><ion-icon class="fa fa-minus-circle"></ion-icon>Delete</button>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
@@ -59,7 +59,7 @@
     <ion-list no-lines>
       <ion-item *ngIf="!isLeiter">
         <ion-label>Currently working</ion-label>
-        <ion-toggle class="toggle-element" (click)="switchAttendance()" [checked]="isAnwesend" color="primary" item-right></ion-toggle>
+        <ion-toggle class="toggle-element" (ionChange)="switchAttendance()"  [checked]="isAnwesend" color="primary" item-right></ion-toggle>
       </ion-item>
       <ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>
       <ion-item *ngIf="queue.length < 1">Nobody in the line!</ion-item>
@@ -79,28 +79,6 @@
       </ion-item-sliding>
     </ion-list>
   </div>
-
-
-  <!--<ion-list *ngIf="!isLeiter">-->
-    <!--<ion-item-divider color="light">Queue</ion-item-divider>-->
-    <!--<ion-item *ngIf="queue.length > 0">Estimated last Service  {{queue.schaetzZeitpunkt | date: 'd.M.y HH:mm:ss'}}</ion-item>-->
-    <!--<ion-item *ngIf="queue.length < 1">Nobody in the line</ion-item>-->
-    <!--<ion-item-sliding *ngFor="let q of queue.wsps" #item>-->
-      <!--<ion-item>-->
-        <!--<h2>{{q.anwender.nutzerName}}</h2>-->
-        <!--<h3>{{q.dlName}}</h3>-->
-        <!--<p>Estimated duration for Service is {{q.dauer/60}} Minutes</p>-->
-        <!--<ion-badge *ngIf="q.beginnZeitpunk != 0" color="primary" item-right>In progress</ion-badge>-->
-      <!--</ion-item>-->
-      <!--<ion-item-options side="right">-->
-        <!--<button ion-button *ngIf="q.beginnZeitpunk == 0" color="primary" (click)="startWorkOn(q.id)"><ion-icon name="hammer"></ion-icon>Start</button>-->
-        <!--<button ion-button *ngIf="q.beginnZeitpunk != 0" color="secondary" (click)="finishWorkOn(q.id)"><ion-icon name="checkmark"></ion-icon>Finish</button>-->
-      <!--</ion-item-options>-->
-    <!--</ion-item-sliding>-->
-
-
-
-  <!--</ion-list>-->
 
 </ion-content>
 

@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+// custom providers
 import { ShopsProvider } from '../../providers/shops-provider';
 import { ServicesProvider } from '../../providers/services-provider';
 import { AuthenticationProvider } from '../../providers/authentication-provider';
+import { ConnectivityProvider } from '../../providers/connectivity-provider';
+import {QueuesProvider} from "../../providers/queues-provider";
+// custom pages
 import { ShopInfoPage } from '../shop-info/shop-info';
 import { ServiceInfoPage } from '../service-info/service-info';
 import { CoworkersPage } from '../coworkers/coworkers';
-import {QueuesProvider} from "../../providers/queues-provider";
-import { ConnectivityProvider } from '../../providers/connectivity-provider';
-import { ToastController } from 'ionic-angular';
 
 /*
   Generated class for the MyShopSingle page.
@@ -66,10 +68,6 @@ export class MyShopSinglePage {
   }
 
   ionViewWillLeave() : void{
-    // send changes of the toggle only when leaving the page
-    if(this.hasOwnQueueToggle !== this.currentManagerWorking){
-      // this.shopsProvider.managerWorking(userID, shopID, bool)..
-    }
   }
 
 // ViewModel logic (working with the data)
@@ -89,7 +87,6 @@ export class MyShopSinglePage {
     this.shopsProvider.getShop(this.shopID)
       .subscribe(
         (shop) => {
-          console.log("GET Shop: ", shop);
           this.shop = {
             name: shop.name,
             phone: shop.tel,
@@ -105,7 +102,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getEmployees(this.shopID)
         .subscribe(
           (employees) => {
-            console.log("GET Employees: ", employees);
             this.employees = employees;
           },
           (error) => this.registerError("Error while fetching data from the server.")
@@ -114,7 +110,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getManagers(this.shopID)
         .subscribe(
           (managers) => {
-            console.log("GET Managers: ", managers);
             this.managers = managers;
           },
           (error) => this.registerError("Error while fetching data from the server.")
@@ -129,7 +124,6 @@ export class MyShopSinglePage {
       this.shopsProvider.getQueueFor(this.shopID)
         .subscribe(
           (queue) => {
-            console.log("queue: ", queue);
             this.queue = queue;
             this.clients = queue.wsps;
             if(this.clients.length > 0){
@@ -141,14 +135,6 @@ export class MyShopSinglePage {
     }
   }
 
-  // start(){
-  //   this.firstStarted = true;
-  // }
-  //
-  // end(){
-  //   this.firstStarted = false;
-  //   this.reloadData();
-  // }
 
 // ViewController logic (reacting to events)
 
@@ -209,17 +195,18 @@ export class MyShopSinglePage {
 
   showService(serviceID: number) : void{
     let service = this.services.filter(s => s.id == serviceID)[0];
-    console.log("will show: ", service);
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: false, serviceID: serviceID, service: service});
   }
 
   deleteService(serviceID: number) : void{
-    console.log("will delete: " + serviceID);
-    //
+    this.servicesProvider.deleteService(this.shopID, serviceID)
+      .subscribe(
+        () => this.reloadData(),
+        (error) => this.registerError("Couldn't delete service.")
+      )
   }
 
   createService() : void{
-    console.log("will create");
     this.navCtrl.push(ServiceInfoPage, {newShop: false, shopID: this.shopID, newService: true, serviceID: -1, service: undefined});
   }
 
