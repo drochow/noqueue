@@ -6,7 +6,6 @@ import slick.profile.SqlProfile.ColumnOption.SqlType
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 trait WarteschlangenPlatzComponent {
   this: DriverComponent with AnwenderComponent with MitarbeiterComponent with DienstleistungComponent with DienstleistungsTypComponent with BetriebComponent =>
@@ -23,7 +22,6 @@ trait WarteschlangenPlatzComponent {
     def dienstleistung = foreignKey("DL_FK", dienstleistungsId, dienstleistungen)(_.id)
     def mitarbeiter = foreignKey("MIT_FK", mitarbeiterId, mitarbeiters)(_.id)
     def anwender = foreignKey("ANW_FK", anwenderId, anwenders)(_.id)
-    //def folgePlatz = foreignKey("NEXT_FK", folgePlatzId, warteschlangenplaetze)(_.id)
 
     /**
      * Default Projection Mapping to case Class

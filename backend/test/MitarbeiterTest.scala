@@ -170,14 +170,17 @@ class MitarbeiterTest extends AsyncWordSpec {
         for {
           now <- Future.successful(System.currentTimeMillis() / 1000 + 40L)
           list <- mitarbeiter.warteSchlangeAnzeigen()
-        } yield list._2.getTime shouldBe (now)
+          //adding 1 second
+          res <- Future.successful(list._2.getTime == now || list._2.getTime == now + 1)
+        } yield res should be(true)
       }
       "be able to show with 1 entry the correct time after it has begun" in {
         for {
           a1 <- mitarbeiter.wspBearbeitungBeginnen(PK[WarteschlangenPlatzEntity](13L))
           now <- Future.successful(System.currentTimeMillis() / 1000 + 40L)
           list <- mitarbeiter.warteSchlangeAnzeigen()
-        } yield list._2.getTime shouldBe (now)
+          res <- Future.successful(list._2.getTime == now || list._2.getTime == now + 1)
+        } yield res should be(true)
       }
       "be able to show with 0 entries the correct time" in {
         for {
@@ -185,7 +188,8 @@ class MitarbeiterTest extends AsyncWordSpec {
           a2 <- mitarbeiter.wspBearbeitungBeenden(PK[WarteschlangenPlatzEntity](13L))
           expectedTime <- Future.successful(System.currentTimeMillis() / 1000)
           list <- mitarbeiter.warteSchlangeAnzeigen()
-        } yield list._2.getTime shouldBe (expectedTime)
+          res <- Future.successful(list._2.getTime == expectedTime || list._2.getTime == expectedTime + 1)
+        } yield res should be(true)
       }
       "be able to show with 5 entries the correct time after one has begun" in {
         for {
@@ -196,7 +200,8 @@ class MitarbeiterTest extends AsyncWordSpec {
           wsp3 <- anw3.wsFuerBestimmtenMitarbeiterBeitreten(6L, 9L)
           wsp4 <- anw4.wsFuerBestimmtenMitarbeiterBeitreten(6L, 9L)
           list <- mitarbeiter.warteSchlangeAnzeigen()
-        } yield list._2.getTime shouldBe (expectedTime)
+          res <- Future.successful(list._2.getTime == expectedTime || list._2.getTime == expectedTime + 1)
+        } yield res should be(true)
       }
       "be able to show with 5 entries the correct time " in {
         for {
@@ -206,7 +211,8 @@ class MitarbeiterTest extends AsyncWordSpec {
           wsp3 <- anw3.wsFuerBestimmtenMitarbeiterBeitreten(6L, 9L)
           wsp4 <- anw4.wsFuerBestimmtenMitarbeiterBeitreten(6L, 9L)
           list <- mitarbeiter.warteSchlangeAnzeigen()
-        } yield list._2.getTime shouldBe (expectedTime)
+          res <- Future.successful(list._2.getTime == expectedTime || list._2.getTime == expectedTime + 1)
+        } yield res should be(true)
       }
       "be able to return a sequence with 0 entries " in {
         for {

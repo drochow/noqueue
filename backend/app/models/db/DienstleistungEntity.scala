@@ -1,6 +1,6 @@
 package models.db
 
-import api.auth.Credentials
+import api.Credentials
 import play.api.libs.json.{ Format, Json }
 
 /**

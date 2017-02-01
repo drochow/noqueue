@@ -36,8 +36,6 @@ trait DienstleistungComponent {
 
   def update(dl: DienstleistungEntity): DBIO[Int] = dienstleistungen.filter(_.id === dl.id.get).filter(_.betriebId === dl.betriebId).update(dl)
 
-  def getDienstleistungById(id: PK[DienstleistungEntity]): DBIO[DienstleistungEntity] = dienstleistungen.filter(_.id === id).result.head
-
   def deleteDienstleistung(dienstleistungId: PK[DienstleistungEntity], betriebId: PK[BetriebEntity]): DBIO[Int] =
     dienstleistungen.filter(_.id === dienstleistungId).filter(_.betriebId === betriebId).delete
 }
