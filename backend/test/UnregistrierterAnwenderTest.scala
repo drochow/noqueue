@@ -236,6 +236,55 @@ class UnregistrierterAnwenderTest extends AsyncWordSpec {
         }
       }
     }
+    "call anbieterSuchen and" should {
+      "see no duplicates" in {
+        ua.anbieterSuchen("a", 30000000, 13.3011108, 52.5913291, 0, 100) map {
+          r => (r diff r.distinct).distinct.length should be(0)
+        }
+      }
+      "see only anbieter in the specified range" in {
+        val anwM = new Anwender(db.dal.getAnwenderWithAdress(PK[AnwenderEntity](1L)), db)
+        for {
+          b1 <- anwM.betriebErstellen(
+            BetriebEntity(
+              name = "a DummyBetrieb a 1",
+              tel = "030 121 121",
+              oeffnungszeiten = "Mo-Fr 10-16 Uhr",
+              kontaktEmail = "a dummybetrieb1@gmail.com",
+              adresseId = PK[AdresseEntity](0L)
+            ),
+            AdresseEntity(
+              strasse = "Parkstraße",
+              hausNummer = "22",
+              plz = "13086",
+              stadt = "Berlin",
+              latitude = Some(52.5530966),
+              longitude = Some(13.4569842)
+            )
+          )
+          leiter1 <- Future.successful(new Leiter(db.dal.getLeiterOfById(b1._1.id.get, PK[AnwenderEntity](1L)), db))
+          m1 <- leiter1.mitarbeiterAnstellen(MitarbeiterEntity(true, b1._1.id.get, PK[AnwenderEntity](8L)))
+          dl1 <- leiter1.dienstleistungAnbieten("aaa", 2000, "aaa")
+          /**
+           * For refrence values we used GoogleMaps feature to calculate the air distance
+           */
+          res1 <- ua.anbieterSuchen("a", 1800, 13.4307916, 52.5514134, 0, 100)
+          res2 <- ua.anbieterSuchen("a", 5000, 13.4307916, 52.5514134, 0, 100)
+          res3 <- ua.anbieterSuchen("a", 5300, 13.4307916, 52.5514134, 0, 100)
+          res4 <- ua.anbieterSuchen("a", 9400, 13.4307916, 52.5514134, 0, 100)
+          total <- Future.successful(res1.length == 1 && res2.length == 2 && res3.length == 5 && res4.length == 7)
+        } yield total should be(true)
+      }
+      "see only anbieter matching the query string" in {
+        for {
+          res1 <- ua.anbieterSuchen("Drugstore", 20000, 13.4307916, 52.5514134, 0, 100)
+          res2 <- ua.anbieterSuchen("Bertas Mass", 20000, 13.4307916, 52.5514134, 0, 100)
+          res3 <- ua.anbieterSuchen("dude", 20000, 13.4307916, 52.5514134, 0, 100)
+          res4 <- ua.anbieterSuchen("awesome", 20000, 13.4307916, 52.5514134, 0, 100)
+          total <- Future.successful(res1.length == 2 && res2.length == 1 && res3.length == 2 && res4.length == 1)
+        } yield total should be(true)
+      }
+    }
   }
 
 }

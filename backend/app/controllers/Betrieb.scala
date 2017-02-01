@@ -7,7 +7,7 @@ import api.ApiError
 import api.JsonCombinators._
 import models.{ DB, UnregistrierterAnwender }
 import models.db._
-import osm.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
+import services.{ AdressNotFoundException, AdressService, GeoCoords, InvalidGeoCoordsException }
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.inject.ApplicationLifecycle

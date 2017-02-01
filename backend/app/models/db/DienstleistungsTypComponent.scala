@@ -11,6 +11,7 @@ trait DienstleistungsTypComponent {
 
     def name = column[String]("NAME")
     def id = column[PK[DienstleistungsTypEntity]]("DLT_ID", O.PrimaryKey, O.AutoInc)
+    def dltNameUnique = index("dltNameUnique", name, unique = true)
 
     def * = (name, id.?) <> (DienstleistungsTypEntity.tupled, DienstleistungsTypEntity.unapply)
   }
