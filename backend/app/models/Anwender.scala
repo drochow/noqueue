@@ -1,6 +1,6 @@
 package models
 
-import java.sql.Timestamp
+import java.sql.{ SQLException, Timestamp }
 import java.util.NoSuchElementException
 
 import akka.actor.FSM.Failure
@@ -9,7 +9,7 @@ import models.db._
 import org.mindrot.jbcrypt.BCrypt
 import play.api.inject.ApplicationLifecycle
 import slick.dbio.{ DBIO, DBIOAction }
-import utils.{ UnauthorizedException, WspDoesNotExistException }
+import utils.{ InvalidWspSubscribtionException, UnauthorizedException, WspDoesNotExistException }
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -132,10 +132,12 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     ))
 
   def wsFuerBestimmtenMitarbeiterBeitreten(dlId: Long, mitarbeiterId: Long): Future[WarteschlangenPlatzEntity] = {
-    for {
+    (for {
       anwenderId <- anwender.map(_.id)
       wsp <- db.run(dal.insert(WarteschlangenPlatzEntity(None, anwenderId.get, PK[MitarbeiterEntity](mitarbeiterId), PK[DienstleistungEntity](dlId))))
-    } yield wsp
+    } yield wsp) recover {
+      case sqle: SQLException => if (sqle.getMessage.contains("integrity constraint violation")) throw new InvalidWspSubscribtionException else throw sqle
+    }
   }
 
   def wspAnzeigen(): Future[(PK[WarteschlangenPlatzEntity], String, String, AdresseEntity, PK[DienstleistungEntity], Int, String, Timestamp)] = {

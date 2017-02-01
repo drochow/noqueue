@@ -1,9 +1,0 @@
-docker run postgresql
-
-or
-
-docker build .
-
-Wich returns an docker hash we can use to run the container
-
-docker run <hash>

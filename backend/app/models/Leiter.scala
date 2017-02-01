@@ -1,10 +1,11 @@
 package models
 
+import java.sql.SQLException
 import java.util.NoSuchElementException
 
 import models.db._
 import slick.dbio.DBIO
-import utils.UnauthorizedException
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -53,7 +54,10 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
    * @return
    */
   def betriebsInformationenVeraendern(betrieb: BetriebEntity, adresse: AdresseEntity) =
-    authorizedAction((b) => db.run(dal.update(b.id.get, betrieb, adresse)))
+    authorizedAction((b) => db.run(dal.update(b.id.get, betrieb, adresse))) recover {
+      case sqle: SQLException =>
+        if (sqle.getMessage.contains("betriebsNameUnique")) throw new BetriebNameAlreadyInUseException else if (sqle.getMessage.contains("betriebsTelUnique")) throw new BetriebTelAlreadyInUseException else throw sqle
+    }
 
   /**
    * Hires new @MitarbeiterEntity for the @BetriebEntity aligned with this @Leiter
@@ -62,7 +66,11 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
    * @return The freshly created @MitarbeiterEntity
    */
   def mitarbeiterAnstellen(mitarbeiter: MitarbeiterEntity): Future[MitarbeiterEntity] =
-    authorizedAction((b) => db.run(dal.insert(mitarbeiter.copy(betriebId = b.id.get))))
+    authorizedAction((b) => db.run(dal.insert(mitarbeiter.copy(betriebId = b.id.get)))) recover {
+      case sqle: SQLException => {
+        if (sqle.getMessage.contains("integrity constraint violation")) throw new InvalidMitarbeiterException else if (sqle.getMessage.contains("mitarbeiterUnique")) throw new MitarbeiterAlreadyExistsException else throw sqle
+      }
+    }
 
   /**
    * Fires  @MitarbeiterEntity with given Primary Key
@@ -80,7 +88,10 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
    * @return The freshly hired @LeiterEntity
    */
   def leiterEinstellen(leiterEntity: LeiterEntity): Future[LeiterEntity] =
-    authorizedAction((b) => db.run(dal.insert(leiterEntity.copy(betriebId = b.id.get))))
+    authorizedAction((b) => db.run(dal.insert(leiterEntity.copy(betriebId = b.id.get)))) recover {
+      case sqle: SQLException =>
+        if (sqle.getMessage.contains("integrity constraint violation")) throw new AnwenderNotFoundException else if (sqle.getMessage.contains("mUnique")) throw new LeiterAlreadyExistsException else throw sqle
+    }
 
   /**
    * Fires  @MitarbeiterEntity with given Primary Key
@@ -130,7 +141,10 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
             dlt.id.get
           )
         ))
-      } yield dl)
+      } yield dl) recover {
+      case sqle: SQLException =>
+        if (sqle.getMessage.contains("dlUnique")) throw new DLAlreadyExistsException else throw sqle
+    }
 
   /**
    * Updates @DienstleistungEntity matching the provided Primary Key with provided data
@@ -157,7 +171,10 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
             Option(diensleistungPK)
           )
         ))
-      } yield affectedRows)
+      } yield affectedRows) recover {
+      case sqle: SQLException =>
+        if (sqle.getMessage.contains("integrity constraint violation")) throw new DLInvalidException else if (sqle.getMessage.contains("dltNameUnique") || sqle.getMessage.contains("dlUnique")) throw new DLAlreadyExistsException else throw sqle
+    }
 
   /**
    * Removes @DienstleistungEntity matching the provided Primary Key
@@ -166,5 +183,8 @@ class Leiter(val leiterAction: DBIO[(BetriebEntity, AnwenderEntity, LeiterEntity
    * @return boolean value representing success or failure of the action
    */
   def dienstleistungEntfernen(dienstleistungPK: PK[DienstleistungEntity]): Future[Boolean] =
-    authorizedAction((b) => db.run(dal.deleteDienstleistung(dienstleistungPK, b.id.get)).map(_ == 1))
+    authorizedAction((b) => db.run(dal.deleteDienstleistung(dienstleistungPK, b.id.get)).map(_ == 1)) recover {
+      case sqle: SQLException =>
+        if (sqle.getMessage.contains("integrity constraint violation")) throw new DLStillUsedInAWspException else throw sqle
+    }
 }
