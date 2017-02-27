@@ -1,0 +1,642 @@
+{
+  "variables": [],
+  "info": {
+    "name": "NoQueue",
+    "_postman_id": "d5e402e0-a28f-e827-61c0-f5d0a9d5f4aa",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "SignIn",
+      "request": {
+        "url": "http://noqueue.bornerd.de/auth",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"password\": \"123456\",\n \"nutzerName\": \"dkaatz1\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Anwender (GET) ",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender  ",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "SETUP",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender  ",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjcsImV4cGlyYXRpb24iOjE0ODEwNDc2MTQyOTF9.IdJwbjqmbhBEqwKH1ohVCuPx6XpkUAw2H8ACHtAMQpk",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "SignUp",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"nutzerEmail\": \"davidkaatz@gmx.de\",\n \"password\": \"123456\",\n \"nutzerName\": \"dkaatz\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb (Create)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0MTM2ODY1NTE4fQ.IhjySchxv-n5ug8Wc00jwe-h5HnlLMW0J_xMFT1PMrM",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"kontaktEmail\": \"weddingerbude3@something.de\",\n \"tel\": \"+49 17623373437532\",\n \"name\": \"Drugstore 3\",\n \"adresse\": {\n \t\"strasse\": \"Ostender Straße\",\n    \"hausNummer\": \"9\",\n    \"plz\": \"13353\",\n    \"stadt\": \"berlin\"\n },\n \"oeffnungszeiten\": \"Mo-Fr 10:00-22:00 Uhr\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb (UPDATE)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgzMDM2MDcyNjgzfQ.JikrLNCqIHahJd7NHzQUFrlTX2oD4NzjhtChNMBnsoQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"kontaktEmail\": \"info@alfredos.de\",\n \"tel\": \"+49 17743753\",\n \"name\": \"Alfredos\",\n \"adresse\": {\n \t\"strasse\": \"Okkastraße\",\n    \"hausNummer\": \"20\",\n    \"plz\": \"10273\",\n    \"stadt\": \"Berlin\"\n },\n \"oeffnungszeiten\": \"Mo-So 10:00-22:00 Uhr\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb (Show one)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"kontaktEmail\": \"info@burgerbude.de\",\n \"tel\": \"017623743753\",\n \"name\": \"Burger Bude\",\n \"adresse\": {\n \t\"strasse\": \"Bollestraße\",\n    \"hausNummer\": \"20\",\n    \"plz\": \"13509\",\n    \"stadt\": \"Berlin\"\n },\n \"oeffnungszeiten\": \"Mo-Fr 10:00-22:00 Uhr\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb Add Mitarbeiter (Create)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5/mitarbeiter",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"anwesend\": false,\n \"anwenderId\": 2,\n \"betriebId\": 5\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb delete Mitarbeiter (delete)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5/mitarbeiter/7",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"anwesend\": true,\n \"anwenderId\": 3,\n \"betriebId\": 5\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Anwender Directory Show Public information by ID",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender/directory/3",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Anwender Directory Filter/List",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender/directory?q=dav",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb Mitarbeiter show",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5/mitarbeiter",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"anwesend\": \"false\",\n \"anwenderId\": \"2\",\n \"betriebId\": \"5\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb Leiter show",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5/leiter?size=10&page=0",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"anwesend\": \"false\",\n \"anwenderId\": \"2\",\n \"betriebId\": \"5\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb Add Leiter (Create)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/5/leiter",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"anwenderId\": 2,\n \"betriebId\": 5\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb delete Leiter (delete)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/6/leiter/7",
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "OSM - Search Adress",
+      "request": {
+        "url": " http://nominatim.openstreetmap.org/search?format=json&countrycode=de&city=berlin&street=gorkistraße&postalcode=13509",
+        "method": "GET",
+        "header": [],
+        "body": {},
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Betrieb (search)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb?q=a&lat=52.5262067&long=13.3589464&umkreis=100000000000",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjo0LCJleHBpcmF0aW9uIjoxNDg0MDEwNTczMjM0fQ.7utq5whys9zdkTCp9UqPyRcfXFFLhZc_CbqlbJkyswg",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n \"kontaktEmail\": \"info@burgerbude.de\",\n \"tel\": \"017623743753\",\n \"name\": \"Burger Bude\",\n \"adresse\": {\n \t\"strasse\": \"Bollestraße\",\n    \"hausNummer\": \"20\",\n    \"plz\": \"13509\",\n    \"stadt\": \"Berlin\"\n },\n \"oeffnungszeiten\": \"Mo-Fr 10:00-22:00 Uhr\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "my Betriebe (GET) ",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender  ",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDgyOTM0MzYwNDExfQ.e14b6OuqKYdSL95vUBOPfg8gcjtmXhAVEy3iHYlzwdQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Warteschlange LineUp",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender/wsp",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0NTcxNDYxNTIwfQ.d2MsBzVMH9s4oSLjAHOFxJRuODpuG3OF00wX8WizlxQ",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"dlId\": 2,\n\t\"mitarbeiterId\": 1\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Change Mitarbeiter Attendance",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/2/mitarbeiter",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjozLCJleHBpcmF0aW9uIjoxNDg0NDk0NjEwNzA2fQ.N5y8bL8-X_kdyQxcsQlU0qj6rpGDGg564NHg0K_znqU",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"anwesend\": true\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Warteschlange Show(mitarbeiter)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/1/ws",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0NTcxNTg4NzQxfQ.-9Xsr9oyAhRIQ3vqC77WWi7TCvR0pW5MIjQR1xVNFmY",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"dlId\": 2,\n\t\"mitarbeiterId\": 1\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "Warteschlange Show(anwender)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender/wsp",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0NTc0MjA4NTA5fQ.TGMqeTwFHsGgmZicwFfZSrl5VPzDrN-lguBprU6uwCc",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"dlId\": 2,\n\t\"mitarbeiterId\": 1\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "NextSlots of Betrieb",
+      "request": {
+        "url": "http://noqueue.bornerd.de/anwender/wsp",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0NTc0MjA4NTA5fQ.TGMqeTwFHsGgmZicwFfZSrl5VPzDrN-lguBprU6uwCc",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"dlId\": 2,\n\t\"mitarbeiterId\": 1\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "WSP start modify(mitarbeiter)",
+      "request": {
+        "url": "http://noqueue.bornerd.de/betrieb/1/wsp/5",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Date",
+            "value": "Mon, 3 GMT",
+            "description": ""
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJhbndlbmRlcklkIjoxLCJleHBpcmF0aW9uIjoxNDg0NTcxNTg4NzQxfQ.-9Xsr9oyAhRIQ3vqC77WWi7TCvR0pW5MIjQR1xVNFmY",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"dlId\": 2,\n\t\"mitarbeiterId\": 1\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    }
+  ]
+}
