@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { HttpProvider } from '../providers/http-provider';
 import { Storage } from '@ionic/storage';
+import {JwtHelper} from "angular2-jwt";
 
 /*
   Generated class for the AuthenticationProvider provider.
@@ -26,10 +27,19 @@ export class AuthenticationProvider {
    * @param httpProvider - the provider that sends http requests
    * @param storage - Local Storage (where the token is being stored)
      */
-  constructor(public http: Http, private httpProvider: HttpProvider, private storage: Storage) {
+  constructor(public http: Http, private httpProvider: HttpProvider, private storage: Storage, private jwt: JwtHelper) {
     if(this.storage){
       this.storage.get('token').then(
-        (token) => this.token = token
+        (token) => {
+          let expirationTime = jwt.decodeToken(token).expiration;
+          console.log("Token present and expires at: "  + expirationTime);
+          console.log("Current time is: "  +  Math.floor(Date.now()));
+          if(expirationTime < Math.floor(Date.now())) {
+            this.resetToken()
+          } else {
+            this.token = token
+          }
+        }
       );
     }
   }
@@ -40,6 +50,7 @@ export class AuthenticationProvider {
      */
   asyncSetup() : Promise<any>{
     let auth = this;
+    this.token = "";
     return new Promise(function(resolve, reject){
       auth.storage.keys().then(
         (keys) => {
@@ -128,7 +139,7 @@ export class AuthenticationProvider {
    * @returns {boolean} - true if token found (user is logged in)
      */
   isLoggedIn() : boolean{
-    return this.token !== undefined && this.token !== "";
+    return this.token !== undefined && this.token.trim() !== "";
   }
 
   /**
