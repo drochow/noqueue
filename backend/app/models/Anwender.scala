@@ -203,4 +203,3 @@ class Anwender(val anwenderAction: DBIO[(AnwenderEntity, Option[AdresseEntity])]
     } yield res
   }
 }
-

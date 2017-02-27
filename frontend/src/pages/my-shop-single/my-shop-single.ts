@@ -68,10 +68,6 @@ export class MyShopSinglePage {
   }
 
   ionViewWillLeave() : void{
-    // send changes of the toggle only when leaving the page
-    if(this.hasOwnQueueToggle !== this.currentManagerWorking){
-      // this.shopsProvider.managerWorking(userID, shopID, bool)..
-    }
   }
 
 // ViewModel logic (working with the data)

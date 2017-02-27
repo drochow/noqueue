@@ -31,10 +31,6 @@
     <p class="info" *ngIf="noShops">No shops found.</p>
 
     <ion-list *ngIf="shouldShowShops" [virtualScroll]="shops">
-      <!--<ion-item *virtualItem="let shop">-->
-        <!--<p (click)="showShopSinglePage(shop.id)">{{shop.name}}</p>-->
-        <!--<p (click)="showShopSinglePage(shop.id)">{{shop.tel}}</p>-->
-      <!--</ion-item>-->
       <div class="shop" *virtualItem="let shop" (click)="showShopSinglePage(shop.id)">
         <div class="first-line">
           <p class="name">{{shop.name}}</p>
