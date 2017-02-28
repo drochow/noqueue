@@ -212,7 +212,7 @@ class AnwenderSpec extends AsyncWordSpec {
       val unregistrierterAnwender = new UnregistrierterAnwender(db)
       for {
         newAnwenderE <- unregistrierterAnwender.registrieren(anw)
-        newAnwender <- Future.successful(new Anwender(db.dal.getAnwenderWithAdress(newAnwenderE.id.get), db))
+        newAnwender = new Anwender(db.dal.getAnwenderWithAdress(newAnwenderE.id.get), db)
         wsp <- newAnwender.wsFuerBestimmtenMitarbeiterBeitreten(expectedWsP.dienstLeistungId.value, expectedWsP.mitarbeiterId.value)
       } yield (wsp should equal(WarteschlangenPlatzEntity(None, newAnwenderE.id.get, expectedWsP.mitarbeiterId, expectedWsP.dienstLeistungId, None, None).copy(id = wsp.id)))
     }
